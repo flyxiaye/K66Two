@@ -432,11 +432,11 @@ void Menu(void)
 {
 	g_Key = Key_Check();
 	Key_Function();
-	if (!g_drive_flag)
+	if (!g_flag)
 	{
 		Extra_Show();
 		Main_Show();
-                OLED_Write_Int(0,0,g_mode);
+        OLED_Write_Int(0,0,g_mode);
 	}
 }
 
