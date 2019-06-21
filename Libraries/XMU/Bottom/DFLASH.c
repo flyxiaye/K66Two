@@ -18,7 +18,7 @@
 
 extern void OLED_Clear(void);
 
-#define First_Time_Init 29
+#define First_Time_Init 31
 
 
 /********** 以下为存储的数据 **********/
@@ -68,39 +68,38 @@ void MyFlash_Write(signed int flashnum)
 
 
        /********** 以下为存储的数据 **********/
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);//角度设置
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_angle_P);//角度环
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, g_RateP);//内环角速度环
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_angle_P);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, g_RateP);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 4, g_RateD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 5, g_dire_P);//方向环
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 5, g_dire_P);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 6, g_dire_D);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 7, g_fSpeed_set);//速度环设置
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 7, g_fSpeed_set);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 8, g_Speed_P);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 9, g_Speed_I);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 10, gRateKd);//方向串级
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 10, gRateKd);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 11, gRateKp);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, MaxSpeed);//速度环限幅
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 13, ProSpect);//前瞻
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 14, meet_st);//会车给的固定偏差
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, max_duty);//速度环输出限幅
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 16, st);//V字形避障偏差
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 17, stop_inf); //路障拐弯红外
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 18, sum_dist);//V字形避障路程积分
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 19, ave_left_cross);//电感归一化
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 20,  ave_right_cross);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 21,  ave_left_column);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 22,  ave_right_column);//
-//        DFlash_Write_Float(SECTOR_NUM + flashnum, 23, ave_mid);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 24, sum_meet_left);//会车掉头
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 25, sum_meet_right);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 26, Speed_MAX);//速度积分限幅
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 27, Img_BlockOpen);//前瞻
-
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 28, exp_time);//单级控制参数
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, gRateKd_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, gRateKp_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, g_dire_P_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, g_dire_D_AD);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, MaxSpeed);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 13, ProSpect);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 14, DFLASH_PARAM14);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, DFLASH_PARAM15);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 16, SteeringCtrlDi_universe);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 17, SteeringCtrlDo_universe);  
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 18, SteerEndDist_circle);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 19, SteerEndDist);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 20, SteeringMid );
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 21, SteeringMin );
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 22, SteeringMax );
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 23, DiffThreshold);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 24, NoiseThreshold);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 25, FrontThreshold);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 26, EngineMax);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 27, EngineMin);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 28, g_Angle_threshold);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, Jolt_delta);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, Jolt_Down_Speed);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, Jolt_time);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, Jolt_Open);
 
     /********** 以上为存储的数据 **********/
 OLED_Clear();
@@ -129,31 +128,30 @@ void MyFlash_Read(signed int flashnum)
         gRateKp = DFlash_Read_Float(SECTOR_NUM + flashnum, 11);
         MaxSpeed= DFlash_Read_Int(SECTOR_NUM + flashnum, 12);
         ProSpect = DFlash_Read_Int(SECTOR_NUM + flashnum,13);
-//        meet_st = DFlash_Read_Int(SECTOR_NUM + flashnum,14);
-        max_duty = DFlash_Read_Int(SECTOR_NUM + flashnum,15);
-        st = DFlash_Read_Int(SECTOR_NUM + flashnum,16);
-        stop_inf = DFlash_Read_Int(SECTOR_NUM + flashnum,17);
-        sum_dist = DFlash_Read_Int(SECTOR_NUM + flashnum,18);       
-//         ave_left_cross = DFlash_Read_Int(SECTOR_NUM + flashnum,19);
-//        ave_right_cross = DFlash_Read_Int(SECTOR_NUM + flashnum,20);
-//        ave_left_column = DFlash_Read_Int(SECTOR_NUM + flashnum,21);
-//        ave_right_column = DFlash_Read_Int(SECTOR_NUM + flashnum,22);
-//                ave_mid = DFlash_Read_Float(SECTOR_NUM + flashnum,23);
-
-        
-        
-        
-//        sum_meet_left = DFlash_Read_Int(SECTOR_NUM + flashnum,24);
-//        sum_meet_right = DFlash_Read_Int(SECTOR_NUM + flashnum,25);
-        Speed_MAX = DFlash_Read_Int(SECTOR_NUM + flashnum,26);
-//        Img_BlockOpen = DFlash_Read_Float(SECTOR_NUM + flashnum,27);
+        DFLASH_PARAM14 = DFlash_Read_Int(SECTOR_NUM + flashnum,14);
+        DFLASH_PARAM15 = DFlash_Read_Int(SECTOR_NUM + flashnum,15);
+//        SteeringCtrlDi_universe = DFlash_Read_Float(SECTOR_NUM + flashnum,16);
+//        SteeringCtrlDo_universe = DFlash_Read_Float(SECTOR_NUM + flashnum,17);
+//        SteerEndDist_circle = DFlash_Read_Float(SECTOR_NUM + flashnum,18);       
+//        SteerEndDist  = DFlash_Read_Float(SECTOR_NUM + flashnum,19);
+//        SteeringMid = DFlash_Read_Float(SECTOR_NUM + flashnum,20);
+//        SteeringMin = DFlash_Read_Float(SECTOR_NUM + flashnum,21);
+//        SteeringMax = DFlash_Read_Float(SECTOR_NUM + flashnum,22);
+//        
+//        
+//        
+//        DiffThreshold = DFlash_Read_Float(SECTOR_NUM + flashnum,23);
+//        NoiseThreshold = DFlash_Read_Float(SECTOR_NUM + flashnum,24);
+//        FrontThreshold = DFlash_Read_Float(SECTOR_NUM + flashnum,25);
+//        EngineMax = DFlash_Read_Float(SECTOR_NUM + flashnum,26);
+//        EngineMin = DFlash_Read_Float(SECTOR_NUM + flashnum,27);
 //  
 //        
-        exp_time = DFlash_Read_Int(SECTOR_NUM + flashnum,28);
-        gRateKd_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
-        gRateKp_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
-        g_dire_P_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
-        g_dire_D_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
+//        g_Angle_threshold = DFlash_Read_Float(SECTOR_NUM + flashnum,28);
+//        Jolt_delta = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
+//        Jolt_Down_Speed = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
+//        Jolt_time = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
+//        Jolt_Open = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
 
          
  

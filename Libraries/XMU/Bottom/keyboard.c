@@ -5,6 +5,23 @@
 
 char g_Key = -1;
 
+//================================================================//
+//  @brief  :		键盘初始化
+//  @param  :		void
+//  @return :		void
+//  @note   :		在Key_Function里最后面调用
+//================================================================//
+void INTR_Keyboard_Init(void)
+{
+	gpio_init(COL1, GPO, 0);
+	gpio_init(COL2, GPO, 0);
+	gpio_init(COL3, GPO, 0);
+	port_init(ROW1, IRQ_FALLING | PF | ALT1 | PULLUP);
+	port_init(ROW2, IRQ_FALLING | PF | ALT1 | PULLUP);
+	port_init(ROW3, IRQ_FALLING | PF | ALT1 | PULLUP);
+	enable_irq(PORTA_IRQn);
+	g_Key = 0;
+}
 
 //*      Key_Scan(void)
 //*	@brief:		获取矩阵键盘的引脚状态，每个按键返回特定的值

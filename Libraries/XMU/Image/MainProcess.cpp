@@ -1,3 +1,4 @@
+#include "headfile.h"
 #include "GlobalVar.h"
 #include "BasicFun.h"
 #include "FindLine.h"
@@ -6,17 +7,20 @@
 #include "CircleIsland.h"
 #include "FirstLineProcess.h"
 #include "canny.h"
-#include "SpecialElem.h"
 
 //================================================================//
-//  @brief  :		首行搜线采用函数
+//  @brief  :		首行采用函数
 //  @param  :		void
 //  @return :		void
 //  @note   :		void
 //================================================================//
 void SelectFirstLine(void)
 {
+	//GetFirstLineEage();
 	FirstLineV4();
+	//FindFirstEage_3();
+	//if (!FindFirstEageV3())
+	//	return;
 }
 //================================================================//
 //  @brief  :		普通补图主程序
@@ -32,83 +36,85 @@ void MainFill(void)
 	if (0 == g_RoadType)
 	{
 		FindLineNormal(1);
-
-		ImgJudgeStopLine();		//识别停车
-		ImgJudgeRamp();			//识别坡道
-		ImgJudgeCurveBroken();	//弯道断路
-#if CIRCLE == 2
-		CircleFlag = ImgJudgeCircle(0);
-		if (CL == CircleFlag)
+#if CIRCLE
+		if (LeftPnt.Type == 4 && RightPnt.Type == 2 && RightPnt.ErrRow >= UP_EAGE + CIRCLEUP_TH
+			&& RightPnt.ErrCol < RIGHT_EAGE - 25)	//右环岛判断
 		{
-			//CircleFlag = CN;
-			CircleState = 1;
-			GetPointA();
-			GetPointB();
-			GetPointC();
-			GetPointD();
-			FillLineAB();
-			FillLineCD();
-			FillAllEage();
+			CircleFlag = IsCircleIsland(CR);
+			if (CircleFlag)		//是环岛 环岛补图
+			{
+				CircleState = 1;
+				GetPointA();
+				GetPointB();
+				GetPointC();
+				GetPointD();
+				FillLineAB();
+				FillLineCD();
+				FillAllEage();
+			}
+			else;
 		}
-		else if (CR == CircleFlag)
+		else if (RightPnt.Type == 4 && LeftPnt.Type == 2 && LeftPnt.ErrRow >= UP_EAGE + CIRCLEUP_TH
+			&& LeftPnt.ErrCol > LEFT_EAGE + 25)	//左环岛判断
 		{
-			//CircleFlag = CN;
-			CircleState = 1;
-			GetPointA();
-			GetPointB();
-			GetPointC();
-			GetPointD();
-			FillLineAB();
-			FillLineCD();
-			FillAllEage();
+			CircleFlag = IsCircleIsland(CL);
+			if (CircleFlag)		//是环岛 环岛补图
+			{
+				CircleState = 1;
+				GetPointA();
+				GetPointB();
+				GetPointC();
+				GetPointD();
+				FillLineAB();
+				FillLineCD();
+				FillAllEage();
+			}
+			else;
 		}
 		else
 #endif // CIRCLE
-			if (LeftPnt.Type == 2 && RightPnt.Type == 2)		//十字补图
+			if (LeftPnt.Type == 2 && RightPnt.Type == 2)
 			{
 				if (LeftPnt.ErrRow - RightPnt.ErrRow > 10 || RightPnt.ErrRow - LeftPnt.ErrRow > 10)
+				{
 					FillBevelCross();
+				}
 				else
+				{
 					FillLevelCross();
+				}
 				FindLineNormal(0);
-
 			}
-		ImgJudgeBlock();		//识别路障
+#if BROKEN
+			else if (LeftPnt.Type + RightPnt.Type == 3 && !BrokenFlag)
+			{
+				if (LeftPnt.ErrRow > 45 && RightPnt.ErrRow > 45)
+				{
+					Point pa = { LeftPnt.ErrRow, LeftPnt.ErrCol };
+					Point pb = { RightPnt.ErrRow, RightPnt.ErrCol };
+					BrokenFlag = JudgeInBroken(pa, pb);
+				}
+			}
+#endif // BROKEN
+		//#if BLOCK_OPEN
+		//                if (BlockFlag_1)
+		//                {
+		//                        if (4 == LeftPnt.Type && 4 == RightPnt.Type)
+		//                                 BlockFlag_1 = 0;
+		//                        else 
+		//                                 BlockFlag_2 = 1;
+		//                }
+		//                        
+		//#endif //BLOCK_OPEN
 	}
 	if (1 == g_RoadType)
 	{
 		FindLineLost();
-#if CIRCLE == 2
-		CircleFlag = ImgJudgeCircle(1);
-		if (CL == CircleFlag)
+		if (1 == g_RoadType && 2 == LeftPnt.Type && 2 == RightPnt.Type)
 		{
-			CircleState = 2;
-			GetPointA();
-			GetPointB();
-			GetPointC();
-			GetPointD();
-			FillLineAB();
-			FillLineCD();
-			FillAllEage();
+			FillBevelCross();
+			FindLineNormal(0);
 		}
-		else if (CR == CircleFlag)
-		{
-			CircleState = 2;
-			GetPointA();
-			GetPointB();
-			GetPointC();
-			GetPointD();
-			FillLineAB();
-			FillLineCD();
-			FillAllEage();
-		}
-		else
-#endif
-			if (1 == g_RoadType && 2 == LeftPnt.Type && 2 == RightPnt.Type)
-			{
-				FillBevelCross();
-				FindLineNormal(0);
-			}
 	}
 	if (2 == g_RoadType)
 	{
@@ -127,29 +133,111 @@ void MainFill(void)
 //================================================================//
 void GetML(void)
 {
-	CannyEage();
-#if CIRCLE
-	if (CircleFlag)		//is CircleIsland 
-	{
-		CircleFill();
-	}
+#if BROKEN
+	if (BrokenFlag == 2)
+		BrokenFlag = JudgeOutBroken();
+	if (BrokenFlag == 1)
+		if (JudgeOutBroken())
+		{
+			BrokenFlag = 2;
+		}
+	if (BrokenFlag == 2)
+		;
 	else
-#endif // CIRCLE
+#endif // BROKEN
 	{
-		if (SpecialElemFlag)
-			SpecialElemFill();
-		if (!SpecialElemFlag)
+		CannyEage();
+#if CIRCLE
+		if (CircleFlag)		//is CircleIsland 
+		{
+			CircleFill();
+		}
+		else
+#endif // CIRCLE
 			MainFill();
 	}
-
 	//中线校验
-	if (RL[DOWN_EAGE] - LL[DOWN_EAGE] <= 40 || ML_Count > DOWN_EAGE - 20		//下边界过小，有效行数过低
-		|| RightPnt.ErrCol - LeftPnt.ErrCol > 100)									//上边界不收敛
+	if (RL[DOWN_EAGE] - LL[DOWN_EAGE] <= 40)
 	{
 		ErrorFlag = 4;
+		return;
 	}
-	if (!ErrorFlag)
-		SpeedRow = GetSpeedRow(ML[DOWN_EAGE], LeftPnt.ErrRow, RightPnt.ErrRow);
+}
 
+//================================================================//
+//  @brief  :		判断出断路
+//  @param  :		void
+//  @return :		1 还处于断路  0已经出了断路
+//  @note   :		void
+//================================================================//
+int JudgeOutBroken(void)
+{
+	CannyEage();
+	VarInit();
+	LeftPnt.Type = RightPnt.Type = 0;
+	SelectFirstLine();
+	static int Num_i = 0;
+	static int BrokenAve[5] = { 0 };
+	if (BrokenFlag == 1)
+	{
+		if (Num_i < 5)
+		{
+			if (Num_i > 0 && BrokenAve[Num_i - 1] - LightThreshold > 30)
+				return 1;
+			BrokenAve[Num_i++] = LightThreshold;
+		}
+		else
+		{
+			for (int i = 0; i < 4; i++)		//更新数组元素
+				BrokenAve[i] = BrokenAve[i + 1];
+			BrokenAve[4] = LightThreshold;
+			//判断条件
+			for (int i = 0; i < 4; i++)
+			{
+				for (int j = i; j < 5; j++)
+				{
+					if (BrokenAve[i] - BrokenAve[j] > 30)
+						return 1;
+				}
+			}
+			return 0;
+		}
 
+		//		if (BrokenLastAve == 0)
+		//		{
+		//			BrokenLastAve = LightThreshold;
+		//			return 0;
+		//		}
+		//		else
+		//		{
+		//			if (BrokenLastAve - LightThreshold > 30)
+		//			{
+		//                          BrokenLastAve = LightThreshold;
+		//				return 1;
+		//			}
+		//			else 
+		//                        {
+		//                          BrokenLastAve = LightThreshold;
+		//                          return 0;
+		//                        }
+		//		}
+	}
+	else
+	{
+		FindLineNormal(0);
+		if (LeftPnt.ErrRow < DOWN_EAGE - 20 && RightPnt.ErrRow < DOWN_EAGE - 20)
+		{
+			if (RL[DOWN_EAGE] - LL[DOWN_EAGE] > 94 && RL[DOWN_EAGE - 1] - LL[DOWN_EAGE - 1] > 94
+				&& RL[DOWN_EAGE - 2] - LL[DOWN_EAGE - 2] > 94 && RL[DOWN_EAGE - 3] - LL[DOWN_EAGE - 3] > 94)
+			{
+				BrokenLastAve = 0;
+				return 0;
+			}
+			else return 2;
+		}
+		else
+		{
+			return 2;
+		}
+	}
 }

@@ -6,8 +6,7 @@
 #include  "Init.h"
 #include  "Basic.h"
 #include "DFLASH.h"
-#include <GlobalVar.h>
-#include  "keyboard.h"
+
 
 
 int main(void)
@@ -71,8 +70,6 @@ int main(void)
       Menu();
 //         OLED_Write_Int(0,0,Key_Scan());
 //      lcd_showint16(0,0,Key_Scan());
-//    text_flag = Key_Check();
-     StopCar();
+
   }
-  
 }

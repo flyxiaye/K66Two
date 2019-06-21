@@ -1,10 +1,10 @@
 #ifndef BasicFun_H
 #define BasicFun_H
 
-float LeastSquare(int* array, int row1, int row2);
+float LeastSquare(int *array, int row1, int row2);
 
-int ArrayMax(int* Array, int n);
-int ArrayMin(int* Array, int n);
+int ArrayMax(int *Array, int n);
+int ArrayMin(int *Array, int n);
 
 int IsEage(int row, int col);
 int SearchUpEage(int row, int col);
@@ -22,12 +22,8 @@ Point SearchRightUpEage45(int row, int col);
 
 int GetLL(int row, int col);
 int GetRL(int row, int col);
+int JumpType(int row, int col);
+void RepareLine(int dir, int row, int *flag);
 int AveGray(void);
-
-int MaxArray(int* line, int n);
-int MinArray(int* line, int n);
-signed int TrendArray(int* line, int n);
-void AveFilter(int* line, int n);
-int IsBigWave(int* line, int n);
 #endif //!BasicFun_H
 #pragma once

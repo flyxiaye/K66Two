@@ -10,9 +10,9 @@
 #define RIGHT_PNT(row, type) RightPnt.ErrRow = (row); RightPnt.ErrCol = RL[RightPnt.ErrRow]; RightPnt.Type = (type)
 #define CIRFL_TH 6			//CircleIsland Find Line Threshold
 #define CIRCROSSUP_TH 7
-#define FIVE_SIX_TH 10
+#define FIVE_SIX_TH 60
 
-#define CIRCLEFINDUP_TH 10
+#define CIRCLEFINDUP_TH 6
 Point PointA, PointB, PointC, PointD;
 int LeftLost = 0, RightLost = 0;
 int ChangeFlag = 0;
@@ -27,71 +27,29 @@ int ConstLeftEage = 30, ConstRightEage = 158;
 int IsCircleIsland(int type)
 {
 #define CIRCLEDIFF_TH 2		//环岛边缘差分阈值
-#if CIRCLE == 1
 	if (CL == type)
 	{
 		int TmpRow = LeftPnt.ErrRow;
-		int MaxRow = MIN(10, DOWN_EAGE - LeftPnt.ErrRow);
-		if (/*LL[TmpRow] - LL[TmpRow + 1] <= CIRCLEDIFF_TH
+		if (LL[TmpRow] - LL[TmpRow + 1] <= CIRCLEDIFF_TH
 			&& LL[TmpRow + 1] - LL[TmpRow] <= CIRCLEDIFF_TH
 			&& LL[TmpRow + 1] - LL[TmpRow + 2] <= CIRCLEDIFF_TH
 			&& LL[TmpRow + 2] - LL[TmpRow + 1] <= CIRCLEDIFF_TH
-			&& LL[TmpRow + 2] - LL[TmpRow + 3] <= CIRCLEDIFF_TH
-			&& LL[TmpRow + 3] - LL[TmpRow + 2] <= CIRCLEDIFF_TH
-			&& LL[TmpRow + 3] - LL[TmpRow + 4] <= CIRCLEDIFF_TH
-			&& LL[TmpRow + 4] - LL[TmpRow + 3] <= CIRCLEDIFF_TH
-			&& */1 == TrendArray(&LL[DOWN_EAGE], MaxRow))
-		{
-			if (LeftPnt.ErrRow >= UP_EAGE + 15 && RightPnt.ErrRow <= UP_EAGE + 1)
-				return CL;
-			else if (LeftPnt.ErrRow >= UP_EAGE + 20 && RightPnt.ErrRow <= UP_EAGE + 7)
-				return CL;
-			else if (LeftPnt.ErrRow > UP_EAGE + 28 && RightPnt.ErrRow <= UP_EAGE + 13)
-				return CL;
-			else if (LeftPnt.ErrRow >= UP_EAGE + 38 && RightPnt.ErrRow <= UP_EAGE + 20)
-				return CL;
-			else return CN;
-		}
+			&& LeftPnt.ErrCol > LEFT_EAGE + 10)
+			return CL;
 		else return CN;
 	}
 	else if (CR == type)
 	{
 		int TmpRow = RightPnt.ErrRow;
-		int MaxRow = MIN(10, DOWN_EAGE - RightPnt.ErrRow);
-		if (/*RL[TmpRow] - RL[TmpRow + 1] <= CIRCLEDIFF_TH
+		if (RL[TmpRow] - RL[TmpRow + 1] <= CIRCLEDIFF_TH
 			&& RL[TmpRow + 1] - RL[TmpRow] <= CIRCLEDIFF_TH
 			&& RL[TmpRow + 1] - RL[TmpRow + 2] <= CIRCLEDIFF_TH
 			&& RL[TmpRow + 2] - RL[TmpRow + 1] <= CIRCLEDIFF_TH
-			&& RL[TmpRow + 2] - RL[TmpRow + 3] <= CIRCLEDIFF_TH
-			&& RL[TmpRow + 3] - RL[TmpRow + 2] <= CIRCLEDIFF_TH
-			&& RL[TmpRow + 3] - RL[TmpRow + 4] <= CIRCLEDIFF_TH
-			&& RL[TmpRow + 4] - RL[TmpRow + 3] <= CIRCLEDIFF_TH
-			&& */-1 == TrendArray(&RL[DOWN_EAGE], MaxRow))
-		{
-			if (RightPnt.ErrRow >= UP_EAGE + 15 && LeftPnt.ErrRow <= UP_EAGE + 1)
-				return CR;
-			else if (RightPnt.ErrRow >= UP_EAGE + 20 && LeftPnt.ErrRow <= UP_EAGE + 7)
-				return CR;
-			else if (RightPnt.ErrRow >= UP_EAGE + 28 && LeftPnt.ErrRow <= UP_EAGE + 13)
-				return CR;
-			else if (RightPnt.ErrRow >= UP_EAGE + 38 && LeftPnt.ErrRow <= UP_EAGE + 20)
-				return CR;
-			else return CN;
-		}
+			&& RightPnt.ErrCol < RIGHT_EAGE - 10)
+			return CR;
 		else return CN;
 	}
 	else return CN;
-#elif CIRCLE == 2
-	int MaxRow = MIN(10, DOWN_EAGE - LeftPnt.ErrRow);
-	int MaxRowR = MIN(10, DOWN_EAGE - RightPnt.ErrRow);
-	if (CL == type && 1 == TrendArray(&LL[DOWN_EAGE], MaxRow)
-		&& 1 == TrendArray(&LL[LeftPnt.ErrRow + MaxRow], MaxRow))
-		return CL;
-	else if (CR == type && -1 == TrendArray(&RL[DOWN_EAGE], MaxRow)
-		&& -1 == TrendArray(&RL[RightPnt.ErrRow + MaxRow], MaxRow))
-		return CR;
-	else return CN;
-#endif
 }
 
 //================================================================//
@@ -126,8 +84,18 @@ void CircleFill(void)
 	FillAllEage();
 	//补中线
 	FillMiddleLine();
+	//for (int i = DOWN_EAGE; i > UP_EAGE; i--)
+	//{
+	//	ML[i] = (LL[i] + RL[i]) >> 1;
+	//}
 	//后类型转化
 	ChangeState(1);
+	//string.Format("\r\n LeftPnt = %d \r\n", LeftPnt.Type); PrintDebug(string);
+	//string.Format("\r\n	 LeftPnt = %d \r\n", LeftPnt.ErrRow); PrintDebug(string);
+	//string.Format("\r\n	 LeftPnt = %d \r\n", LeftPnt.ErrCol); PrintDebug(string);
+	//string.Format("\r\n RightPnt = %d \r\n", RightPnt.Type); PrintDebug(string);
+	//string.Format("\r\n	 RightPnt = %d \r\n", RightPnt.ErrRow); PrintDebug(string);
+	//string.Format("\r\n	 RightPnt = %d \r\n", RightPnt.ErrCol); PrintDebug(string);
 }
 
 //================================================================//
@@ -139,11 +107,12 @@ void CircleFill(void)
 void CircleIslandImageInit(void)
 {
 	VarInit();
-	LeftLost = 0; RightLost = 0;
+	LeftLost = 0;RightLost = 0;
 	LeftPnt.Type = RightPnt.Type = 0;
 	LeftPnt.ErrRow = RightPnt.ErrRow = DOWN_EAGE;
 	LeftPnt.ErrCol = LEFT_EAGE;
 	RightPnt.ErrCol = RIGHT_EAGE;
+	//LightThreshold = 80;
 }
 //================================================================//
 //  @brief  :		环岛首行搜线以及边缘校正
@@ -153,7 +122,26 @@ void CircleIslandImageInit(void)
 //================================================================//
 void CircleFirstLine(void)
 {
+	//	LL[DOWN_EAGE] = GetLL(DOWN_EAGE, LEFT_EAGE + 80);
+	//	RL[DOWN_EAGE] = GetRL(DOWN_EAGE, RIGHT_EAGE - 80);
+	//FindFirstEageV3();
 	SelectFirstLine();//首行搜线
+	//GetFirstLineEage();
+	//针对状态7搜首行不准确
+//方案一，直接偏移
+//	if (7 == CircleState && 1 == CircleFlag)
+//	{
+//		LL[DOWN_EAGE] = GetLL(DOWN_EAGE, MIDDLE - 30);
+//		RL[DOWN_EAGE] = GetRL(DOWN_EAGE, MIDDLE - 30);
+//	}
+//	else if (7 == CircleState && 2 == CircleFlag)
+//	{
+//		LL[DOWN_EAGE] = GetLL(DOWN_EAGE, MIDDLE + 30);
+//		RL[DOWN_EAGE] = GetRL(DOWN_EAGE, MIDDLE + 30);
+//	}
+	//方案二返回ErrorFlag=3使用电磁
+
+
 	LeftPnt.ErrRow = RightPnt.ErrRow = DOWN_EAGE;
 	LeftPnt.ErrCol = LL[DOWN_EAGE];
 	RightPnt.ErrCol = RL[DOWN_EAGE];
@@ -163,16 +151,76 @@ void CircleFirstLine(void)
 	if (RL[DOWN_EAGE] >= RIGHT_EAGE - 3)		//right lost
 		RightLost = 1;
 	else RightLost = 0;
+#define FIND_UP_LINE 0 //向上搜线行数以校正丢边情况
 #define LOST_EAGE_TH 4	//判断为非丢边的阈值
 	if (!LeftLost & !RightLost)  //左右均不丢，函数返回
 		return;
+	int LineL, LineR;
 	switch (CircleState)
 	{
 	case 1:
+		if (LeftLost)
+		{
+			if (CL == CircleFlag)
+				LineL = DOWN_EAGE - FIND_UP_LINE;
+			else LineL = UP_EAGE;
+			for (int i = DOWN_EAGE - 1; i > LineL; i--)
+			{
+				LL[i] = GetLL(i, LL[i + 1]);
+				if (LL[i] > LEFT_EAGE + LOST_EAGE_TH)		//no lost eage
+				{
+					LEFT_PNT(i, 0);
+					LeftLost = 0;
+					break;
+				}
+			}
+		}
+		if (RightLost)
+		{
+			if (CR == CircleFlag)
+				LineR = DOWN_EAGE - FIND_UP_LINE;
+			else LineR = UP_EAGE;
+			for (int i = DOWN_EAGE - 1; i > LineR; i--)
+			{
+				RL[i] = GetRL(i, RL[i + 1]);
+				if (RL[i] < RIGHT_EAGE - LOST_EAGE_TH)
+				{
+					RIGHT_PNT(i, 0);
+					RightLost = 0;
+					break;
+				}
+			}
+		}
+		break;
 	case 2:
+		if (LeftLost && CR == CircleFlag)
+		{
+			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
+			{
+				LL[i] = GetLL(i, LL[i + 1]);
+				if (LL[i] > LEFT_EAGE + LOST_EAGE_TH)		//no lost eage
+				{
+					LEFT_PNT(i, 0);
+					LeftLost = 0;
+					break;
+				}
+			}
+		}
+		if (RightLost && CL == CircleFlag)
+		{
+			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
+			{
+				RL[i] = GetRL(i, RL[i + 1]);
+				if (RL[i] < RIGHT_EAGE - LOST_EAGE_TH)
+				{
+					RIGHT_PNT(i, 0);
+					RightLost = 0;
+					break;
+				}
+			}
+		}
+		break;
 	case 3:
-	case 5:
-	case 7:
 		if (LeftLost && CR == CircleFlag)
 		{
 			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
@@ -204,17 +252,65 @@ void CircleFirstLine(void)
 		if (CL == CircleFlag && RightLost)
 		{
 			RightPnt.Type = 1;
-			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
-			{
-				RL[i] = GetRL(i, RL[i + 1]);
-			}
 		}
 		else if (CR == CircleFlag && LeftLost)
 		{
 			LeftPnt.Type = 1;
+		}
+		break;
+	case 5:
+		if (CL == CircleFlag && RightLost)
+		{
+			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
+			{
+				RL[i] = GetRL(i, RL[i + 1]);
+				if (RL[i] < RIGHT_EAGE - LOST_EAGE_TH)
+				{
+					RIGHT_PNT(i, 0);
+					RightLost = 0;
+					break;
+				}
+			}
+		}
+		else if (CR == CircleFlag && LeftLost)
+		{
 			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
 			{
 				LL[i] = GetLL(i, LL[i + 1]);
+				if (LL[i] > LEFT_EAGE + LOST_EAGE_TH)		//no lost eage
+				{
+					LEFT_PNT(i, 0);
+					LeftLost = 0;
+					break;
+				}
+			}
+		}
+		break;
+	case 7:
+		if (CL == CircleFlag && RightLost)
+		{
+			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
+			{
+				RL[i] = GetRL(i, RL[i + 1]);
+				if (RL[i] < RIGHT_EAGE - LOST_EAGE_TH)
+				{
+					RIGHT_PNT(i, 0);
+					RightLost = 0;
+					break;
+				}
+			}
+		}
+		else if (CR == CircleFlag && LeftLost)
+		{
+			for (int i = DOWN_EAGE - 1; i > UP_EAGE; i--)
+			{
+				LL[i] = GetLL(i, LL[i + 1]);
+				if (LL[i] > LEFT_EAGE + LOST_EAGE_TH)		//no lost eage
+				{
+					LEFT_PNT(i, 0);
+					LeftLost = 0;
+					break;
+				}
 			}
 		}
 		break;
@@ -238,9 +334,9 @@ void ChangeState(int Order)
 		case 1:
 #define LOST_TH 50
 			if (CL == CircleFlag && 1 == LeftLost && RL[DOWN_EAGE] > RIGHT_EAGE - LOST_TH)
-				CircleState = 2;
+				CircleState = 3;
 			else if (CR == CircleFlag && 1 == RightLost && LL[DOWN_EAGE] < LEFT_EAGE + LOST_TH)
-				CircleState = 2;
+				CircleState = 3;
 			break;
 		case 2:
 			if (CL == CircleFlag && 0 == LeftLost)
@@ -249,10 +345,18 @@ void ChangeState(int Order)
 				CircleState = 3;
 			break;
 		case 3:
-			if (CL == CircleFlag && RIGHT_EAGE - 3 <= RL[DOWN_EAGE])
+			if (CL == CircleFlag && RIGHT_EAGE == RL[DOWN_EAGE])
+			{
+				//int TmpRow = SearchUpEage(DOWN_EAGE, LL[DOWN_EAGE] + 5);
+				//if (TmpRow < 60)
 				CircleState = 4;
-			else if (CR == CircleFlag && LEFT_EAGE + 3 >= LL[DOWN_EAGE])
+			}
+			else if (CR == CircleFlag && LEFT_EAGE == LL[DOWN_EAGE])
+			{
+				//int TmpRow = SearchUpEage(DOWN_EAGE, RL[DOWN_EAGE] - 5);
+				//if (TmpRow < 60)
 				CircleState = 4;
+			}
 			break;
 		case 4:
 			if (CL == CircleFlag && 0 == RightLost)
@@ -268,14 +372,13 @@ void ChangeState(int Order)
 				while (1)
 				{
 					NewRow = SearchUpEage(OldRow + 2, TmpCol - 1);
-					if (OldRow - NewRow > 12 || OldRow > DOWN_EAGE + 10 || TmpCol < MIDDLE - MIDDLE / 2)
+					if (OldRow - NewRow > 12)
 					{
 						break;
 					}
-					else if (OldRow <= DOWN_EAGE - 20)
+					else if (OldRow <= 50)
 					{
-						if (IndJudgeCircle(0))
-							CircleState = 7;
+						CircleState = 7;
 						break;
 					}
 					else
@@ -292,14 +395,13 @@ void ChangeState(int Order)
 				while (1)
 				{
 					NewRow = SearchUpEage(OldRow + 2, TmpCol + 1);
-					if (OldRow - NewRow > 12 || OldRow > DOWN_EAGE + 10 || TmpCol > MIDDLE + MIDDLE / 2)
+					if (OldRow - NewRow > 12)
 					{
 						break;
 					}
-					else if (OldRow <= DOWN_EAGE - 20)
+					else if (OldRow <= 50)
 					{
-						if (IndJudgeCircle(0))
-							CircleState = 7;
+						CircleState = 7;
 						break;
 					}
 					else
@@ -388,10 +490,7 @@ void CircleFindLine(void)
 		if (RightPnt.ErrRow - LeftPnt.ErrRow < EXIT_ISLAND && LeftPnt.ErrRow - RightPnt.ErrRow < EXIT_ISLAND
 			&& RightPnt.ErrCol - LeftPnt.ErrCol < 4 * EXIT_ISLAND)
 		{
-#if CI_IND
-			if (ind_left + ind_right <= ind_ci_th)
-#endif // CI_IND
-				ChangeFlag = 1;
+			ChangeFlag = 1;
 		}
 		break;
 	default:
@@ -437,9 +536,19 @@ void GetPointA(void)
 	case 4:
 		PointA.Row = DOWN_EAGE;
 		if (CL == CircleFlag)
-			PointA.Col = LL[DOWN_EAGE] + 1;
+		{
+			if (1 == LeftLost && 3 == CircleState)
+				PointA.Col = LL[DOWN_EAGE] = ConstLeftEage;
+			else
+				PointA.Col = LL[DOWN_EAGE] + 1;
+		}
 		else if (CR == CircleFlag)
-			PointA.Col = RL[DOWN_EAGE] - 1;
+		{
+			if (1 == RightLost && 3 == CircleState)
+				PointA.Col = RL[DOWN_EAGE] = ConstRightEage;
+			else
+				PointA.Col = RL[DOWN_EAGE] - 1;
+		}
 		break;
 	case 7:
 		if (CL == CircleFlag)
@@ -454,7 +563,7 @@ void GetPointA(void)
 					PointA.Col = TmpCol;
 					break;
 				}
-				else if (TmpCol >= LL[DOWN_EAGE] + 40)
+				else if (TmpCol >= LL[DOWN_EAGE] + 30)
 				{
 					PointA.Row = OldRow;
 					PointA.Col = TmpCol;
@@ -479,7 +588,7 @@ void GetPointA(void)
 					PointA.Col = TmpCol;
 					break;
 				}
-				else if (TmpCol <= RL[DOWN_EAGE] - 40)
+				else if (TmpCol <= RL[DOWN_EAGE] - 30)
 				{
 					PointA.Row = OldRow;
 					PointA.Col = TmpCol;
@@ -516,7 +625,7 @@ void GetPointB(void)
 		if (CL == CircleFlag)
 		{
 			RowNew = SearchUpEage(PointA.Row - 1, PointA.Col + 1);
-			if (3 == CircleState && (PointA.Row - RowNew > 20 && 0 == LeftLost || LeftLost))
+			if (3 == CircleState && PointA.Row - RowNew > 20 && 0 == LeftLost)
 			{
 				PointB = PointA;
 			}
@@ -554,7 +663,7 @@ void GetPointB(void)
 		else if (CR == CircleFlag)
 		{
 			RowNew = SearchUpEage(PointA.Row - 1, PointA.Col - 1);
-			if (3 == CircleState && (PointA.Row - RowNew > 20 && 0 == RightLost || RightLost))
+			if (3 == CircleState && PointA.Row - RowNew > 20 && 0 == RightLost)
 			{
 				PointB = PointA;
 			}
@@ -661,7 +770,7 @@ void GetPointB(void)
 				}
 				else if (PointNew.Row >= DOWN_EAGE || PointNew.Col >= RIGHT_EAGE)
 				{
-					PointB.Row = UP_EAGE;
+					PointB.Row == UP_EAGE;
 					break;
 				}
 				else
@@ -718,31 +827,9 @@ void GetPointC(void)
 	case 1:
 		break;
 	case 2:
-		if (PointB.Row == UP_EAGE) //Not Find PointB
-			PointC.Row = UP_EAGE;
-		else
-		{
-			int TmpRow;
-			if (CL == CircleFlag)		//Left CircleIsland
-			{
-				TmpRow = SearchUpEage(PointB.Row - 1, PointB.Col + 1);
-				PointC.Row = TmpRow;
-				PointC.Col = PointB.Col + 20;
-			}
-			else if (CR == CircleFlag)		//Right CircleIsland
-			{
-				TmpRow = SearchUpEage(PointB.Row - 1, PointB.Col - 1);
-				PointC.Row = TmpRow;
-				PointC.Col = PointB.Col - 20;
-			}
-			else return;
-		}
-		break;
 	case 3:
 		if (PointB.Row == UP_EAGE) //Not Find PointB
-		{
 			PointC.Row = UP_EAGE;
-		}
 		else
 		{
 			int TmpRow;
@@ -750,31 +837,139 @@ void GetPointC(void)
 			{
 				TmpRow = SearchUpEage(PointB.Row - 1, PointB.Col + 1);
 				PointC.Row = TmpRow;
-				PointC.Col = PointB.Col + 11;
+				PointC.Col = PointB.Col + 1;
+				//{
+				//	Point PointNew, PointOld;
+				//	PointNew.Row = TmpRow;
+				//	PointNew.Col = PointB.Col + 1;
+				//	PointOld = PointNew;
+				//	while (1)
+				//	{
+				//		PointNew = SearchRightUpEage(PointOld.Row + 1, PointOld.Col);
+				//		if (PointOld.Row - PointNew.Row > UpTh || PointNew.Row <= UP_EAGE || PointNew.Col >= RIGHT_EAGE)
+				//		{
+				//			PointC = PointOld;
+				//			break;
+				//		}
+				//		else if (PointOld.Row > PointB.Row)			//find PointC error
+				//		{
+				//			PointC.Row = UP_EAGE;
+				//			break;
+				//		}
+				//		else
+				//		{
+				//			PointOld = PointNew;
+				//		}
+				//	}
+				//}
 			}
 			else if (CR == CircleFlag)		//Right CircleIsland
 			{
 				TmpRow = SearchUpEage(PointB.Row - 1, PointB.Col - 1);
 				PointC.Row = TmpRow;
-				PointC.Col = PointB.Col - 11;
+				PointC.Col = PointB.Col - 1;
+				//{
+				//	Point PointNew, PointOld;
+				//	PointNew.Row = TmpRow;
+				//	PointNew.Col = PointB.Col - 1;
+				//	PointOld = PointNew;
+				//	while (1)
+				//	{
+				//		PointNew = SearchLeftUpEage(PointOld.Row + 1, PointOld.Col);
+				//		if (PointOld.Row - PointNew.Row > UpTh || PointNew.Row <= UP_EAGE || PointNew.Col <= LEFT_EAGE)
+				//		{
+				//			PointC = PointOld;
+				//			break;
+				//		}
+				//		else if (PointOld.Row > PointB.Row)   //find PointC error
+				//		{
+				//			PointC.Row = UP_EAGE;
+				//			break;
+				//		}
+				//		else
+				//		{
+				//			PointOld = PointNew;
+				//		}
+				//	}
+				//}
 			}
 			else return;
 		}
 		break;
 	case 4:
+		/*if (CL == CircleFlag)
+		{
+			int TmpRow = SearchUpEage(PointB.Row, PointB.Col + 1);
+			if (UP_EAGE == TmpRow)
+			{
+				PointC.Row = UP_EAGE + 1;
+				PointC.Col = PointB.Col + 1;
+			}
+			else
+			{
+				Point PointNew = { TmpRow,PointB.Col + 1 };
+				Point PointOld = PointNew;
+				while (1)
+				{
+					PointNew = SearchLeftUpEage(PointOld.Row + 1, PointOld.Col);
+					if (PointOld.Row - PointNew.Row > 3 || PointNew.Row <= UP_EAGE)
+					{
+						PointC = PointOld;
+						break;
+					}
+					else if (PointNew.Row >= DOWN_EAGE || PointNew.Col >= RIGHT_EAGE)
+					{
+						PointC.Row = UP_EAGE + 1;
+						PointC.Col = PointB.Col + 1;
+						break;
+					}
+					else
+					{
+						PointOld = PointNew;
+					}
+				}
+			}
+			LL[PointC.Row] = PointC.Col;
+		}
+		else if (CR == CircleFlag)
+		{
+			int TmpRow = SearchUpEage(PointB.Row, PointB.Col - 1);
+			if (UP_EAGE == TmpRow)
+			{
+				PointC.Row = UP_EAGE + 1;
+				PointC.Col = PointB.Col - 1;
+			}
+			else
+			{
+				Point PointNew = { TmpRow,PointB.Col - 1 };
+				Point PointOld = PointNew;
+				while (1)
+				{
+					PointNew = SearchLeftUpEage(PointOld.Row + 1, PointOld.Col);
+					if (PointOld.Row - PointNew.Row > 3 || PointNew.Row <= UP_EAGE)
+					{
+						PointC = PointOld;
+						break;
+					}
+					else if (PointNew.Row >= DOWN_EAGE || PointNew.Col <= LEFT_EAGE)
+					{
+						PointC.Row = UP_EAGE + 1;
+						PointC.Col = PointB.Col - 1;
+						break;
+					}
+					else
+					{
+						PointOld = PointNew;
+					}
+				}
+			}
+			RL[PointC.Row] = PointC.Col;
+		}
+		else return;*/
 		if (CL == CircleFlag)
 		{
 			Point TmpPnt = SearchRightUpEage45(PointB.Row, PointB.Col + 1);
-			int tmp_col = SearchRightEage(TmpPnt.Row + 1, TmpPnt.Col);
-			if (TmpPnt.Row < UP_EAGE + 10 || (TmpPnt.Col - RL[TmpPnt.Row] < 8 && RL[TmpPnt.Row] - TmpPnt.Col < 8) || tmp_col == RL[TmpPnt.Row + 1])
-			{
-				PointC.Row = UP_EAGE;
-				PointC.Col = PointB.Col;
-				RL[PointC.Row] = PointC.Col;
-				RIGHT_PNT(PointC.Row + 1, 1);
-				break;
-			}
-			RL[TmpPnt.Row + 1] = tmp_col;
+			RL[TmpPnt.Row + 1] = SearchRightEage(TmpPnt.Row + 1, TmpPnt.Col);
 			RIGHT_PNT(TmpPnt.Row + 1, 1);
 			int i;
 			for (i = TmpPnt.Row + 2; i < DOWN_EAGE; ++i)
@@ -789,25 +984,19 @@ void GetPointC(void)
 			}
 			if (DOWN_EAGE == i)
 			{
+				PointC.Row = DOWN_EAGE;
+			}
+			if (PointC.Row >= PointB.Row)
+			{
 				PointC.Row = UP_EAGE;
 				PointC.Col = PointB.Col;
 				RL[PointC.Row] = PointC.Col;
-				RIGHT_PNT(PointC.Row + 1, 1);
 			}
 		}
 		else if (CR == CircleFlag)
 		{
 			Point TmpPnt = SearchLeftUpEage45(PointB.Row, PointB.Col - 1);
-			int tmp_col = SearchLeftEage(TmpPnt.Row + 1, TmpPnt.Col);
-			if (TmpPnt.Row < UP_EAGE + 10 || (TmpPnt.Col - LL[TmpPnt.Row] < 8 && LL[TmpPnt.Row] - TmpPnt.Col < 8) || tmp_col == LL[TmpPnt.Row + 1])
-			{
-				PointC.Row = UP_EAGE;
-				PointC.Col = PointB.Col;
-				LL[PointC.Row] = PointC.Col;
-				LEFT_PNT(PointC.Row + 1, 1);
-				break;
-			}
-			LL[TmpPnt.Row + 1] = tmp_col;
+			LL[TmpPnt.Row + 1] = SearchLeftEage(TmpPnt.Row + 1, TmpPnt.Col);
 			LEFT_PNT(TmpPnt.Row + 1, 1);
 			int i;
 			for (i = TmpPnt.Row + 2; i < DOWN_EAGE; ++i)
@@ -822,10 +1011,13 @@ void GetPointC(void)
 			}
 			if (DOWN_EAGE == i)
 			{
+				PointC.Row = DOWN_EAGE;
+			}
+			if (PointC.Row >= PointB.Row)
+			{
 				PointC.Row = UP_EAGE;
 				PointC.Col = PointB.Col;
 				LL[PointC.Row] = PointC.Col;
-				LEFT_PNT(PointC.Row + 1, 1);
 			}
 		}
 		else return;
@@ -833,54 +1025,28 @@ void GetPointC(void)
 	case 5:
 		if (CL == CircleFlag)
 		{
-			if (RightPnt.Type == 2 && RightPnt.ErrRow > DOWN_EAGE - FIVE_SIX_TH)// || DOWN_EAGE == RightPnt.ErrRow)
+			if (RightPnt.Type == 2 && RightPnt.ErrRow > FIVE_SIX_TH || DOWN_EAGE == RightPnt.ErrRow)
 			{
-				//拐点确认
-				int UpSum = 0, DownSum = 0;
-				for (int i = 1; i < 5; i++)
-				{
-					UpSum += RightPnt.ErrCol - RL[RightPnt.ErrRow - i];
-					DownSum += RightPnt.ErrCol - RL[RightPnt.ErrRow + i];
-				}
-				if (UpSum <= 0 && DownSum <= 0)
-					ChangeFlag = 1;
-
+				ChangeFlag = 1;
+				PointC.Col = MIDDLE - 40;
+				PointC.Row = SearchUpEage((LeftPnt.ErrRow + RightPnt.ErrRow) >> 1, PointC.Col);
 			}
-			PointC.Col = (LeftPnt.ErrCol + RightPnt.ErrCol) >> 1;
-			PointC.Row = SearchUpEage((LeftPnt.ErrRow + RightPnt.ErrRow) >> 1, PointC.Col);
+			else PointC.Row = UP_EAGE;
 		}
 		else if (CR == CircleFlag)
 		{
-			if (LeftPnt.Type == 2 && LeftPnt.ErrRow > DOWN_EAGE - FIVE_SIX_TH)// || DOWN_EAGE == LeftPnt.ErrRow)
+			if (LeftPnt.Type == 2 && LeftPnt.ErrRow > FIVE_SIX_TH || DOWN_EAGE == LeftPnt.ErrRow)
 			{
-				//拐点确认
-				int UpSum = 0, DownSum = 0;
-				for (int i = 1; i < 5; i++)
-				{
-					UpSum += LeftPnt.ErrCol - LL[LeftPnt.ErrRow - i];
-					DownSum += LeftPnt.ErrCol - LL[LeftPnt.ErrRow + i];
-				}
-				if (UpSum >= 0 && DownSum >= 0)
-					ChangeFlag = 1;
-				PointC.Col = (LeftPnt.ErrCol + RightPnt.ErrCol) >> 1;
+				ChangeFlag = 1;
+				PointC.Col = MIDDLE + 40;
 				PointC.Row = SearchUpEage((RightPnt.ErrRow + LeftPnt.ErrRow) >> 1, PointC.Col);
 			}
-			PointC.Col = (LeftPnt.ErrCol + RightPnt.ErrCol) >> 1;
-			PointC.Row = SearchUpEage((RightPnt.ErrRow + LeftPnt.ErrRow) >> 1, PointC.Col);
+			else PointC.Row = UP_EAGE;
 		}
 		else return;
 		break;
 	case 6:
-		if (CL == CircleFlag)
-		{
-			int Eage = MIN(ConstRightEage, RightPnt.ErrCol);
-			PointC.Col = (LeftPnt.ErrCol + Eage) >> 1;
-		}
-		else if (CR == CircleFlag)
-		{
-			int Eage = MAX(ConstLeftEage, LeftPnt.ErrCol);
-			PointC.Col = (Eage + RightPnt.ErrCol) >> 1;
-		}
+		PointC.Col = MIDDLE;
 		PointC.Row = SearchUpEage((LeftPnt.ErrRow + RightPnt.ErrRow) >> 1, PointC.Col);
 		break;
 	case 7:
@@ -909,6 +1075,7 @@ void GetPointD(void)
 	case 1:
 		break;
 	case 2:
+	case 3:
 		if (UP_EAGE == PointB.Row)			//Not find PointB
 			PointD.Row = UP_EAGE;
 		else if (CL == CircleFlag)		//left CircleIsland
@@ -920,21 +1087,6 @@ void GetPointD(void)
 		{
 			PointD.Row = DOWN_EAGE;
 			PointD.Col = LL[DOWN_EAGE];
-		}
-		else return;
-		break;
-	case 3:
-		if (UP_EAGE == PointB.Row)
-			PointD.Row = UP_EAGE;
-		else if (CL == CircleFlag)
-		{
-			PointD.Row = DOWN_EAGE;
-			PointD.Col = MIN(ConstRightEage, RL[DOWN_EAGE]);
-		}
-		else if (CR == CircleFlag)
-		{
-			PointD.Row = DOWN_EAGE;
-			PointD.Col = MAX(ConstLeftEage, LL[DOWN_EAGE]);
 		}
 		else return;
 		break;
@@ -956,6 +1108,7 @@ void GetPointD(void)
 		else return;
 		break;
 	case 5:
+	case 6:
 		if (CL == CircleFlag)
 		{
 			PointD.Row = RightPnt.ErrRow;
@@ -965,18 +1118,6 @@ void GetPointD(void)
 		{
 			PointD.Row = LeftPnt.ErrRow;
 			PointD.Col = LeftPnt.ErrCol;
-		}
-		break;
-	case 6:
-		if (CL == CircleFlag)
-		{
-			PointD.Row = RightPnt.ErrRow;
-			PointD.Col = MIN(ConstRightEage, RightPnt.ErrCol);
-		}
-		else if (CR == CircleFlag)
-		{
-			PointD.Row = LeftPnt.ErrRow;
-			PointD.Col = MAX(ConstLeftEage, LeftPnt.ErrCol);
 		}
 		break;
 	case 7:
@@ -1041,33 +1182,62 @@ void FillLineAB(void)
 		if (CL == CircleFlag)
 		{
 			if (UP_EAGE == PointB.Row)
-				PointB.Col = 78;
-			LL[PointB.Row] = PointB.Col;
-			LL[PointA.Row] = PointA.Col;
-			FillLinePoint(LL, PointA.Row, PointB.Row);
-			LEFT_PNT(PointB.Row, 0);
+				LeftPnt = FillLineUp(LL, PointA.Row + 6, PointA.Row + 2);
+			else
+			{
+				LL[PointB.Row] = PointB.Col;
+				LL[PointA.Row] = PointA.Col;
+				FillLinePoint(LL, PointA.Row, PointB.Row);
+				LEFT_PNT(PointB.Row, 0);
+			}
 		}
 		else if (CR == CircleFlag)
 		{
 			if (UP_EAGE == PointB.Row)
-				PointB.Col = 110;
-			RL[PointB.Row] = PointB.Col;
-			RL[PointA.Row] = PointA.Col;
-			FillLinePoint(RL, PointA.Row, PointB.Row);
-			RIGHT_PNT(PointB.Row, 0);
+				RightPnt = FillLineUp(RL, PointA.Row + 6, PointA.Row + 2);
+			else
+			{
+				RL[PointB.Row] = PointB.Col;
+				RL[PointA.Row] = PointA.Col;
+				FillLinePoint(RL, PointA.Row, PointB.Row);
+				RIGHT_PNT(PointB.Row, 0);
+			}
 		}
+		break;
+	case 3:
+		if (CL == CircleFlag)
+		{
+			if (1 == LeftLost)
+			{
+				LL[PointA.Row] = PointA.Col;
+				LL[PointB.Row] = PointB.Col;
+				FillLinePoint(LL, PointA.Row, PointB.Row);
+				LEFT_PNT(PointB.Row, 0);
+			}
+		}
+		else if (CR == CircleFlag)
+		{
+			if (1 == RightLost)
+			{
+				RL[PointA.Row] = PointA.Col;
+				RL[PointB.Row] = PointB.Col;
+				FillLinePoint(RL, PointA.Row, PointB.Row);
+				RIGHT_PNT(PointB.Row, 0);
+			}
+		}
+		else;
 		break;
 	case 7:
 		if (CL == CircleFlag)
 		{
-			if (UP_EAGE + 10 >= PointB.Row)		//no find line AB
+			if (UP_EAGE == PointB.Row)		//no find line AB
 			{
 				if (RL[UP_EAGE + 20] < LEFT_EAGE + 60)
 					;
 				else
 				{
 					PointB.Row = UP_EAGE + 20;
-					PointB.Col = RL[UP_EAGE + 20] - 60;
+					PointB.Col = RL[UP_EAGE + 20] - 55;
 					if (LeftLost)			//lost A
 					{
 						PointA.Col = LEFT_EAGE;
@@ -1090,23 +1260,31 @@ void FillLineAB(void)
 				LEFT_PNT(PointB.Row, 0);
 				if (RL[DOWN_EAGE] - PointA.Col > 120)				//lost A
 				{
+					//LL[PointB.Row - 1] = GetLL(PointB.Row - 1, LL[PointB.Row]);
+					//LL[PointB.Row - 2] = GetLL(PointB.Row - 2, LL[PointB.Row - 1]);
+					//LL[PointB.Row - 3] = GetLL(PointB.Row - 3, LL[PointB.Row - 2]);
+					//FillLineDown(LL, PointB.Row, PointB.Row - 3);
 					PointA.Row = DOWN_EAGE;
 					PointA.Col = RL[DOWN_EAGE] - 120;
+					FillLinePoint(LL, PointA.Row, PointB.Row);
 				}
-				LL[PointA.Row] = PointA.Col;
-				FillLinePoint(LL, PointA.Row, PointB.Row);
+				else
+				{
+					LL[PointA.Row] = PointA.Col;
+					FillLinePoint(LL, PointA.Row, PointB.Row);
+				}
 			}
 		}
 		else if (CR == CircleFlag)
 		{
-			if (UP_EAGE + 10 >= PointB.Row)		//no find line AB
+			if (UP_EAGE == PointB.Row)		//no find line AB
 			{
 				if (LL[UP_EAGE + 20] > RIGHT_EAGE - 60)
 					;
 				else
 				{
 					PointB.Row = UP_EAGE + 20;
-					PointB.Col = LL[UP_EAGE + 20] + 60;
+					PointB.Col = LL[UP_EAGE + 20] + 55;
 					if (RightLost)			//lost A
 					{
 						PointA.Col = RIGHT_EAGE;
@@ -1123,17 +1301,26 @@ void FillLineAB(void)
 					RightPnt = FillLineUp(RL, PointB.Row + 3, PointB.Row);
 				}
 			}
+
 			else
 			{
 				RL[PointB.Row] = PointB.Col;
 				RIGHT_PNT(PointB.Row, 0);
 				if (PointA.Col - LL[DOWN_EAGE] > 120)				//lost A
 				{
+					//RL[PointB.Row - 1] = GetRL(PointB.Row - 1, RL[PointB.Row]);
+					//RL[PointB.Row - 2] = GetRL(PointB.Row - 2, RL[PointB.Row - 1]);
+					//RL[PointB.Row - 3] = GetRL(PointB.Row - 3, RL[PointB.Row - 2]);
+					//FillLineDown(RL, PointB.Row, PointB.Row - 3);
 					PointA.Row = DOWN_EAGE;
 					PointA.Col = LL[DOWN_EAGE] + 120;
+					FillLinePoint(RL, PointA.Row, PointB.Row);
 				}
-				RL[PointA.Row] = PointA.Col;
-				FillLinePoint(RL, PointA.Row, PointB.Row);
+				else
+				{
+					RL[PointA.Row] = PointA.Col;
+					FillLinePoint(RL, PointA.Row, PointB.Row);
+				}
 			}
 		}
 		break;
@@ -1151,6 +1338,32 @@ void FillLineCD(void)
 {
 	switch (CircleState)
 	{
+	case 1:
+		break;
+	case 2:
+		if (CL == CircleFlag)
+		{
+			if (UP_EAGE == PointC.Row);
+			else
+			{
+				RL[PointD.Row] = PointD.Col;
+				RL[PointC.Row] = PointC.Col;
+				FillLinePoint(RL, PointD.Row, PointC.Row);
+				RIGHT_PNT(PointC.Row, 1);
+			}
+		}
+		if (CR == CircleFlag)
+		{
+			if (UP_EAGE == PointC.Row);
+			else
+			{
+				LL[PointD.Row] = PointD.Col;
+				LL[PointC.Row] = PointC.Col;
+				FillLinePoint(LL, PointD.Row, PointC.Row);
+				LEFT_PNT(PointC.Row, 1);
+			}
+		}
+		break;
 	case 3:
 		if (UP_EAGE == PointB.Row)
 			return;
@@ -1158,14 +1371,14 @@ void FillLineCD(void)
 		{
 			RL[PointD.Row] = PointD.Col;
 			RL[PointC.Row] = PointC.Col;
-			Connect_Point_Curve(RL, PointD.Row, PointD.Col, PointC.Row, PointC.Col);
+			FillLinePoint(RL, PointD.Row, PointC.Row);
 			RIGHT_PNT(PointC.Row, 1);
 		}
 		else if (CR == CircleFlag)
 		{
 			LL[PointD.Row] = PointD.Col;
 			LL[PointC.Row] = PointC.Col;
-			Connect_Point_Curve(LL, PointD.Row, PointD.Col, PointC.Row, PointC.Col);
+			FillLinePoint(LL, PointD.Row, PointC.Row);
 			LEFT_PNT(PointC.Row, 1);
 		}
 		break;
@@ -1184,33 +1397,41 @@ void FillLineCD(void)
 	case 5:
 		if (CL == CircleFlag && 2 == RightPnt.Type)
 		{
-			RL[PointD.Row] = PointD.Col;
-			RL[PointC.Row] = PointC.Col;
-			FillLinePoint(RL, PointD.Row, PointC.Row);
-			RIGHT_PNT(PointC.Row, 1);
+			if (RightPnt.ErrRow < 60)
+			{
+				RightPnt = FillLineUp(RL, RightPnt.ErrRow + 4, RightPnt.ErrRow + 1);
+			}
+			else
+			{
+				RL[PointD.Row] = PointD.Col;
+				int TempRow = FillLineGradient(RL, PointD.Row, PointD.Col, 3);
+				RIGHT_PNT(TempRow, 1);
+			}
 		}
 		else if (CR == CircleFlag && 2 == LeftPnt.Type)
 		{
-			LL[PointD.Row] = PointD.Col;
-			LL[PointC.Row] = PointC.Col;
-			FillLinePoint(LL, PointD.Row, PointC.Row);
-			LEFT_PNT(PointC.Row, 1);
+			if (LeftPnt.ErrRow < 60)
+				LeftPnt = FillLineUp(LL, LeftPnt.ErrRow + 4, LeftPnt.ErrRow + 1);
+			else
+			{
+				LL[PointD.Row] = PointD.Col;
+				int TempRow = FillLineGradient(LL, PointD.Row, PointD.Col, -3);
+				LEFT_PNT(TempRow, 1);
+			}
 		}
 		break;
 	case 6:
 		if (CL == CircleFlag)
 		{
 			RL[PointD.Row] = PointD.Col;
-			RL[PointC.Row] = PointC.Col;
-			FillLinePoint(RL, PointD.Row, PointC.Row);
-			RIGHT_PNT(PointC.Row, 1);
+			int TempRow = FillLineGradient(RL, PointD.Row, PointD.Col, 3);
+			RIGHT_PNT(TempRow, 1);
 		}
 		else if (CR == CircleFlag)
 		{
 			LL[PointD.Row] = PointD.Col;
-			LL[PointC.Row] = PointC.Col;
-			FillLinePoint(LL, PointD.Row, PointC.Row);
-			LEFT_PNT(PointC.Row, 1);
+			int TempRow = FillLineGradient(LL, PointD.Row, PointD.Col, -3);
+			LEFT_PNT(TempRow, 1);
 		}
 		break;
 	case 7:
@@ -1255,6 +1476,9 @@ void FillAllEage(void)
 	case 7:
 		FindLineNormal(0);
 		break;
+		//case 3:
+	case 4:
+		break;
 	default:
 		break;
 	}
@@ -1266,9 +1490,9 @@ void FillAllEage(void)
 //  @return :		行数
 //  @note   :		void
 //================================================================//
-int FillLineGradient(int* line, int row, int col, float Gradient)
+int FillLineGradient(int *line, int row, int col, float Gradient)
 {
-	int* p = line + row - 1;
+	int *p = line + row - 1;
 	for (int i = row - 1; i > UP_EAGE; i--)
 	{
 		*p = (int)((i - row) * Gradient + col + 0.5);
@@ -1279,48 +1503,4 @@ int FillLineGradient(int* line, int row, int col, float Gradient)
 		p--;
 	}
 	return UP_EAGE + 1;
-}
-
-//================================================================//
-//  @brief  :		抛物线连接两点
-//  @param  :		两点行坐标(x_position)和列坐标(y_position)
-//  @return :		void
-//  @note   :		针对Left_border[],Right_border[],Middle_line[];
-//					point1为中间点，point2为两侧点
-//================================================================//
-void Connect_Point_Curve(int* line_process, int x_position1, int y_position1, int x_position2, int y_position2)
-{
-	float c_K, c_B;
-	if (x_position1 == x_position2 || y_position1 == y_position2)
-	{
-		return;
-	}
-	line_process += x_position1;
-	if (y_position1 > y_position2)
-	{
-		c_K = (float)(y_position1 - y_position2) * (y_position1 + y_position2) / (x_position1 - x_position2);
-		c_B = c_K * x_position1 - y_position1 * y_position1;
-	}
-	else
-	{
-		c_K = (float)(y_position2 - y_position1) * (y_position1 + y_position2) / (x_position1 - x_position2);
-		c_B = c_K * x_position1 - y_position2 * y_position2;
-	}
-
-	if (y_position1 > y_position2)
-	{
-		for (int c_point = x_position1; c_point >= x_position2; c_point--)
-		{
-			*line_process = (int)sqrt(c_K * c_point - c_B);
-			line_process--;
-		}
-	}
-	else
-	{
-		for (int c_point = x_position1; c_point >= x_position2; c_point--)
-		{
-			*line_process = y_position2 + y_position1 - (int)sqrt(c_K * c_point - c_B);
-			line_process--;
-		}
-	}
 }

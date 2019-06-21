@@ -5,17 +5,15 @@
 #include "FindLine.h"
 #include "canny.h"
 
-#define DE412 1
-
 #define UP_TH 15		//向上搜边缘行数
 #define LOST_TH 5	//首行丢边阈值	
 #define JUMP_TH 10		//判断是否为真丢边跳变阈值
 #define CROSSUP 4	//拐点向上阈值
 #define CROSSUP_TH 5		//单丢边判断拐点跳变阈值
-#define LEFT_PNT(row, type)	LeftPnt.ErrRow = (row); LeftPnt.ErrCol = LL[LeftPnt.ErrRow]; LeftPnt.Type = (type)
-#define RIGHT_PNT(row, type) RightPnt.ErrRow = (row); RightPnt.ErrCol = RL[RightPnt.ErrRow]; RightPnt.Type = (type)
+#define SOBEL(i, j)		image[i-1][j-1] - image[i-1][j+1] + image[i][j-1] +image[i][j-1]\
+						-image[i][j+1] - image[i][j+1] +image[i+1][j-1] - image[i+1][j+1]
 //================================================================//
-//  @brief  :		首行搜线版本4(现用)
+//  @brief  :		首行搜线版本4
 //  @param  :		void
 //  @return :		void
 //  @note   :		void
@@ -53,13 +51,14 @@ void FirstLineV4(void)
 }
 //================================================================//
 //  @brief  :		首行情况处理
-//  @param  :		LL[DOWN_EAGE] RL[DOWN_EAGE]
-//  @return :		RoadType LeftPnt RightPnt
-//  @note   :		丢边为5、开区间
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
 //================================================================//
 int FirstRowProcess(void)
 {
-	int RoadType = 0;
+
+	int RoadType;
 	int Middle = (LL[DOWN_EAGE] + RL[DOWN_EAGE]) >> 1;
 
 	if (LEFT_EAGE + LOST_TH > LL[DOWN_EAGE] && RIGHT_EAGE - LOST_TH < RL[DOWN_EAGE])	//两侧丢边 判定为双侧十字
@@ -72,7 +71,6 @@ int FirstRowProcess(void)
 	else if (LEFT_EAGE + LOST_TH > LL[DOWN_EAGE])	//左侧丢边
 	{
 		unsigned char LeftLostFlag = 0, RightLostFlag = 0;   //the flag of lost eage
-		//First detect
 		//Lost Line Process
 		int i;
 		int NoLostFlag = 0;
@@ -91,7 +89,6 @@ int FirstRowProcess(void)
 					LeftPnt.ErrRow = i;
 					LeftPnt.Type = 0;
 					LeftPnt.ErrCol = LL[i];
-					NoLostFlag = i;
 					break;
 				}
 			}
@@ -152,12 +149,6 @@ int FirstRowProcess(void)
 		}
 		if (DOWN_EAGE - UP_TH == i)
 		{
-#if DE412
-			if (1 == TrendArray(&RL[DOWN_EAGE], 10) && LeftLostFlag)		//412新加
-			{
-				RightLostFlag = 1;
-			}
-#endif // DE412
 			RightPnt.ErrRow = DOWN_EAGE;
 			RightPnt.ErrCol = RL[DOWN_EAGE];
 			RightPnt.Type = 0;
@@ -165,9 +156,7 @@ int FirstRowProcess(void)
 		//judge roadtype
 		if (LeftLostFlag & RightLostFlag)
 			RoadType = 2;
-		else if (LeftLostFlag)//Second detect
-			RoadType = 1;
-		else if (RightLostFlag)
+		else if (LeftLostFlag | RightLostFlag)
 			RoadType = 1;
 		else RoadType = 0;
 	}
@@ -178,15 +167,15 @@ int FirstRowProcess(void)
 		int i;
 		int NoLostFlag = 0;
 		FindLineType = 1;
-		for (i = DOWN_EAGE - 1; i > DOWN_EAGE - UP_TH; --i)
+		for (i = DOWN_EAGE - 1; i > DOWN_EAGE - UP_TH;--i)
 		{
 			RL[i] = SearchRightEage(i, Middle);
 			if (i < DOWN_EAGE - 3)
 			{
 				if (RL[i + 4] - RL[i] > JUMP_TH
-					&& RL[i + 4] - RL[i + 1] > JUMP_TH
+					&&RL[i + 4] - RL[i + 1] > JUMP_TH
 					&& RL[i + 4] - RL[i + 2] > JUMP_TH
-					&& RL[i + 4] - RL[i + 3] > JUMP_TH)		//非丢边 向下补线
+					&&RL[i + 4] - RL[i + 3] > JUMP_TH)		//非丢边 向下补线
 				{
 					FillLineDown(RL, i + 3, i);
 					RightPnt.ErrRow = i;
@@ -235,6 +224,7 @@ int FirstRowProcess(void)
 			}
 			if (LL[i] < LEFT_EAGE + LOST_TH)		//Lost line
 			{
+				//str.Format("\r\n no = %d \r\n", NoLostFlag); PrintDebug(str);
 				if (NoLostFlag)			//other side is no lost
 				{
 					LeftPnt.ErrRow = DOWN_EAGE;
@@ -253,12 +243,6 @@ int FirstRowProcess(void)
 		}
 		if (DOWN_EAGE - UP_TH == i)
 		{
-#if DE412
-			if (-1 == TrendArray(&LL[DOWN_EAGE], 10) && RightLostFlag)		//412新加
-			{
-				LeftLostFlag = 1;
-			}
-#endif // DE412
 			LeftPnt.ErrRow = DOWN_EAGE;
 			LeftPnt.ErrCol = LL[DOWN_EAGE];
 			LeftPnt.Type = 0;
@@ -279,12 +263,24 @@ int FirstRowProcess(void)
 		RoadType = 0;
 		int i;
 		int LeftFlag = 0, RightFlag = 0;
-		for (i = DOWN_EAGE - 1; i > DOWN_EAGE - UP_TH; --i)
+		int Width = 0, LastWidth = RL[DOWN_EAGE] - LL[DOWN_EAGE];
+		int Num = 0;
+		for (i = DOWN_EAGE - 1; i > DOWN_EAGE - UP_TH;--i)
 		{
 			if (!LeftFlag)
 				LL[i] = GetLL(i, LL[i + 1]);
 			if (!RightFlag)
 				RL[i] = GetRL(i, RL[i + 1]);
+			/*if (LL[i] - LL[i + 1] > FINDLINE_TH || LL[i + 1] - LL[i] > FINDLINE_TH
+				|| RL[i] - RL[i + 1] > FINDLINE_TH || RL[i + 1] - RL[i] > FINDLINE_TH)
+			{
+				LeftPnt.ErrRow = RightPnt.ErrRow = MIN(i + 2, DOWN_EAGE);
+				LeftPnt.Type = RightPnt.Type = 0;
+				LeftPnt.ErrCol = LL[LeftPnt.ErrRow];
+				RightPnt.ErrCol = RL[RightPnt.ErrRow];
+				RoadType = 0;
+				break;
+			}*/
 			if (LEFT_EAGE + LOST_TH > LL[i])
 			{
 				LeftFlag = 1;
@@ -317,8 +313,9 @@ int FirstRowProcess(void)
 	return RoadType;
 }
 
+
 //================================================================//
-//  @brief  :		普通寻线
+//  @brief  :		普通寻线新版本
 //  @param  :		void
 //  @return :		void
 //  @note   :		void
@@ -337,6 +334,7 @@ void FindLineNormal(int Fill)
 		RightFindFlag = 1;
 		StartRow = LeftPnt.ErrRow - 1;
 	}
+	//str.Format("\r\n Startrow = %d \r\n", StartRow); PrintDebug(str);
 	int i;
 	for (i = StartRow; i > UP_EAGE; --i)
 	{
@@ -350,7 +348,6 @@ void FindLineNormal(int Fill)
 				if (LL[i] - LL[i + 1] > FINDLINE_TH && !RightFindFlag)
 				{
 					LL[i] = SearchLeftNoEage(i, LL[i]) + 3;
-					LeftIntLine = MAX(LeftIntLine, i);
 				}
 				else if (LL[i] - LL[i + 1] > FINDLINE_TH || LL[i + 1] - LL[i] > FINDLINE_TH || LEFT_EAGE + 3 >= LL[i])
 				{
@@ -373,7 +370,6 @@ void FindLineNormal(int Fill)
 				if (RL[i + 1] - RL[i] > FINDLINE_TH && !LeftFindFlag)
 				{
 					RL[i] = SearchRightNoEage(i, RL[i]) - 3;
-					RightIntLine = MAX(RightIntLine, i);
 				}
 				if (RL[i] - RL[i + 1] > FINDLINE_TH || RL[i + 1] - RL[i] > FINDLINE_TH || RIGHT_EAGE - 3 <= RL[i])
 				{
@@ -404,11 +400,12 @@ void FindLineNormal(int Fill)
 	}
 	if (Fill)
 	{
+
 		//对拐点的判断
 		if (LeftPnt.Type == 2 && RightPnt.ErrRow < LeftPnt.ErrRow)	//左外跳 左比右低
 		{
 			int TmpRow;
-			for (int i = LeftPnt.ErrRow; i >= RightPnt.ErrRow; --i)
+			for (int i = LeftPnt.ErrRow; i > RightPnt.ErrRow;--i)
 			{
 				TmpRow = SearchUpEage(i, RL[i] - 1);
 				if (i - TmpRow > CROSSUP || TmpRow == UP_EAGE)		//是拐点
@@ -423,7 +420,7 @@ void FindLineNormal(int Fill)
 		else if (RightPnt.Type == 2 && LeftPnt.ErrRow < RightPnt.ErrRow) //右外跳 右比左低
 		{
 			int TmpRow;
-			for (int i = RightPnt.ErrRow; i >= LeftPnt.ErrRow; --i)
+			for (int i = RightPnt.ErrRow; i > LeftPnt.ErrRow; --i)
 			{
 				TmpRow = SearchUpEage(i, LL[i] + 1);
 				if (i - TmpRow > CROSSUP || TmpRow == UP_EAGE)
@@ -436,9 +433,6 @@ void FindLineNormal(int Fill)
 			}
 		}
 	}
-	//对双侧十字的判断 左右特殊点之差不合常理 则认为是双侧十字
-
-
 }
 //================================================================//
 //  @brief  :		单边丢寻线
@@ -448,6 +442,7 @@ void FindLineNormal(int Fill)
 //================================================================//
 void FindLineLost(void)
 {
+
 	if (0 == RightPnt.Type)			//左丢边 右寻线
 	{
 		LeftPnt.Type = 2;
@@ -470,7 +465,7 @@ void FindLineLost(void)
 			RightPnt.ErrCol = RL[RightPnt.ErrRow];
 		}
 		//对拐点的判断
-		for (int i = LeftPnt.ErrRow; i > RightPnt.ErrRow; --i)
+		for (int i = LeftPnt.ErrRow; i > RightPnt.ErrRow;--i)
 		{
 			int TmpRow = SearchUpEage(i, RL[i] - 1);
 			if (i - TmpRow > CROSSUP_TH || TmpRow == UP_EAGE)
@@ -528,6 +523,7 @@ void FindLineLost(void)
 			return;
 		}
 	}
+
 }
 
 //================================================================//
@@ -550,3 +546,80 @@ Point FindLowPoint(int row, int col1, int col2, int Step)
 	}
 	return PointLow;
 }
+
+//================================================================//
+//  @brief  :		判断进入断路
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
+//================================================================//
+int JudgeInBroken(Point pa, Point pb)
+{
+	if (pb.Row - pa.Row < 10 && pa.Row - pb.Row < 10)
+	{
+		if (pa.Col < pb.Col)
+			return IsConnectPoint(pa, pb);
+		else return IsConnectPoint(pb, pa);
+	}
+	else return 0;
+}
+
+//================================================================//
+//  @brief  :		判断两点是否相连
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
+//================================================================//
+int IsConnectPoint(Point pa, Point pb)
+{
+	image[pa.Row][pa.Col] = 255;
+	if (pa.Col == pb.Col && pa.Row == pb.Row) return 1;
+	if (pa.Col < pb.Col)
+	{
+		if (ImageEage[pa.Row][pa.Col + 1] == HIGH_TH)
+		{
+			pa.Col++;
+			return IsConnectPoint(pa, pb);
+		}
+		else if (pa.Row < pb.Row)
+		{
+			if (ImageEage[pa.Row + 1][pa.Col] == HIGH_TH)
+			{
+				pa.Row++;
+				return IsConnectPoint(pa, pb);
+			}
+			else return 0;
+		}
+		else if (pa.Row > pb.Row)
+		{
+			if (ImageEage[pa.Row - 1][pa.Col] == HIGH_TH)
+			{
+				pa.Row--;
+				return IsConnectPoint(pa, pb);
+			}
+			else return 0;
+		}
+		else return 0;
+	}
+	else if (pa.Row < pb.Row)
+	{
+		if (ImageEage[pa.Row + 1][pa.Col] == HIGH_TH)
+		{
+			pa.Row++;
+			return IsConnectPoint(pa, pb);
+		}
+		else return 0;
+	}
+	else if (pa.Row > pb.Row)
+	{
+		if (ImageEage[pa.Row - 1][pa.Col] == HIGH_TH)
+		{
+			pa.Row--;
+			return IsConnectPoint(pa, pb);
+		}
+		else return 0;
+	}
+	else return 0;
+}
+
+

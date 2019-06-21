@@ -7,55 +7,32 @@
 void ind_acq(void)                         //µç¸Ğ²É¼¯
 {
 	//²É¼¯µç¸Ğ
-
-  ind_left_line = ad_ave(ADC1_SE8, ADC_12bit, 6);
-  ind_left_column = ad_ave(ADC1_SE9, ADC_12bit, 6);
-  ind_right_line = ad_ave(ADC0_SE13, ADC_12bit, 6);
-  ind_right_column = ad_ave(ADC0_SE12, ADC_12bit, 6);
-  ind_mid = ad_ave(ADC1_SE10, ADC_12bit, 6);
-
+        ind_left = collect(ADC1_SE9);
+        ind_right = collect(ADC1_SE8);
 //        ind_mid = adc_once(ADC0_SE6,ADC_16bit)
 	//µç¸ĞÖµÏŞ·ù
-	ind_left_line = MIN(ind_left_line, 4000);
-	ind_left_line = MAX(ind_left_line, 20);
-        
-        ind_left_column = MIN(ind_left_column, 4000);
-	ind_left_column = MAX(ind_left_column, 20);
-        
-	ind_right_line = MIN(ind_right_line, 4000);
-	ind_right_line = MAX(ind_right_line, 20);
-        
-        ind_right_column = MIN(ind_right_column, 4000);
-	ind_right_column = MAX(ind_right_column, 20);
-        
-	ind_mid = MIN(ind_mid, 4000);
-	ind_mid = MAX(ind_mid, 20);
+	ind_left = MIN(ind_left, 3400);
+	ind_left = MAX(ind_left, 20);
+	ind_right = MIN(ind_right, 3400);
+	ind_right = MAX(ind_right, 20);
+//	ind_mid = MIN(ind_mid, 3400);
+//	ind_mid = MAX(ind_mid, 20);
 }
 
 void ind_norm_maxmin(void)                //×óÓÒµç¸Ğ×î´ó×îĞ¡
 {
-	ind_left_line_max = MAX(ind_left_line_max, ind_left_line);
-	ind_left_line_min = MIN(ind_left_line_min, ind_left_line);
-        
-        ind_left_column_max = MAX(ind_left_column_max, ind_left_column);
-	ind_left_column_min = MIN(ind_left_column_min, ind_left_column);
-        
-	ind_right_line_max = MAX(ind_right_line_max, ind_right_line);
-	ind_right_line_min = MIN(ind_right_line_min, ind_right_line);
-        
-        ind_right_column_max = MAX(ind_right_column_max, ind_right_column);
-	ind_right_column_min = MIN(ind_right_column_min, ind_right_column);
-        
-	ind_mid_max = MAX(ind_mid_max, ind_mid);
-	ind_mid_min = MIN(ind_mid_min, ind_mid);
+	ind_leftmax = MAX(ind_leftmax, ind_left);
+	ind_leftmin = MIN(ind_leftmin, ind_left);
+	ind_rightmax = MAX(ind_rightmax, ind_right);
+	ind_rightmin = MIN(ind_rightmin, ind_right);
+//	ind_midmax = MAX(ind_midmax, ind_mid);
+//	ind_midmin = MIN(ind_midmin, ind_mid);
 }
 void ind_norm(void)                           //µÃ³ö¹éÒ»Öµ£»
 {
-  left_line_norm = (float)((ind_left_line - ind_left_line_min)) / (float)((ind_left_line_max - ind_left_line_min));
-  left_column_norm = (float)((ind_left_column - ind_left_column_min)) / (float)((ind_left_column_max - ind_left_column_min));
-  right_line_norm = (float)((ind_right_line - ind_right_line_min)) / (float)((ind_right_line_max - ind_right_line_min));
-  right_column_norm = (float)((ind_right_column - ind_right_column_min)) / (float)((ind_right_column_max - ind_right_column_min));
-  mid_norm = (float)((ind_mid - ind_mid_min)) / (float)((ind_mid_max - ind_mid_min));
+	left_norm = (float)((ind_left - ind_leftmin)) / (float)((ind_leftmax - ind_leftmin));
+	right_norm = (float)((ind_right - ind_rightmin)) / (float)((ind_rightmax - ind_rightmin));
+//	mid_norm = (float)((ind_mid - ind_midmin)) / (float)((ind_midmax - ind_midmin));
 }
 
 void get_ind_error(void)  //µç¸Ğ»ñÈ¡ErrorÖµ note:·ÅÔÚÖĞ¶Ï Èç¹ûµç¸Ğ¿ª ÔòÒ»Ö±²É¼¯µç¸ĞÖµ ¼ÆËãerror£»
@@ -64,7 +41,7 @@ void get_ind_error(void)  //µç¸Ğ»ñÈ¡ErrorÖµ note:·ÅÔÚÖĞ¶Ï Èç¹ûµç¸Ğ¿ª ÔòÒ»Ö±²É¼¯µ
 	{
                 ind_acq();
                 ind_norm();
-		ad_error_1 = (left_line_norm - right_line_norm) / (left_line_norm + right_line_norm);
+		ad_error_1 = (left_norm - right_norm) / (left_norm + right_norm);
 	}
         else if(0 == g_ad_flag)
         {
@@ -74,25 +51,3 @@ void get_ind_error(void)  //µç¸Ğ»ñÈ¡ErrorÖµ note:·ÅÔÚÖĞ¶Ï Èç¹ûµç¸Ğ¿ª ÔòÒ»Ö±²É¼¯µ
         }
 }
 
-//================================================================//
-//  @brief  :		µç¸ĞÊ¶±ğ»·µº
-//  @param  :		void
-//  @return :		1ÊÇ»·µº 0·Ç»·µº
-//  @note   :		´«Èë²ÎÊıÎª0Ìõ¼şÈõ ´«Èë²ÎÊıÎª1Ìõ¼şÇ¿
-//================================================================//
-unsigned char IndJudgeCircle(unsigned char type)
-{
-#if CI_IND
-	if (type)
-	{
-
-	}
-	else
-	{
-		if (mid_norm > 1.6f) return 1;
-		else return 0;
-	}
-#else
-	return 1;
-#endif
-}

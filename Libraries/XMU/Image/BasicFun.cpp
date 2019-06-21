@@ -1,6 +1,5 @@
 #include "GlobalVar.h"
 #include "BasicFun.h"
-#include "canny.h"
 
 
 
@@ -19,7 +18,7 @@ int IsEage(int row, int col)
 	if (col > RIGHT_EAGE) col = RIGHT_EAGE;
 	if (FindLineType)
 	{
-		unsigned char* p = image[0] + IMG_COL * (row - 1) + col - 1;
+		unsigned char *p = image[0] + IMG_COL * (row - 1) + col - 1;
 		unsigned char ack = 0;
 		ack += *p++ < LightThreshold;
 		ack += *p++ < LightThreshold;
@@ -129,7 +128,6 @@ int SearchRightNoEage(int row, int col)
 	}
 	return RIGHT_EAGE;
 }
-
 
 //================================================================//
 //  @brief  :		向左上搜索一个边界点
@@ -268,7 +266,7 @@ Point SearchLeftDownEage(int row, int col)
 			Up45.Col = j;
 			return Up45;
 		}
-		++i; --j;
+		++i;--j;
 	}
 	Up45.Row = i;
 	Up45.Col = j;
@@ -293,7 +291,7 @@ Point SearchRightDownEage(int row, int col)
 			Up45.Col = j;
 			return Up45;
 		}
-		++i; ++j;
+		++i;++j;
 	}
 	Up45.Row = i;
 	Up45.Col = j;
@@ -344,11 +342,12 @@ int GetRL(int row, int col)
 //================================================================//
 //  @brief  :		最小二乘法
 //  @param  :		起始行（row1） 结束行（row2） 首地址（array）
-//  @return :		k斜率
+//  @return :		k b
 //  @note   :		void
 //================================================================//
-float LeastSquare(int* array, int row1, int row2)
+float LeastSquare(int *array, int row1, int row2)
 {
+
 	float sum_x2 = 0.0;
 	float sum_y = 0.0;
 	float sum_x = 0.0;
@@ -365,9 +364,13 @@ float LeastSquare(int* array, int row1, int row2)
 
 	c = (row1 - row2 + 1) * sum_x2 - sum_x * sum_x;
 	if (0 == c)
+	{
 		return 0;
+	}
 	else
+	{
 		return ((row1 - row2 + 1) * sum_xy - sum_x * sum_y) / c;
+	}
 }
 
 
@@ -380,7 +383,7 @@ float LeastSquare(int* array, int row1, int row2)
 //================================================================//
 int AveGray(void)
 {
-	unsigned char* p = image[UP_EAGE];
+	unsigned char *p = image[UP_EAGE];
 	long int sum = 0;
 	for (int i = 0; i < 188 * 51; i++)
 	{
@@ -390,92 +393,3 @@ int AveGray(void)
 
 }
 
-//================================================================//
-//  @brief  :		求数组最值
-//  @param  :		数组首地址Array n个数
-//  @return :		最值
-//  @note   :		void
-//================================================================//
-int MaxArray(int* line, int n)
-{
-	int max = 0;
-	for (int i = 0; i < n; i++)
-	{
-		if (*line > max) max = *line;
-		line--;
-	}
-	return max;
-}
-int MinArray(int* line, int n)
-{
-	int min = 0;
-	for (int i = 0; i < n; i++)
-	{
-		if (*line < min) min = *line;
-		line--;
-	}
-	return min;
-}
-
-//================================================================//
-//  @brief  :		求数组趋势
-//  @param  :		数组首地址Array n个数
-//  @return :		趋势 -1向左 1向右 0无朝向
-//  @note   :		void
-//================================================================//
-signed int TrendArray(int* line, int n)
-{
-	int LeftNum = 0, RightNum = 0;
-	for (int i = 0; i < n - 1; i++)
-	{
-		if (*line > * (line - 1))LeftNum++;
-		else if (*line < *(line - 1))RightNum++;
-		else;
-		line--;
-	}
-	if (LeftNum > RightNum)return -1;
-	else if (LeftNum < RightNum)return 1;
-	else return 0;
-}
-
-//================================================================//
-//  @brief  :		均值滤波
-//  @param  :		数组首地址Array n个数
-//  @return :		void
-//  @note   :		void
-//================================================================//
-void AveFilter(int* line, int n)
-{
-	const int filter_threshold = 7;	//滤波阈值
-	line--; n -= 2;
-	while (n-- > 0)
-	{
-		if ((*line - *(line + 1) > filter_threshold || *(line + 1) - *line > filter_threshold)
-			&& (*line - *(line - 1) > filter_threshold || *(line - 1) - *line > filter_threshold))
-			* line = (*(line - 1) + *(line + 1)) >> 1;
-		line--;
-	}
-}
-
-//================================================================//
-//  @brief  :		是否存在大波动
-//  @param  :		数组首地址Array n个数
-//  @return :		void
-//  @note   :		void
-//================================================================//
-int IsBigWave(int* line, int n)
-{
-	AveFilter(line, n);		//滤波
-	//for (int i = 0; i < n; i++)
-	//{
-	//	string.Format("\r\n LL = %d \r\n", *(line-i)); PrintDebug(string);
-	//}
-	int* line_init = line;
-	while (--n > 0)
-	{
-		if (*line - *(line - 1) > FINDLINE_TH || *(line - 1) - *line > FINDLINE_TH)
-			return line_init - line + 1;
-		line--;
-	}
-	return 0;
-}

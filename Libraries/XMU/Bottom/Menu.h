@@ -21,7 +21,7 @@ void Key_Function(void);
 void Extra_Show(void);
 void Main_Show(void);
 
-
+void ExploreTime(void);
 
 
 
