@@ -36,7 +36,7 @@ void SpeedControl()
               
 //                if(curSpeed < 0.2)
                 g_fI += g_errorS * g_Speed_I;
-		if (g_flag == 0)
+		if (g_drive_flag == 0)
 		{
 			g_fI = 0;
 		}
@@ -59,11 +59,11 @@ void  SpeedControlOutput()
         static int get_flag = 0;
         static int StartCount = 0;
         //开机加速
-//        if(g_flag == 0 && !get_flag)
+//        if(g_drive_flag == 0 && !get_flag)
 //        {
 //           get_flag = 1;
 //        }
-//        else if(g_flag && get_flag && StartCount < 1000)
+//        else if(g_drive_flag && get_flag && StartCount < 1000)
 //        {
 //              g_fSpeedControlOut = 4000;
 //              StartCount++;
@@ -73,7 +73,7 @@ void  SpeedControlOutput()
 //                StartCount = 0;
 //              }
 //        }
-//        else if(g_flag && !get_flag)
+//        else if(g_drive_flag && !get_flag)
 //        {
                 
           g_nSpeedControlPeriod++;

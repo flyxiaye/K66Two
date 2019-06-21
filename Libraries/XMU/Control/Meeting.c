@@ -344,7 +344,7 @@ void MeetingTwo(void)
                                 acc_speed = 0;
 				//改变状态 调整下一状态标志
 				g_StateMaster = 1;
-				g_flag = 0;//停车
+				g_drive_flag = 0;//停车
 				BrokenFlag = 0;
 
 			}
@@ -382,7 +382,7 @@ void MeetingTwo(void)
 			else
 			{
 				g_StateMaster = StateStop; //停留等待
-				g_flag = 0;
+				g_drive_flag = 0;
 			}
 		}
 		break;
@@ -397,7 +397,7 @@ void MeetingTwo(void)
 	case StateStop:
 		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//从车到达
 		{
-			g_flag = 1;
+			g_drive_flag = 1;
 			acc_speed += curSpeed;
 			if (acc_speed > sum_speed)
 			{
@@ -407,7 +407,7 @@ void MeetingTwo(void)
 		}
 		break;
 	case CarFinish:
-		g_flag = 0;
+		g_drive_flag = 0;
                 break;
 	default:
 		break;
@@ -436,13 +436,13 @@ void MeetingTwo(void)
 //                } 
                 if(g_StateSlave < 3 && g_SlaveOutFlag != 1)//从车未到达并且未出界，主车等待
                 {
-//                  g_flag = 0;
+//                  g_drive_flag = 0;
                   Ground();
                 }
                 else if(g_StateSlave >= 3 || g_SlaveOutFlag == 1)
                 {
 //                  g_StateMaster = WaitingStop;
-                  g_flag = 1;
+                  g_drive_flag = 1;
                   CircleFlag = 0;
                   CircleState = 0;
                   BlockFlag = 0;
@@ -497,7 +497,7 @@ void MeetingTwo(void)
                 Ground();
 		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//从车到达
 		{
-			g_flag = 1;
+			g_drive_flag = 1;
 			acc_speed += curSpeed;
 			if (acc_speed > sum_speed + 200)
 			{
@@ -507,7 +507,7 @@ void MeetingTwo(void)
 		}
                 if(g_SlaveOutFlag == 1)//从车出界，主车继续动
                 {
-                  g_flag = 1;
+                  g_drive_flag = 1;
 			acc_speed += curSpeed;
 			if (acc_speed > sum_speed + 200)
 			{ 
@@ -518,7 +518,7 @@ void MeetingTwo(void)
 		break;
 	case CarFinish:
           
-		g_flag = 0;
+		g_drive_flag = 0;
                 break;
 	default:
 		break;
@@ -554,7 +554,7 @@ float LinearOut(float dst, float src, float duty)
 //    g_mode = 1;
 //    stage = 0;
 //    get_flag = 1;
-//    g_flag = 0;
+//    g_drive_flag = 0;
 //    last_yaw = _ANGLE;
 //  } 
 //  switch(stage)
@@ -566,7 +566,7 @@ float LinearOut(float dst, float src, float duty)
 //      }
 //      if(delay > 200)
 //      {
-//        g_flag = 1;
+//        g_drive_flag = 1;
 //        stage = 1;
 //        delay = 0;
 //      }
@@ -605,7 +605,7 @@ float LinearOut(float dst, float src, float duty)
 //      {
 //	g_StateMaster = 3;
 //        BrokenFlag = 2;
-//        g_flag = 0;
+//        g_drive_flag = 0;
 //        g_mode = 3;
 ////        error_yaw = 0;
 //      }

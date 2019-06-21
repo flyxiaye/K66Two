@@ -6,7 +6,7 @@
 float g_fDirectionControlOut_new;
 float g_fDirectionControlOut_before;
 
-
+void AD_DirectionControl();
 //================================================================//
 //  @brief  :		方向环算法
 //  @param  :		
@@ -15,7 +15,7 @@ float g_fDirectionControlOut_before;
 //================================================================//
 void Direction()
 {
-  void AD_DirectionControl();
+  
   //拨码开关向下拨，摄像头算法
   if(dialSwitchFlg2)
   {
@@ -83,7 +83,7 @@ void AD_DirectionControl()
   static float g_fDirectionAngleControlOut = 0.0f;
   static float sensorGyroZLast = 0.0f;
   static float g_error_before = 0.0f;
-  if(count >= 5)
+  if(count >= 4)
   {
     count = 0;
     if ((BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制

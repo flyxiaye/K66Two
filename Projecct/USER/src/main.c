@@ -40,39 +40,32 @@ int main(void)
           
             
 	}
-     //发车
-//     if (g_StartMaster)
-//     {
-//       if (g_StartSlave)
-//       {
-//         g_flag = 1;
-//         g_StartMaster = 0;
-//          CircleFlag = 0;
-//          CircleState = 0;
-//          BrokenFlag = 0;
-//          BlockFlag = 0;
-//          RampFlag = 0;
-//          g_handle_open = 1;
-//       }
-//     }
-    if (1 == dialSwitchFlg1)
+    if (1 == dialSwitchFlg1 && g_drive_flag == 0)
     {
 //      DisplayBinary(ImageData[0]);
       
       displayimage032(image[0]);
       ShowEage();
     }
-    else
          //Bluebooth_Push_Data();
 //    SendAngle();
 //    SendData();
-//    if (!BlockFlag)
-//      StopCar();
+    else 
+    {
       Menu();
-//         OLED_Write_Int(0,0,Key_Scan());
-//      lcd_showint16(0,0,Key_Scan());
-//    text_flag = Key_Check();
-     StopCar();
+    }
+//    if(CircleState) 
+      gpio_init(E8,GPO,0);
+//    else 
+//      gpio_init(E8,GPO,1);
+//    if(CircleState) 
+      gpio_init(E7,GPO,0);
+//    else 
+//      gpio_init(E7,GPO,1);
+//    if(CircleState) 
+      gpio_init(E6,GPO,0);
+//    else 
+//      gpio_init(E6,GPO,1);
   }
   
 }

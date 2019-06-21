@@ -149,25 +149,25 @@ void DrivePWM(float g_duty_PWMleft, float g_duty_PWMright)
 //-------------------------------------------------------------------------------------------------------------------
 void power()
 {
-	if (1 == g_flag)
+	if (1 == g_drive_flag)
 	{
 		motormode(g_mode);
 		DrivePWM(g_fleft, g_fright);
 	}
-	else if (0 == g_flag)
+	else if (0 == g_drive_flag)
 	{
 		DrivePWM(0, 0);
 	}
 }
 void on_off_flag()
 {
-	if (1 == g_flag)
+	if (1 == g_drive_flag)
 	{
-		g_flag = 0;
+		g_drive_flag = 0;
 	}
-	else if (0 == g_flag)
+	else if (0 == g_drive_flag)
 	{
-		g_flag = 1;
+		g_drive_flag = 1;
 
 	}
 }
@@ -181,7 +181,7 @@ void StopCar()
 {
 	if (ind_left_line < 100 && ind_right_line < 100 && ind_mid < 100)
 	{
-		g_flag = 0;
+		g_drive_flag = 0;
                 g_MasterOutFlag = 1;
               
 	}
@@ -243,7 +243,7 @@ void StopCar()
 //             flag = 1;
 //             g_mode = 3;
 //             time = 0;
-//             g_flag = 0;
+//             g_drive_flag = 0;
 //             g_angle_set = angle_init;
 //             angle_init = 0;
 //           }
@@ -259,25 +259,29 @@ void StartSpeed()
 {
   static int flag = 0;
   static float angle_init = 0;
-  static int time = 0;
-  if(g_flag == 1 && flag == 0)
+  static int distance = 0;
+  static int flag_2 = 0;
+  if(flag == 0)
   {
-    if(angle_init == 0)
-    {
-      angle_init = g_angle_set;
-    }
-    g_angle_set = angle_init + 5;
-    
+    angle_init = g_angle_set;
+      flag = 1;
   }
-  else if(!g_flag)
+  if(g_drive_flag == 1 && ABS(distance) < 10000 && flag == 1)
+  {
+   
+    g_angle_set = angle_init + 5;
+    distance += curSpeed;
+    flag_2 = 1;
+  }
+  else if(!g_drive_flag)
+  {
+    distance = 0;
+  }
+  if((ABS(distance) >= 10000 || g_drive_flag == 0) && flag_2 == 1 && flag == 1)
   {
     flag = 0;
-  }
-  if(time >= 1000)
-  {
-    flag = 1;
+    flag_2 = 0;
     g_angle_set = angle_init;
-    angle_init = 0;
   }
   
 }
@@ -297,5 +301,5 @@ void StartSpeed()
 //  }
 //
 //    if (sum > 150)
-//      g_flag = 0;
+//      g_drive_flag = 0;
 //}

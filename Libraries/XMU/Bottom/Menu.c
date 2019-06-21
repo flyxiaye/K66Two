@@ -454,8 +454,8 @@ void Key_Function(void)
 		{
 		case 1: if (g_steer_open)           //启动
 		{
-			FlagChange(&g_flag);//开电机
-			if (g_flag)
+			FlagChange(&g_drive_flag);//开电机
+			if (g_drive_flag)
 			{
 				g_StateMaster = 0;
 				g_StartMaster = 0;
@@ -467,7 +467,6 @@ void Key_Function(void)
 //				speed_type = 1;
 				if (1 == g_camera_open)
 					g_handle_open = 1;
-//				g_steer_open = 1;
 				g_ad_flag = 1;
 				RampFlag = 0;
 			}

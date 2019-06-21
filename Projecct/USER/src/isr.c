@@ -75,6 +75,7 @@ void PIT0_IRQHandler(void)
 //      ChangeStartMeetingFlag();//识别会车
 //      MeetingCarControl();
 //    }
+    StopCar();
     StartSpeed();
     DistCI();
     get_ind_error();
