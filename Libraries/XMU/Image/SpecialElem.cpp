@@ -9,144 +9,6 @@
 #include "SpecialElem.h"
 
 
-//===========================以下为可直接调用的元素识别函数======================//
-
-//================================================================//
-//  @brief  :		环岛判断
-//  @param  :		void 
-//  @return :		void
-//  @note   :		void
-//================================================================//
-int ImgJudgeCircle(int type)
-{
-	if (0 == type)
-	{
-		if (Img_CircleOpen && !SpecialElemFlag
-			&& LeftPnt.Type == 2 && LeftPnt.ErrRow > UP_EAGE + 20 && RightPnt.ErrRow < UP_EAGE + 10
-			&& LeftPnt.ErrCol < MIDDLE && RightPnt.ErrCol > MIDDLE - 7 && IsCircleIsland(CL))
-			return CL;
-		else if (Img_CircleOpen && !SpecialElemFlag
-			&& RightPnt.Type == 2 && RightPnt.ErrRow > UP_EAGE + 20 && LeftPnt.ErrRow < UP_EAGE + 10
-			&& RightPnt.ErrCol > MIDDLE && LeftPnt.ErrCol < MIDDLE + 7 && IsCircleIsland(CR))
-			return CR;
-		else return CN;
-	}
-	else
-	{
-		if (Img_CircleOpen && !SpecialElemFlag
-			&& LL[DOWN_EAGE] == LEFT_EAGE && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7)
-			return CL;
-		else if (Img_CircleOpen && !SpecialElemFlag
-			&& RL[DOWN_EAGE] == RIGHT_EAGE && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7)
-			return CR;
-		else return CN;
-	}
-}
-
-//================================================================//
-//  @brief  :		识别停车
-//  @param  :		void 
-//  @return :		void
-//  @note   :		void
-//================================================================//
-void ImgJudgeStopLine(void)
-{
-#if STOPLINE
-	if (Img_StopOpen && LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
-		&& LeftPnt.ErrRow <= UP_EAGE + 15 && RightPnt.ErrRow <= UP_EAGE + 15
-		&& !StopLineFlag && DistStopLine(UP_EAGE + 15))
-	{
-		StopLineFlag = 1;
-		SpecialElemFlag = 1;
-	}
-#endif
-}
-
-//================================================================//
-//  @brief  :		识别坡道
-//  @param  :		void 
-//  @return :		void
-//  @note   :		void
-//================================================================//
-void ImgJudgeRamp(void)
-{
-#if RAMP
-	if (Img_RampOpen && !SpecialElemFlag
-		&& LeftPnt.ErrRow <= UP_EAGE + 1 && RightPnt.ErrRow <= UP_EAGE + 1)
-	{
-		if (IsRamp())
-		{
-			RampFlag = 1;
-			SpecialElemFlag = 1;
-		}
-	}
-#endif
-}
-
-//================================================================//
-//  @brief  :		识别弯道断路
-//  @param  :		void 
-//  @return :		void
-//  @note   :		void
-//================================================================//
-void ImgJudgeCurveBroken(void)
-{
-#if CURVE_BROKEN
-	if (LeftPnt.ErrRow - RightPnt.ErrRow < 5 && RightPnt.ErrRow - LeftPnt.ErrRow < 5
-		&& LeftPnt.ErrCol - RightPnt.ErrCol < 10 && RightPnt.ErrCol - LeftPnt.ErrCol < 10)
-	{
-		if (ImgJudgeSpecialLine(LeftPnt.ErrRow, RightPnt.ErrRow, 1))
-		{
-			BrokenFlag = 3;
-			SpecialElemFlag = 1;
-		}
-		else BrokenFlag = 0;
-	}
-	else BrokenFlag = 0;
-#endif
-}
-
-//================================================================//
-//  @brief  :		识别路障
-//  @param  :		void 
-//  @return :		void
-//  @note   :		void
-//================================================================//
-void ImgJudgeBlock(void)
-{
-#if BLOCK_BROKEN
-	if ((Img_BlockOpen || Img_BrokenOpen) && !SpecialElemFlag)		//断路路障判断
-	{
-		int flag = ImgJudgeSpecialElem(LeftIntLine, RightIntLine);
-		if (1 == Img_BlockOpen && 1 == flag)
-		{
-			BlockFlag = 1;
-			SpecialElemFlag = 1;
-		}
-		else if (2 == Img_BlockOpen && flag)			//红外识别路障
-		{
-			BrokenFlag = 1;
-			SpecialElemFlag = 1;
-#if INF
-			if (g_inf > stop_inf)
-			{
-				BlockFlag = 1;
-				BrokenFlag = 0;
-			}
-#endif 
-		}
-		else if (Img_BrokenOpen && 2 == flag)
-		{
-			BrokenFlag = 1;
-			SpecialElemFlag = 1;
-		}
-		else;
-	}
-#endif
-}
-
-//===========================以上为可直接调用的元素识别函数======================//
-
 //================================================================//
 //  @brief  :		特殊元素
 //  @param  :		坡道 路障 断路 停车线
@@ -164,19 +26,30 @@ void SpecialElemFill(void)
 	FindLineNormal(0);
 	if (1 == BrokenFlag)
 	{
-		if (LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
-			&& LeftPnt.ErrRow < UP_EAGE + 15 && RightPnt.ErrRow < UP_EAGE + 15
+		int flag = JudgeSpecialElem(LeftIntLine, RightIntLine);
+		if (/*LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
+			&& */LeftPnt.ErrRow < UP_EAGE + 15 && RightPnt.ErrRow < UP_EAGE + 15
 			&& DistStopLine(UP_EAGE + 15))
 		{
 			StopLineFlag = 1;
 			BrokenFlag = 0;
 		}
-		else if (1 == BlockFlag && 1 == ImgJudgeSpecialElem(LeftIntLine, RightIntLine))
+		else if (1 == Img_BlockOpen && 1 == flag)
 		{
 			BlockFlag = 1;			//路障
 			BrokenFlag = 0;
 		}
-		else if (ImgJudgeOutBroken())
+		else if (2 == Img_BlockOpen && flag)
+		{
+#if INF
+			if (g_inf > stop_inf)
+			{
+				BlockFlag = 1;
+				BrokenFlag = 0;
+			}
+#endif
+		}
+		else if (JudgeOutBroken())
 		{
 			BrokenFlag = 2;			//断路
 		}
@@ -186,7 +59,7 @@ void SpecialElemFill(void)
 	}
 	else if (2 == BrokenFlag)
 	{
-		if (ImgJudgeOutBroken())
+		if (JudgeOutBroken())
 		{
 			BrokenFlag = 0;
 			SpecialElemFlag = 0;
@@ -194,7 +67,7 @@ void SpecialElemFill(void)
 	}
 	else if (3 == BrokenFlag)
 	{
-		if (ImgJudgeOutBroken())
+		if (JudgeOutBroken())
 		{
 			BrokenFlag = 2;			//断路
 		}
@@ -226,9 +99,9 @@ void SpecialElemFill(void)
 //  @return :		1路障 2断路
 //  @note   :		void
 //================================================================//
-int ImgJudgeSpecialElem(int left_line, int right_line)
+int JudgeSpecialElem(int left_line, int right_line)
 {
-	if (ImgJudgeSpecialLine(left_line, right_line, 0))
+	if (JudgeSpecialLine(left_line, right_line, 0))
 	{
 		if (IsBlock(left_line, right_line))
 			return 1;
@@ -243,12 +116,11 @@ int ImgJudgeSpecialElem(int left_line, int right_line)
 //  @return :		1 确认有
 //  @note   :		全局变量LL RL
 //================================================================//
-int ImgJudgeSpecialLine(int left_line, int right_line, int type)
+int JudgeSpecialLine(int left_line, int right_line, int type)
 {
-	const int StartLine = 33;
+	const int StartLine = 30;
 	if (left_line < StartLine && right_line < StartLine
-		|| left_line - right_line > 8 || right_line - left_line > 8
-		|| LL[left_line] > MIDDLE || RL[right_line] < MIDDLE)
+		|| left_line - right_line > 8 || right_line - left_line > 8)
 		return 0;
 	if (!type && LL[left_line] + 15 > RL[right_line]) return 0;
 
@@ -366,6 +238,7 @@ int IsRamp(void)
 	{
 		DiffSum += (RL[i] - LL[i]) - (MidOffset[i] << 1);
 	}
+	//string.Format("\r\n RampDiffSum = %d \r\n", DiffSum); PrintDebug(string);
 	if (DiffSum > DiffTh)
 	{
 		int left_out_num = 0, right_out_num = 0;
@@ -387,8 +260,12 @@ int IsRamp(void)
 //  @return :		1还处于断路  0已经出了断路
 //  @note   :		void
 //================================================================//
-int ImgJudgeOutBroken(void)
+int JudgeOutBroken(void)
 {
+	//CannyEage();
+	//VarInit();
+	//LeftPnt.Type = RightPnt.Type = 0;
+	//SelectFirstLine();
 	static int Num_i = 0;
 	static int BrokenAve[5] = { 0 };
 	if (BrokenFlag == 1 || BrokenFlag == 3)
@@ -560,6 +437,110 @@ int JudgeInBroken_V2(Point pa, Point pb)
 	else return 0;
 }
 
+//================================================================//
+//  @brief  :		判断进入断路
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
+//================================================================//
+int JudgeInBroken(Point pa, Point pb)
+{
+	if (pb.Row - pa.Row < 10 && pa.Row - pb.Row < 10)
+	{
+		if (pa.Col < pb.Col)
+			return IsConnectPoint(pa, pb);
+		else return IsConnectPoint(pb, pa);
+	}
+	else return 0;
+}
+
+//================================================================//
+//  @brief  :		判断两点是否相连
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
+//================================================================//
+int IsConnectPoint(Point pa, Point pb)
+{
+	image[pa.Row][pa.Col] = 255;
+	if (pa.Col == pb.Col && pa.Row == pb.Row) return 1;
+	if (pa.Col < pb.Col)
+	{
+		if (ImageEage[pa.Row][pa.Col + 1] == HIGH_TH)
+		{
+			pa.Col++;
+			return IsConnectPoint(pa, pb);
+		}
+		else if (pa.Row < pb.Row)
+		{
+			if (ImageEage[pa.Row + 1][pa.Col] == HIGH_TH)
+			{
+				pa.Row++;
+				return IsConnectPoint(pa, pb);
+			}
+			else return 0;
+		}
+		else if (pa.Row > pb.Row)
+		{
+			if (ImageEage[pa.Row - 1][pa.Col] == HIGH_TH)
+			{
+				pa.Row--;
+				return IsConnectPoint(pa, pb);
+			}
+			else return 0;
+		}
+		else return 0;
+	}
+	else if (pa.Row < pb.Row)
+	{
+		if (ImageEage[pa.Row + 1][pa.Col] == HIGH_TH)
+		{
+			pa.Row++;
+			return IsConnectPoint(pa, pb);
+		}
+		else return 0;
+	}
+	else if (pa.Row > pb.Row)
+	{
+		if (ImageEage[pa.Row - 1][pa.Col] == HIGH_TH)
+		{
+			pa.Row--;
+			return IsConnectPoint(pa, pb);
+		}
+		else return 0;
+	}
+	else return 0;
+}
+
+//================================================================//
+//  @brief  :		坡道路障区分
+//  @param  :		void
+//  @return :		1坡道 2路障
+//  @note   :		void
+//================================================================//
+int Diff_R_B(int state)
+{
+	if (state == 1)		//检测标志
+	{
+		if (LeftPnt.Type == 4 && RightPnt.Type == 4)
+		{
+			int left_eage = MaxArray(&LL[DOWN_EAGE], DOWN_EAGE - UP_EAGE);
+			int right_eage = MinArray(&RL[DOWN_EAGE], DOWN_EAGE - UP_EAGE);
+			int count = 0;
+			for (int i = left_eage + 1; i < right_eage; i++)
+			{
+				if (UP_EAGE == SearchUpEage(DOWN_EAGE - 20, i))
+					count++;
+			}
+			if (count > (right_eage - left_eage) * 0.8) return 1; //坡道
+			else return 2;//路障
+		}
+		else
+		{
+			return 2; //路障
+		}
+	}
+}
 
 //================================================================//
 //  @brief  :		期望速度控制

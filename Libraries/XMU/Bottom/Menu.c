@@ -9,7 +9,7 @@
 #include "Screen.h"
 #include "PID.h"
 #include "XMU_IMU.h"
-
+#include "AD.h"
 
 //#include  "headfile.h"
 //#include  "GlobalVar.h"
@@ -46,7 +46,6 @@ signed char g_imgFlg = 0;
 signed char g_Rate = 0;                                      //倍率指数 方便加减
 float g_addValue = 1;                                        //倍率
 signed char g_picture_show = 0;
-signed char g_explore_page = 0;								//调节曝光功能页
 
 unsigned char Cursor[][16] =
 
@@ -455,8 +454,8 @@ void Key_Function(void)
 		{
 		case 1: if (g_steer_open)           //启动
 		{
-			FlagChange(&g_drive_flag);//开电机
-			if (g_drive_flag)
+			FlagChange(&g_flag);//开电机
+			if (g_flag)
 			{
 				g_StateMaster = 0;
 				g_StartMaster = 0;
@@ -465,10 +464,10 @@ void Key_Function(void)
 				CircleState = 0;
 				BrokenFlag = 0;
 				BlockFlag = 0;
-				speed_type = 1;
+//				speed_type = 1;
 				if (1 == g_camera_open)
 					g_handle_open = 1;
-				g_steer_open = 1;
+//				g_steer_open = 1;
 				g_ad_flag = 1;
 				RampFlag = 0;
 			}
@@ -503,7 +502,7 @@ void Key_Function(void)
 			break;
 		case 6:  PageNumAdd();       break;//向下翻页
 		case 7:
-                  if (2 == g_pageNum)
+                  if (6 == g_pageNum)
 				g_ad_flag = !g_ad_flag;
 			else changemode();
 //				SD_Gather_Camera_Picture_120x188();        break; //采图
@@ -753,7 +752,7 @@ void Main_Show(void)
 	Insert_Page("Display");
 	if (g_pageNum == 1)
 	{
-		displayimage032_zoom(image[0], 64, 10, 70,1);
+		displayimage032_zoom(image[0], 64, 10, 70);
 		switch (g_picture_show)
 		{
 		case 0:
@@ -822,115 +821,83 @@ void Main_Show(void)
 
          
          
-//         Insert_Page("Angle");//角度
-//         Insert_Float("X",&Angle.X);
-//         Insert_Float("Y",&Angle.Y);
-//         Insert_Float("Z",&Angle.Z);
-//         Insert_Float("Rate_X",&ICM_Gyro.X);
-//         Insert_Float("Rate_Y",&ICM_Gyro.Y);
-//         Insert_Float("Rate_Z",&ICM_Gyro.Z);
-//         
-//         Insert_Page("Angle");//角度
-//         Insert_Float("ANGLE",&g_angle);
-//         Insert_Float("GYRO",&g_gyro_angle_x);
-//         Insert_Float("ACC",&g_acc_zy);
-//         Insert_Float("RATIO",&g_gyro_ratio);
 
          Insert_Page("PID_A");//角度
          Insert_Float("set",&g_angle_set);
-         Insert_Float("conset",&g_angle_set_const);
          Insert_Float("out",&g_AngleOut);
-         Insert_Float("P1",&g_angle_P);
-         Insert_Float("D1",&g_angle_D);
-         Insert_Float("P2",&g_RateP);
-         Insert_Float("D2",&g_RateD);
-//         Insert_Float("P2",&g_anglerate_P);
-//         Insert_Float("D2",&g_anglerate_D);
-//         Insert_Float("I2",&g_anglerate_I);
+         Insert_Float("PA",&g_angle_P);
+         Insert_Float("PR",&g_RateP);
+         Insert_Float("DR",&g_RateD);
          
          
          
-//         Insert_Page("PID_A");//角度//SPI
-//         Insert_Float("set",&g_angle_set);
-//         Insert_Float("P_A",&pidAnglePitch.kp);
-//         Insert_Float("I_A",&pidAnglePitch.ki);
-//         Insert_Float("D_A",&pidAnglePitch.kd);
-//         Insert_Float("P_D",&pidRatePitch.kp);
-//         Insert_Float("I_D",&pidRatePitch.ki);
-//         Insert_Float("D_D",&pidRatePitch.kd);
 
-         Insert_Page("Obstacle");
-         Insert_Float("g_inf",&g_inf);
-         Insert_Int("stop_inf",&stop_inf);
-         Insert_Int("s1",&s1);
-         Insert_Int("st",&st);
-         Insert_Int("sum_dist",&sum_dist);
+//         Insert_Page("Obstacle");//避障
+//         Insert_Float("g_inf",&g_inf);
+//         Insert_Int("stop_inf",&stop_inf);
+//         Insert_Int("s1",&s1);
+//         Insert_Int("st",&st);
+//         Insert_Int("sum_dist",&sum_dist);
          
-         Insert_Page("Flag");
-//         Insert_Int("camera_open",&g_camera_open);      //1：使用摄像头 0：不使用摄像头
-//         Insert_Int("ind_open",&g_ind_open);            //1：使用电磁   0：不使用电磁
-         Insert_Int("single_open",&g_single_open);
-//         Insert_Int("ramp_open",&g_ramp_open);
-         Insert_Int("broken_open",&g_broken_open);
-         Insert_Int("block_open",&g_block_open);
+//         Insert_Page("ImgFlag");//标志位
+//	 Insert_Char("ImgCircle", &Img_CircleOpen);
+//	 Insert_Char("ImgBroken", &Img_BrokenOpen);
+//	 Insert_Char("ImgBlock", &Img_BlockOpen);
+//	 Insert_Char("ImgRamp", &Img_RampOpen);
+//	 Insert_Char("ImgStop", &Img_StopOpen);
          
-         Insert_Page("PID_D");//方向
+         
+         Insert_Page("PID_D/C");//方向
          Insert_Float("error",&g_errorD);
          Insert_Float("Out" ,&g_fDirectionControlOut);
          Insert_Float("KP",&gRateKp);
          Insert_Float("KD",&gRateKd);
          Insert_Float("P",&g_dire_P);
          Insert_Float("D",&g_dire_D);
-         Insert_Int("Pro",&ProSpect);
-         
-         Insert_Page("MeetFlag");
-         Insert_Char("MasterM",&g_GetMeetingMaster);
-         Insert_Char("SlaveM",&g_GetMeetingSlave);
-         Insert_Char("MasterS",&g_StartMaster);
-         Insert_Char("SlaveS",&g_StartSlave);
-         Insert_Char("MasterO",&g_MasterOutFlag);
-         Insert_Char("SlaveO",&g_SlaveOutFlag);
-         
-         Insert_Page("AD"); 
-         Insert_Int("g_ad_flag",&g_ad_flag);            //1：计算电磁偏差  0：采集电感值  
-         Insert_Float("ad_error_1",&ad_error_1);        //电磁偏差值
-         Insert_Int("left",&ind_left);                  //电磁采集值 左
-         Insert_Int("right",&ind_right);                //电磁采集值 右
-         Insert_Int("lmax",&ind_leftmax);               //电感左最大值
-         Insert_Int("rmax",&ind_rightmax);              //电感右最大值
-         Insert_Int("lmin",&ind_leftmin);               //电感左最小值
-         Insert_Int("rmin",&ind_rightmin);              //电感右最小值
-         Insert_Float("lnorm",&left_norm);              //电感左归一化值
-         Insert_Float("rnorm",&right_norm);             //电感右归一化值
-         Insert_Int("mul_ad_error",&mul_ad_error);      //电感error放大倍数
-        
-         //         //期望速度，控速PID
-         Insert_Page("SPEED");
-         Insert_Int("SpdExp",&spdExp0);
-         Insert_Int("SpdRel",&spdExp1);                 //实际速度
-         Insert_Int("SpdInd",&spdExp2);
-//         Insert_Int("SpdHigh",&d_spd_high);
-//         Insert_Int("SpdMid",&d_spd_mid);
-//         Insert_Int("SpdMax",&d_spd_max);
-//         Insert_Int("SpdMin",&d_spd_min);
-         Insert_Int("KDet",&KDet);
-         Insert_Float("SpeedP",&g_speed_p);             //速控P
-         Insert_Float("SpeedI",&g_speed_i);             //速控I
-         Insert_Float("SpeedD",&g_speed_d);             //速控D
+         Insert_Int("MAX",&max_duty);
+         Insert_Int("ProOUT",&ProSpect);
          
          
-         Insert_Page("PID_S");//速度
-//         Insert_Float("I", &g_speed_error_i);
-//         Insert_Float("P", &g_speed_error_p);
-//         Insert_Float("D", &g_speed_error_d);
-//         Insert_Float("E",&g_speed_error);
+         
+         Insert_Page("PID_D/AD");//方向
+         Insert_Float("error",&g_errorD);
+         Insert_Float("Out" ,&g_fDirectionControlOut);
+         Insert_Float("KP",&gRateKp_AD);
+         Insert_Float("KD",&gRateKd_AD);
+         Insert_Float("P",&g_dire_P_AD);
+         Insert_Float("D",&g_dire_D_AD);
+
+         
+         
+          Insert_Page("AD"); //电机
+         Insert_Int("L-",&ind_left_line);
+         Insert_Int("mid",&ind_mid);
+         Insert_Int("R-",&ind_right_line);
+         Insert_Int("L|",&ind_left_column);
+         Insert_Int("R|",&ind_right_column);
+
+         Insert_Float("norm_L-",&left_line_norm);
+         Insert_Float("norm_mid",&mid_norm);
+         Insert_Float("norm_R-",&right_line_norm);
+         Insert_Float("norm_L|",&left_column_norm);
+         Insert_Float("noem_R|",&right_column_norm);
+         Insert_Int("Flag",&g_ad_flag);
+         
+            
+         
+         
+        Insert_Page("PID_S");//速度
          Insert_Float("SpdSet",&g_fSpeed_set);
          Insert_Float("error",&g_errorS);
          Insert_Float("P",&g_Speed_P);
          Insert_Float("I",&g_Speed_I);
          Insert_Int("MaxSpeed",&MaxSpeed);
+         Insert_Int("MaxI",&Speed_MAX);
+         Insert_Float("g_fI",&g_fI);
          
-         Insert_Page("PWM"); //电机
+         
+         
+        Insert_Page("PWM"); //电机
          Insert_Float("left",&g_nLeftMotorPulseSigma);
          Insert_Float("right",&g_nRightMotorPulseSigma);
          Insert_Float("out_L",&g_fleft);
@@ -938,198 +905,8 @@ void Main_Show(void)
          Insert_Float("duty_L",&g_duty_left);
          Insert_Float("duty_R",&g_duty_right);
          
-         Insert_Page("AD"); //电机
-         Insert_Int("left",&ind_left);
-         Insert_Int("right",&ind_right);
-         Insert_Float("error",&g_errorD);
          
-//          //电感
-//          Insert_Page("AD"); 
-//         Insert_Int("g_ad_flag",&g_ad_flag);
-//         Insert_Float("ad_error_1",&ad_error_1);
-//         Insert_Int("mul_ad_error",&mul_ad_error);
-//         Insert_Int("left",&ind_left);
-//         Insert_Int("right",&ind_right);
-//         Insert_Float("lnorm",&left_norm);
-//         Insert_Float("rnorm",&right_norm);
-
-//         Insert_Float("Pmax",&p_max);
-//         Insert_Float("Pmin",&p_min);
-//         Insert_Float("D1",&Steer_D1);
-//         Insert_Float("D2",&Steer_D2);
-//         Insert_Float("long_p",&long_steer_p);
-//         Insert_Float("long_d",&long_steer_d);
-//         Insert_Float("Plong",&p_long);
-//         Insert_Float("Dmax",&d_max);
-//         Insert_Int("E0",&E0);
-//         Insert_Float("P2",&Steer_P2);
+         Insert_Page("camera");//摄像头曝光时间
+         Insert_Int("exp",&exp_time);
          
-//         Insert_Float("P2",&Steer_P2);
-//         Insert_Float("D",&Steer_D);
-//         Insert_Float("D1",&Steer_D1);
-//         Insert_Float("D2",&Steer_D2);
-//         Insert_Int("steerduty",&SteerDuty);
-         
-//         Insert_Float("P_lose",&g_steer_p_straight);
-//         Insert_Float("D_in",&g_steer_d_in);
-//         Insert_Float("cir_p",&g_steer_p_circle);
-//         Insert_Float("cir_p2",&g_steer_p2_circle);
-//         Insert_Float("cir_d",&g_steer_d_circle);
-//         Insert_Int("steer",&g_steer_duty);
-//         Insert_Float("P_lit",&g_steer_p_little);
-//         Insert_Float("D_out",&g_steer_d_out);
-//         
-//         //期望速度，控速PID
-//         Insert_Page("SPEED");
-//         Insert_Int("SpdExp",&spdExp0);
-//         Insert_Int("SpdRel",&spdExp1);
-//         Insert_Int("SpdHigh",&d_spd_high);
-//         Insert_Int("SpdMid",&d_spd_mid);
-//         Insert_Int("SpdMax",&d_spd_max);
-//         Insert_Int("SpdMin",&d_spd_min);
-//         Insert_Int("KDet",&KDet);
-//         Insert_Int("Small",&s_width);
-//         Insert_Int("Middle",&m_width);
-//         Insert_Int("Large",&l_width);
-         
-         
-//         Insert_Int("SpdMin",&spdExp2);
-//         Insert_Int("SpdCir",&spdExp3);
-//         Insert_Int("SpdMeet",&spdExp4);
-//         Insert_Int("SpdRamp",&spdExp5);
-//         Insert_Int("SpdBig",&spdExp6);         
-//         Insert_Int("SpdBack",&spdExpb);
-//         Insert_Float("SpeedP",&g_speed_p);
-//         Insert_Float("SpeedI",&g_speed_i);
-//         Insert_Float("SpeedD",&g_speed_d);
-//         Insert_Int("Lcur",&lCurSpeed);
-//         Insert_Int("Rcur",&rCurSpeed);
-//         Insert_Int("drif",&g_drive_flag);
-         
-//         
-//         Insert_Page("STOP");
-//         Insert_Int("rount",&rount);
-         
-//         Insert_Page("Camera");
-//         Insert_Int("exp_time",&exp_time);
-//         //会车
-//         Insert_Page("meeting"); 
-//         Insert_Int("identify",&g_meeting_threshold);
-//         Insert_Int("offset",&g_meeting_offset);
-//         Insert_Float("dis_k",&g_distance_k);
-//         Insert_Int("protect",&g_protect_enable);
-//         
-//         //电感        
-//         Insert_Page("INDUC");
-//         Insert_Int("middle",&ind_middle);
-//         Insert_Float("MN",&middle_norm);
-//         Insert_Int("MH",&mid_max);
-//         Insert_Int("ML",&mid_min);
-//         
-//         /*备用*/
-////         Insert_Int("left",&ind_left);
-////         Insert_Int("right",&ind_right);
-////         Insert_Float("LN",&left_norm);
-////         Insert_Float("RN",&right_norm);
-//         
-//         
-//         //陀螺仪
-//         Insert_Page("Angle");
-//         Insert_Int("jolt",&g_gyro_jolt);
-//         Insert_Float("Res",&g_angleResult);
-//         Insert_Int("get",&g_gyroGet);
-//         Insert_Float("gb",&g_gyroBalance);
-//         Insert_Int("Judge",&g_ramp_judge);
-//           
-//         //定时停车
-//         Insert_Page("stop") ;
-//         Insert_Int("sec",&g_stop_time);
-//         Insert_Int("pic240",&g_pic240);
-//         Insert_Int("cir_able",&g_circle_open);
-//         Insert_Int("pic_show",&g_picture_show);
-//          //方向
-//         Insert_Page("0000") ;
-//         Insert_Int("CON1",&condition[1]);
-//         Insert_Int("CON2",&condition[2]);
-//         Insert_Int("CON3",&condition[3]);
-//         Insert_Int("BIG",&big_circle);        
-//         Insert_Int("meet",&circle_meet_cnt);
-//         Insert_Int("MAX",&circle_max);
-//         Insert_Int("1or0",&g_JudgeValue);  
-//         
-         
-         
-
-}
-
-
-//*
-//*  @brief:		摄像头调节曝光时间
-//*  @param:		void
-//*  @return:	    void
-//*
-void ExploreTime(void)
-{
-	static unsigned char DispPicture = 0;	//显示整幅图像
-	static unsigned char DispEage = 1;		//显示边缘
-	static signed char AddMul = 0;
-	static unsigned char AddValue = 1;
-	CannyEage();
-	//displayimage032(image[0]);
-	displayimage032_zoom(image[0], 64, 10, 70, 0);
-	if (DispEage)
-	{
-		unsigned char* p = ImageEage[0];
-		for (int i = 10; i <= 70; i++)
-		{
-			for (int j = 0; j < 160; j++)
-			{
-				unsigned char temp = *(p + i * ROW / 120 * COL + j * (COL - 1) / (160 - 1));//读取像素点
-				if (HIGH_TH == temp)
-				{
-					Lcd_SetRegion(j, i + 54, j, i + 54);		//坐标设置
-					LCD_WriteData_16Bit(BLUE);
-				}
-			}
-		}
-	}
-	//display
-	Dis_String(1, "exp_time"); Dis_Int(2, exp_time);
-	Dis_String(3, "ave_gray"); Dis_Int(4, LightThreshold);
-	OLED_Write_Int(0, 152, AddValue);
-	if (0 == AddMul) AddValue = 1;
-	else if (1 == AddMul) AddValue = 10;
-	else if (2 == AddMul) AddValue = 100;
-	switch (g_Key)
-	{
-	case 1:
-		MyFlash_Write(0);
-		break;
-	case 3:
-		exp_time += AddValue;
-		break;
-	case 4:
-		AddMul--;
-		if (AddMul < 0)AddMul = 2;
-		break;
-	case 6:
-		AddMul++;
-		if (AddMul > 2) AddMul = 0;
-		break;
-	case 5:
-		set_exposure_time(exp_time);
-		break;
-	case 8:
-		g_explore_page = 0;
-		g_pageNum = 1;
-		g_lineNum = 1;
-		OLED_Clear();
-		break;
-	case 9:
-		exp_time -= AddValue;
-		break;
-	default:
-		break;
-	}
-	INTR_Keyboard_Init();
 }

@@ -4,6 +4,7 @@
 
 #include <math.h>
 
+extern int text_flag ;
 
 #define ROW             120             //原始图像总行数，即高              
 #define COL             188             //原始图像总列数，即宽 
@@ -21,11 +22,8 @@ extern float g_constant1;
 extern float g_gyro_ratio;
 extern float g_AngleControlOut;
 extern float g_angle_set;
-extern float g_angle_P; 
-extern float g_angle_D; 
-extern float g_angle_x;
-extern float g_angle_y;
-extern float g_angle_z;
+
+
 extern float g_anglerate_x;
 extern float g_anglerate_y;
 extern float g_anglerate_z;
@@ -41,15 +39,18 @@ extern float g_angle_old;
 extern float g_error;
 extern float g_gyro_angle_x;
 extern float g_angle;
-extern float g_acc_zy;//加速度?
-extern float g_acc_zx;
+
 extern int g_count;
 extern float g_angle_set_const;
 //串级
 extern float g_AngleOut;
 extern float g_RateP ;
 extern float g_RateD;
-
+extern float g_angle_P; 
+extern float g_angle_D; 
+//单级
+extern float g_single_angle_P;
+extern float g_single_angle_D;
 //***********MOTOR（电机模式及其输出及开关）***********//
 extern float g_fleft;
 extern float g_fright;
@@ -71,8 +72,12 @@ extern float g_errorS ;
 extern float g_duty_PWMleft;
 extern float g_duty_PWMright;
 extern int g_mode;
-//extern int g_flag;
+extern int g_flag;
 extern int MaxSpeed;
+extern int Speed_MAX ;
+extern float g_fI ;//积分项暂存处
+
+extern int starcount;
 //**************************Direction方向环（摄像头）**************//
 extern float gRateKp;            //串级p
 extern float gRateKd;            //串级d
@@ -85,18 +90,23 @@ extern float g_fDirectionControlOut;
 extern float g_nDirectionControlPeriod;//输出平滑
 extern float g_DirectionPeriod;//分的段数
 extern float AD_flag;
+extern float ave_right;
+extern float ave_left ;
+
+extern float g_dire_ad_P;
+extern float g_dire_ad_D ;
 
 
+//**************************Direction方向环（电感）**************//
+extern float gRateKp_AD ;            //串级p
+extern float gRateKd_AD ;            //串级d
 
+extern float g_dire_P_AD;
+extern float g_dire_D_AD;
 
 
 
 //==========================图像变量============================//
-#define ROW             120             //原始图像总行数，即高              
-#define COL             188             //原始图像总列数，即宽 
-//#define F_INT(num)	(signed int)(num + 0.5f)
-//#define Line_To_Dis(row) F_INT((((0.00004f * row - 0.0079f) * row + 0.5639f) * row - 18.833f) * row + 285.71f)
-
 #define LEFT_EAGE 0			//图像左边界
 #define RIGHT_EAGE 187		//图像右边界
 #define MIDDLE 94			//图像中值
@@ -114,10 +124,15 @@ extern float AD_flag;
 #define IN_OFFSET 2 //向内偏移
 //#define OUT_OFFSET 6 //向外偏移
 #define CIRCLEUP_TH 15		//进入环岛差距行
-#define CIRCLE 1			//环岛开关
-#define BROKEN 1			//断路开关
-#define BLOCK_OPEN 1                         //路障开关
 
+#define CIRCLE 2			//环岛开关
+#define BROKEN 0			//断路开关
+#define CURVE_BROKEN 1
+#define RAMP 0				 //坡道开关
+#define BLOCK_BROKEN 1		//路障断路开关
+#define STOPLINE 1			//停车开关
+#define CI_IND 1			//出环岛标志
+#define INF 1                           //红外标志
 typedef struct
 {
 	int Row;
@@ -140,11 +155,8 @@ enum EageType
 {
 	NO, HIGH_TH, LOW_TH
 };
-extern int CircleFlag;		//CN普通赛道 CL左环岛 CR右环岛
-extern int CircleState;		//1远处识别环岛 4入环岛口 5环岛中 6出环岛
-extern int BrokenFlag;		//断路标志
-extern int BrokenLastAve;
 
+extern const int MidOffset[];
 extern int ML_Count;									//中线有效行
 extern SpecialPoint LeftPnt, RightPnt;					//保存左右特殊点信息
 extern int g_RoadType;
@@ -155,27 +167,37 @@ extern int LightThreshold;						//去高光噪声阈值
 extern int LightThreshold2;						//去高光噪声阈值2
 extern int FindLineType;							//是否加入高光滤波标志
 
+extern int CircleFlag;
+extern int CircleState;
+
+extern int LeftIntLine;		//记录左内跳行数
+extern int RightIntLine;		//记录右内跳行数
+extern int SpecialElemFlag;    //特殊元素标志
+extern int BrokenFlag;			//断路标志
+extern int BlockFlag;			//路障标志
+extern int StopLineFlag;		//停车线标志
+extern int RampFlag;			//坡道标志
+
+extern int BrokenLastAve;
+extern int StopLineDist;
+
+extern unsigned char Img_CircleOpen;
+extern unsigned char Img_BrokenOpen;
+extern unsigned char Img_StopOpen;
+extern unsigned char Img_BlockOpen;
+extern unsigned char Img_RampOpen;
+
 extern int ML[IMG_ROW], LL[IMG_ROW], RL[IMG_ROW];
 extern unsigned char ImageEage[IMG_ROW][IMG_COL];
 void VarInit(void);
+extern int pro;
 
+//==========================摄像头参数=================================//
+extern int exp_time;						//曝光时间
+extern int HighThreshold;						//canny高阈值
+extern int LowThreshold;						//canny低阈值
+extern int ControlMid;						//图像控制中值
 
-
-extern unsigned char image[ROW][COL];
-extern unsigned char g_Img_All_120x188[ROW][COL];
-
-
-extern const unsigned char g_Bit_Val_Up[8];
-extern const unsigned char g_Bit_Val_Down[8];
-
-
-
-//extern int RoadType;
-//extern int ErrorFlag;
-//extern int MaxSpeedFlag;
-
-//==========================摄像头参数==============================//
-extern int exp_time;                           //摄像头曝光时间
 
 //==========================菜单标志=================================//
 //==========================菜单标志=================================//
@@ -217,12 +239,22 @@ extern float long_steer_p;
 extern float long_steer_d;
 
 //=====================================电感===================================//
-extern int ind_left, ind_right, ind_mid;	//记录电感
-extern int ind_leftmax, ind_leftmin, ind_rightmax, ind_rightmin, ind_midmax, ind_midmin;	//电感最值
-extern float left_norm, right_norm, mid_norm;
 extern float ad_error_1, ad_error_2;
 extern int mul_ad_error;         //电磁error放大倍数
 
+extern int ind_left_line,//记录电感
+            ind_left_column,
+            ind_right_line,
+            ind_right_column,
+            ind_mid;
+extern int ind_left_line_max,ind_left_line_min,  
+    ind_left_column_max,ind_left_column_min ,
+    ind_right_line_max,ind_right_line_min,
+    ind_right_column_max ,ind_right_column_min,
+    ind_mid_max,ind_mid_min;//电感最值
+extern float  left_line_norm,left_column_norm,right_line_norm,right_column_norm,mid_norm ;//归一化
+extern float ind_mid_flag ,ind_left_flag ,ind_right_flag ;
+extern int CircleIsland_into_flag ;
 /*=====================================增量式速度控制========================================*/
 extern int KDet;
 

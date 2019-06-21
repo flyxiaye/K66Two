@@ -1,10 +1,9 @@
-
 #include "GlobalVar.h"
 
 #define ROW 51
 #define COL 188
-int HighThreshold = 50;
-int LowThreshold = 50 * 0.4;
+//int HighThreshold = 50;
+//int LowThreshold = HighThreshold * 0.4;
 
 
 
@@ -54,7 +53,7 @@ unsigned char Gauss(int row, int col)
 	unsigned char *p = image[0] + IMG_COL * (row - 1) + IMG_COL - 1;
 	sum += *p++;sum += *p;sum += *p++;sum += *p++;
 	p += (IMG_COL - 3);
-	sum += *p;sum += *p++;sum + *p;sum += *p;sum += *p;sum += *p++;
+	sum += *p;sum += *p++;sum += *p;sum += *p;sum += *p;sum += *p++;
 	sum += *p;sum += *p++;
 	p += (IMG_COL - 3);
 	sum += *p++;sum += *p;sum += *p++;sum += *p;
@@ -183,6 +182,15 @@ void CannyEage(void)
 			ImageEage[i][j] = GetEageThreshold(i, j);
 		}
 	}
+	//unsigned char GradHist[255] = { 0 };
+	//for (int i = 0; i < 255; i++)
+	//{
+	//	GradHist[i] = 0;
+	//}
+	//int HistSize = GetGradHist(ImageEage[UP_EAGE], GradHist);
+	//GetDoubleThreshold(GradHist, HistSize, &HighThreshold, &LowThreshold);
+	//string.Format("\r\n High = %d \r\n", HighThreshold); PrintDebug(string);
+	//string.Format("\r\n Low = %d \r\n", LowThreshold); PrintDebug(string);
 	LightThreshold = GetAveGray(DOWN_EAGE);
 	DoubleTh(ImageEage[0]);
 	PressEage(ImageEage[0]);

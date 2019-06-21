@@ -1,26 +1,18 @@
-#include <GlobalVar.h>
+ #include <GlobalVar.h>
 #include "headfile.h"
 
+int text_flag = 0;
 const unsigned char g_Bit_Val_Up[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};//液晶图像压缩;
 const unsigned char g_Bit_Val_Down[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
 //**********Angle(角度控制)**************//
-float g_angle_set=21;//车平衡位置角度
+float g_angle_set=15.09;//车平衡位置角度
 float g_angle_set_const = 26;
-float g_angle_P=280; 
-float g_angle_D=30; 
-float g_angle_I=0; 
+
 float g_gyro_ratio = 4.8;
 float g_AngleControlOut = 0;
-float g_angle_x=0;
-float g_angle_y=0;
-float g_angle_z=0;
-float g_anglerate_x=0;
-float g_anglerate_y=0;
-float g_anglerate_z=0;
-float g_anglerate_P=0;
-float g_anglerate_D=0;
-float g_anglerate_I=0;
+
+
 float g_rate_expect = 0;
 float g_rate_expect_old = 0;
 float g_rate_expect_integal = 0;
@@ -29,15 +21,20 @@ float g_angle_old = 0;
 float g_error = 0;
 float g_gyro_angle_x = 0;
 float g_angle = 0;
-float g_acc_zy = 0;//加速度?
-float g_acc_zx = 0;
+
 int g_count = 0;
 
 
 //串级
 float g_AngleOut = 0.0f;
-float g_RateP = 60.0;
-float g_RateD = 10.0;
+float g_RateP = 39.09;
+float g_RateD = 61.69;
+float g_angle_P=19.3; 
+float g_angle_D=30; 
+//单级
+float g_single_angle_P = 1;
+float g_single_angle_D = 0;
+
 //***********MOTOR（电机模式及其输出及开关）***********//
 float g_fleft;
 float g_fright;
@@ -45,17 +42,18 @@ int g_mode=1;
 float g_duty_left=0;
 float g_duty_right=0;
 //***********Speed(速度控制)**********//
-//int g_flag=0;  //是否发车
-float g_Speed_P = 0;
-float g_Speed_I = 0.0;
+int g_flag=0;  //是否发车
+float g_Speed_P = 240;
+float g_Speed_I = 0.97;
 float g_fSpeedControlOut = 0;//输出速度控制
-float g_fSpeed_set = 0.0;//设置的速度值
+float g_fSpeed_set = 20;//设置的速度值
 float g_nSpeedControlPeriod=-1;
 float g_SpeedPeriod=10;
 float g_nLeftMotorPulseSigma = 0;//编码器采集的脉冲值
 float g_nRightMotorPulseSigma = 0;//编码器采集的脉冲值
 float g_errorS = 0;
-int MaxSpeed = 6000;
+int MaxSpeed = 3000;
+float g_fI = 1000;//积分项暂存处
 
 
 //**********speed(速度控制)**************//
@@ -63,20 +61,32 @@ float g_speed_error = 0;
 float g_speed_error_i = 0;
 float g_speed_error_p = 0;
 float g_speed_error_d = 0;
+int Speed_MAX = 3800;
+
+int starcount = 0;//开机加速计时
 
 //**************************Direction方向环（摄像头）**************//
-float gRateKp = 0.0;            //串级p
-float gRateKd = 0.0;            //串级d
+float gRateKp = 8.41;            //串级p
+float gRateKd = 10.1;            //串级d
 
-float g_dire_P=0;
-float g_dire_D=-0;
+float g_dire_P=9;
+float g_dire_D=9.2;
 float g_errorD=0;//差值
 float g_fDirectionControlOut;
 float g_nDirectionControlPeriod=0;//输出平滑
 float g_DirectionPeriod=5;//分的段数
 float AD_flag = 0;
+
+//**************************Direction方向环（电感）**************//
+float gRateKp_AD = 15;            //串级p
+float gRateKd_AD = 10;            //串级d
+
+float g_dire_P_AD=6;
+float g_dire_D_AD=10;
 //==========================图像变量============================//
-#include "GlobalVar.h"
+const int MidOffset[] = {
+	 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 11, 12, 13, 14, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 52, 53, 54, 55, 56, 57, 58, 59, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93,
+};
 unsigned char ImageEage[IMG_ROW][IMG_COL];
 int ML[IMG_ROW], LL[IMG_ROW], RL[IMG_ROW];   //保存边缘线信息数组
 int ML_Count;									//中线有效行
@@ -87,32 +97,53 @@ int LightThreshold2 = 150;						//去高光噪声阈值2
 int FindLineType = 0;							//是否加入高光滤波标志
 int g_RoadType = 0;
 int ErrorFlag = 0;								//错误标志位
-//1双侧十字错误  2误判为斜十字  3视野丢失错误
+//1双侧十字错误  2误判为斜十字  3视野丢失错误  4中线错误  5双侧十字噪点错误  6平十字噪点错误
 int LastMiddleLine = 0;
 
-int CircleFlag = 0;             //环岛标志
+int CircleFlag = 0;
 int CircleState = 0;
-int BrokenFlag = 0;           //断路标志
+
+int LeftIntLine = 0;		//记录左内跳行数
+int RightIntLine = 0;		//记录右内跳行数
+int SpecialElemFlag = 0;    //特殊元素标志
+int BrokenFlag = 0;			//断路标志
+int StopLineFlag = 0;		//停车线标志
+
 int BrokenLastAve = 0;
+int StopLineDist = 0;
 
-
+unsigned char Img_CircleOpen = 1;
+unsigned char Img_BrokenOpen = 1;
+unsigned char Img_StopOpen = 1;
+unsigned char Img_BlockOpen = 1;
+unsigned char Img_RampOpen = 1;
 void VarInit(void)
 {
-        ML_Count = 0;
+	ML_Count = 0;
 	ErrorFlag = 0;
-        g_RoadType = 0;
-        
-        LeftPnt.ErrCol = RightPnt.ErrCol = 0;
-        LeftPnt.ErrRow = RightPnt.ErrRow = DOWN_EAGE;
-        for (int i = 0; i < IMG_ROW; i++)
-        {
-          LL[i] = LEFT_EAGE;
-          RL[i] = RIGHT_EAGE;
-          ML[i] = MIDDLE;
-        }
+	g_RoadType = 0;
+	LeftIntLine = 0;
+	RightIntLine = 0;
+	//下面某些地方起了关键作用
+	LeftPnt.ErrCol = RightPnt.ErrCol = 0;
+	LeftPnt.ErrRow = RightPnt.ErrRow = DOWN_EAGE;
+	for (int i = 0; i < IMG_ROW; i++)
+	{
+		LL[i] = LEFT_EAGE;
+		RL[i] = RIGHT_EAGE;
+		ML[i] = MIDDLE;
+	}
+
 }
+
+
+int StraightFlag = 0;//直道标志位 1为直道
 //==========================摄像头参数==============================//
+unsigned char image[ROW][COL];        //摄像头数据接收
 int exp_time = 300;                           //摄像头曝光时间
+int HighThreshold = 50;						//canny高阈值
+int LowThreshold = 20;						//canny低阈值
+int ControlMid = 90;						//图像控制中值
 
 //==========================菜单标志==============================//
 
@@ -159,12 +190,23 @@ float long_steer_p = 0.5;
 float long_steer_d = 0.5;
 
 //=====================================电感===================================//
-int ind_left, ind_right, ind_mid;	//记录电感
-int ind_leftmax, ind_leftmin, ind_rightmax, ind_rightmin, ind_midmax, ind_midmin;	//电感最值
-float left_norm, right_norm, mid_norm;
 float ad_error_1 = 0, ad_error_2 = 0;
 int mul_ad_error = 100;         //电磁error放大倍数
 
+int ind_left_line,//记录电感
+    ind_left_column,
+    ind_right_line,
+    ind_right_column,
+    ind_mid;
+
+int ind_left_line_max,ind_left_line_min,  
+    ind_left_column_max,ind_left_column_min ,
+    ind_right_line_max,ind_right_line_min,
+    ind_right_column_max ,ind_right_column_min,
+    ind_mid_max,ind_mid_min;//电感最值
+float  left_line_norm,left_column_norm,right_line_norm,right_column_norm,mid_norm ;//归一化
+float ind_mid_flag = 0,ind_left_flag = 0,ind_right_flag = 0;
+int CircleIsland_into_flag = 0;
 /*=====================================增量式速度控制========================================*/
 int KDet = 10;
 

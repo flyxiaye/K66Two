@@ -22,8 +22,12 @@ Point SearchRightUpEage45(int row, int col);
 
 int GetLL(int row, int col);
 int GetRL(int row, int col);
-int JumpType(int row, int col);
-void RepareLine(int dir, int row, int *flag);
 int AveGray(void);
+
+int MaxArray(int* line, int n);
+int MinArray(int* line, int n);
+signed int TrendArray(int* line, int n);
+void AveFilter(int* line, int n);
+int IsBigWave(int* line, int n);
 #endif //!BasicFun_H
 #pragma once

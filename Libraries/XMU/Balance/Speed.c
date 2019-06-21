@@ -7,73 +7,97 @@ float g_CarSpeed = 0;
 float g_fSpeedControlOut_before = 0;
 float g_fSpeedControlOut_new = 0;
 float g_CarSpeed_constant = 1;//8053;//转换单位常数
-float g_fI = 0;//积分项暂存处
-
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      速度计算函数
+//  @param      	
+//  @param      	
+//  @param     	 	
+//  @return     
+//---------------------------------------------------------------------------------------------------------------------
 void SpeedControl()
 {
-  rCurSpeed = -ftm_quad_get(ftm1);
-  lCurSpeed = ftm_quad_get(ftm2);
-  curSpeed = (lCurSpeed + rCurSpeed) >> 1;
-  g_nLeftMotorPulseSigma+=lCurSpeed;
-  g_nRightMotorPulseSigma+=rCurSpeed;
-  ftm_quad_clean(ftm1);
-  ftm_quad_clean(ftm2);
-  
-  static unsigned char count = 0;
-  count++;
-  if (count >= 10)
-  {
-    count = 0;
-//    g_nLeftMotorPulseSigma = ftm_quad_get(ftm1);
-//    g_nRightMotorPulseSigma = ftm_quad_get(ftm2);
-//    ftm_quad_clean(ftm1);
-//    ftm_quad_clean(ftm2);
-    g_CarSpeed =  0.9*(g_nLeftMotorPulseSigma + g_nRightMotorPulseSigma)/2+0.1*g_CarSpeed;
-    g_CarSpeed *= g_CarSpeed_constant;
-    g_fSpeedControlOut_before = g_fSpeedControlOut_new;
-    g_errorS = g_fSpeed_set - g_CarSpeed;
-    g_fI += g_errorS * g_Speed_I;
-    g_fSpeedControlOut_new = g_errorS * g_Speed_P + g_fI;
-    g_fSpeedControlOut_new = MAX(g_fSpeedControlOut_new, -500);
-    g_fSpeedControlOut_new = MIN(g_fSpeedControlOut_new, 500);
-    g_nLeftMotorPulseSigma = 0;
-    g_nRightMotorPulseSigma = 0;
-  }
+	rCurSpeed = -ftm_quad_get(ftm1);
+	lCurSpeed = ftm_quad_get(ftm2);
+	curSpeed = (lCurSpeed + rCurSpeed) >> 1;
+	g_nLeftMotorPulseSigma += lCurSpeed;
+	g_nRightMotorPulseSigma += rCurSpeed;
+	ftm_quad_clean(ftm1);
+	ftm_quad_clean(ftm2);
+
+	static unsigned char count = 0;
+        
+	count++;
+	if (count >= 10)
+	{
+		count = 0;
+                
+		g_fSpeedControlOut_before = g_fSpeedControlOut_new;
+		g_errorS = g_fSpeed_set - curSpeed;
+              
+//                if(curSpeed < 0.2)
+                g_fI += g_errorS * g_Speed_I;
+		if (g_flag == 0)
+		{
+			g_fI = 0;
+		}
+		if (g_fI > Speed_MAX) g_fI = Speed_MAX;
+		if (g_fI < -Speed_MAX) g_fI = -Speed_MAX;
+	
+		g_fSpeedControlOut_new = g_errorS * g_Speed_P + g_fI;
+
+		g_nLeftMotorPulseSigma = 0;
+		g_nRightMotorPulseSigma = 0;
+	
+		g_fSpeedControlOut_new = MAX(g_fSpeedControlOut_new, -MaxSpeed);
+		g_fSpeedControlOut_new = MIN(g_fSpeedControlOut_new, MaxSpeed);
+	}
+       
 }
 
 void  SpeedControlOutput()
 {
-  g_nSpeedControlPeriod++;
-  g_fSpeedControlOut=(g_fSpeedControlOut_new-g_fSpeedControlOut_before)*(g_nSpeedControlPeriod + 1)/g_SpeedPeriod+g_fSpeedControlOut_before;
-  if (10 <= g_nSpeedControlPeriod)   
-  {
-    g_nSpeedControlPeriod = 0;
-  }
+        static int get_flag = 0;
+        static int StartCount = 0;
+        //开机加速
+//        if(g_flag == 0 && !get_flag)
+//        {
+//           get_flag = 1;
+//        }
+//        else if(g_flag && get_flag && StartCount < 1000)
+//        {
+//              g_fSpeedControlOut = 4000;
+//              StartCount++;
+//              if(StartCount >= 1000)
+//              {
+//                get_flag = 0;
+//                StartCount = 0;
+//              }
+//        }
+//        else if(g_flag && !get_flag)
+//        {
+                
+          g_nSpeedControlPeriod++;
+          g_fSpeedControlOut = (g_fSpeedControlOut_new - g_fSpeedControlOut_before) * (g_nSpeedControlPeriod + 1) / g_SpeedPeriod + g_fSpeedControlOut_before;
+          if (10 <= g_nSpeedControlPeriod)
+          {
+		g_nSpeedControlPeriod = 0;
+          }
+//        }
 }
 
-void SpeedControlChangeAngle(void)
-{
-      //脉冲读取
-    rCurSpeed =-ftm_quad_get(ftm1);
-    lCurSpeed = ftm_quad_get(ftm2);
-    curSpeed = (lCurSpeed+rCurSpeed)>>1;
-    ftm_quad_clean(ftm1);
-    ftm_quad_clean(ftm2);
-    static float last_error = 0;
-    g_speed_error = (spdExp1 - curSpeed) / 1000.0f;
-    g_angle_set = g_angle_set_const -(g_speed_error_p * g_speed_error + g_speed_error_d * (g_speed_error - last_error));
-    last_error = g_speed_error;
-    g_angle_set = MAX(g_angle_set, -20);
-    g_angle_set = MIN(g_angle_set, 40);
-}
+//void SpeedControlChangeAngle(void)//速度与角度串级暂时控不住
+//{
+//      //脉冲读取
+//    rCurSpeed =-ftm_quad_get(ftm1);
+//    lCurSpeed = ftm_quad_get(ftm2);
+//    curSpeed = (lCurSpeed+rCurSpeed)>>1;
+//    ftm_quad_clean(ftm1);
+//    ftm_quad_clean(ftm2);
+//    static float last_error = 0;
+//    g_speed_error = (spdExp1 - curSpeed) / 1000.0f;
+//    g_angle_set = g_angle_set_const -(g_speed_error_p * g_speed_error + g_speed_error_d * (g_speed_error - last_error));
+//    last_error = g_speed_error;
+//    g_angle_set = MAX(g_angle_set, -20);
+//    g_angle_set = MIN(g_angle_set, 40);
+//}
 
-void StopCar(void)
-{
-  int sum = 0;
-  for (int i = 0; i < 188; i++)
-  {
-    if (image[DOWN_EAGE][i] < 50)sum++;
-  }
-  if (sum > 150)
-    g_drive_flag = 0;
-}

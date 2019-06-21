@@ -8,4 +8,5 @@ void Acc_AngleCalculate();//加速度
 void AngleCalculate();//角度融合
 void AngleControl();
 void Gyro_AngleCalculate();
+void shakalaka2();
 #endif

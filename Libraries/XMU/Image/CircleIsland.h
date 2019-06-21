@@ -14,6 +14,6 @@ void FillLineAB(void);
 void FillLineCD(void);
 void FillAllEage(void);
 int FillLineGradient(int *line, int row, int col, float Gradient);
-void CircleLight(void);
+void Connect_Point_Curve(int* line_process, int x_position1, int y_position1, int x_position2, int y_position2);
 #endif // !CircleIsland_H
 #pragma once

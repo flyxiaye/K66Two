@@ -1,5 +1,5 @@
 #ifndef CANNY_H
 #define CANNY_H
 void CannyEage(void);
-//void ShowEage(unsigned char *p);
+int GetAveGray(int row);
 #endif // !CANNY_H

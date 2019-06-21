@@ -691,7 +691,7 @@ void lcd_init(void)
 	Lcd_WriteData(0x0E);
 
 	Lcd_WriteIndex(0x36);
-	//Lcd_WriteData(0xA0);                //横屏命令
+//	Lcd_WriteData(0xA0);                //横屏命令
 	Lcd_WriteData(0x60);                //横屏命令
 //    Lcd_WriteData(0xC0); 
 //#ifdef USE_LANDSCAPE
@@ -939,7 +939,7 @@ void displayimage032(uint8 * p)
 //  @since      v1.0
 //  Sample usage:              
 //-------------------------------------------------------------------------------------------------------------------
-void displayimage032_zoom(uint8* p, uint16 y_position, uint16 row_up, uint16 row_down, uint8 showeage)
+void displayimage032_zoom(uint8 * p, uint16 y_position, uint16 row_up, uint16 row_down)
 {
 	int i, j;
 	int offset = y_position - row_up;
@@ -961,33 +961,30 @@ void displayimage032_zoom(uint8* p, uint16 y_position, uint16 row_up, uint16 row
 		}
 		y_position++;
 	}
-	if (showeage)
+	//showeage
+	for (i = row_up; i < row_down; i++)
 	{
-		//showeage
-		for (i = row_up; i < row_down; i++)
-		{
-			Lcd_SetRegion(ML[i] * 159 / 188, i + offset, ML[i] * 159 / 188, i + offset);
-			LCD_WriteData_16Bit(BLUE);
-			Lcd_SetRegion(LL[i] * 159 / 188, i + offset, LL[i] * 159 / 188, i + offset);
-			LCD_WriteData_16Bit(GREEN);
-			Lcd_SetRegion(RL[i] * 159 / 188, i + offset, RL[i] * 159 / 188, i + offset);
-			LCD_WriteData_16Bit(RED);
-		}
-		Lcd_SetRegion(0, UP_EAGE + offset, 159, UP_EAGE + offset);
-		for (i = 0; i < 160; ++i)
-		{
-			LCD_WriteData_16Bit(RED);
-		}
-		Lcd_SetRegion(0, DOWN_EAGE + offset, 159, DOWN_EAGE + offset);
-		for (i = 0; i < 160; ++i)
-		{
-			LCD_WriteData_16Bit(GREEN);
-		}
-		Lcd_SetRegion(0, ProSpect + offset, 159, ProSpect + offset);
-		for (i = 0; i < 160; ++i)
-		{
-			LCD_WriteData_16Bit(YELLOW);
-		}
+		Lcd_SetRegion(ML[i] * 159 / 188, i + offset, ML[i] * 159 / 188, i + offset);
+		LCD_WriteData_16Bit(BLUE);
+		Lcd_SetRegion(LL[i] * 159 / 188, i + offset, LL[i] * 159 / 188, i + offset);
+		LCD_WriteData_16Bit(GREEN);
+		Lcd_SetRegion(RL[i] * 159 / 188, i + offset, RL[i] * 159 / 188, i + offset);
+		LCD_WriteData_16Bit(RED);
+	}
+	Lcd_SetRegion(0, UP_EAGE + offset, 159, UP_EAGE + offset);
+	for (i = 0; i < 160; ++i)
+	{
+		LCD_WriteData_16Bit(RED);
+	}
+	Lcd_SetRegion(0, DOWN_EAGE + offset, 159, DOWN_EAGE + offset);
+	for (i = 0; i < 160; ++i)
+	{
+		LCD_WriteData_16Bit(GREEN);
+	}
+	Lcd_SetRegion(0, ProSpect + offset, 159, ProSpect + offset);
+	for (i = 0; i < 160; ++i)
+	{
+		LCD_WriteData_16Bit(YELLOW);
 	}
 }
 
