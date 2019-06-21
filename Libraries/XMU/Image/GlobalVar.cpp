@@ -100,6 +100,8 @@ int ErrorFlag = 0;								//错误标志位
 //1双侧十字错误  2误判为斜十字  3视野丢失错误  4中线错误  5双侧十字噪点错误  6平十字噪点错误
 int LastMiddleLine = 0;
 
+int SpeedRow = 0;			//控速边界行数
+
 int CircleFlag = 0;
 int CircleState = 0;
 
@@ -107,7 +109,9 @@ int LeftIntLine = 0;		//记录左内跳行数
 int RightIntLine = 0;		//记录右内跳行数
 int SpecialElemFlag = 0;    //特殊元素标志
 int BrokenFlag = 0;			//断路标志
+int BlockFlag = 0;			//路障标志
 int StopLineFlag = 0;		//停车线标志
+int RampFlag = 0;			//坡道标志
 
 int BrokenLastAve = 0;
 int StopLineDist = 0;
@@ -302,7 +306,6 @@ int const_error_1 = -20;
 int const_error_2 = 40;
 int max_duty = 1300;
 /*====================================路障=====================================*/
-int BlockFlag = 0;              //路障标志
 int g_RB_Lduty = 0,g_RB_Rduty = 0;
 float k1 = 30,k2 = 54,k3 = 63;//调整系数
 int sum = 0;
@@ -314,6 +317,4 @@ int s1 = 15;
 int st = -40;
 int stop_inf = 90;
 unsigned char ObstacleEndFlag = 0;
-/*====================================坡道=====================================*/
-int RampFlag = 0;
 

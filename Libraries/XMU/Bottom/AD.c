@@ -74,3 +74,8 @@ void get_ind_error(void)  //µç¸Ğ»ñÈ¡ErrorÖµ note:·ÅÔÚÖĞ¶Ï Èç¹ûµç¸Ğ¿ª ÔòÒ»Ö±²É¼¯µ
         }
 }
 
+unsigned char IndJudgeCircle(unsigned char type)
+{
+  return 1;
+}
+

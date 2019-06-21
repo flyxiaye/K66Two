@@ -116,9 +116,6 @@ void FillBevelCross(void)
 		PointNew.Row = SearchUpEage(LeftPnt.ErrRow - 1, LeftPnt.ErrCol + 1) + 1;
 		PointNew.Col = LeftPnt.ErrCol + 1;
 		Point PointOld = PointNew;
-		//str.Format("\r\n TmpB = %d \r\n", PointNew.Row); PrintDebug(str);
-		//str.Format("\r\n TmpBcol = %d \r\n", PointNew.Col); PrintDebug(str);
-
 		if (UP_EAGE == PointNew.Row)			//找到为上边界
 			LeftPnt = FillLineUp(LL, LeftPnt.ErrRow + 4, LeftPnt.ErrRow + 2);
 		else
@@ -126,9 +123,6 @@ void FillBevelCross(void)
 			while (1)				//开始斜45找线
 			{
 				PointNew = SearchRightUpEage(PointOld.Row + 1, PointOld.Col);
-				/*str.Format("\r\n PointOld = %d \r\n", PointOld.Row); PrintDebug(str);
-				str.Format("\r\n TmpBcol = %d \r\n", PointOld.Col); PrintDebug(str);*/
-
 				if (PointOld.Row - PointNew.Row > UP45_TH)	//找到左B点 存在PointOld里
 				{
 					PointNew.Row = LeftPnt.ErrRow;		//储存LPER值，为下面做判断
@@ -161,9 +155,6 @@ void FillBevelCross(void)
 			PointNew.Row = SearchUpEage(RightPnt.ErrRow - 1, RightPnt.ErrCol - 1) + 1;
 			PointNew.Col = RightPnt.ErrCol - 1;
 			PointOld = PointNew;
-			//str.Format("\r\n TmpB = %d \r\n", PointNew.Row); PrintDebug(str);
-			//str.Format("\r\n TmpBcol = %d \r\n", PointNew.Col); PrintDebug(str);
-
 			if (RightPnt.ErrCol > RL[DOWN_EAGE])		//趋势向右
 			{
 				RightPnt = FillLineUp(RL, MIN(RightPnt.ErrRow + 10, DOWN_EAGE), RightPnt.ErrRow + 2);
@@ -176,9 +167,6 @@ void FillBevelCross(void)
 				while (1)				//开始斜65找线
 				{
 					PointNew = SearchLeftUpEage(PointOld.Row + 1, PointOld.Col);
-					/*str.Format("\r\n PointOld = %d \r\n", PointOld.Row); PrintDebug(str);
-					str.Format("\r\n TmpBcol = %d \r\n", PointOld.Col); PrintDebug(str);*/
-
 					if (PointOld.Row - PointNew.Row > UP45_TH)	//找到右B点 存在PointOld里
 					{
 						RL[PointOld.Row] = PointOld.Col;
@@ -261,8 +249,6 @@ void FillBevelCross(void)
 		PointNew.Row = SearchUpEage(RightPnt.ErrRow - 1, RightPnt.ErrCol - 1) + 1;
 		PointNew.Col = RightPnt.ErrCol - 1;
 		Point PointOld = PointNew;
-		//str.Format("\r\n TmpA = %d \r\n", TmpA.Row); PrintDebug(str);
-		//str.Format("\r\n TmpAcol = %d \r\n", TmpA.Col); PrintDebug(str);
 		if (UP_EAGE >= PointNew.Row)			//找到为上边界
 			RightPnt = FillLineUp(RL, RightPnt.ErrRow + 4, RightPnt.ErrRow + 2);
 		else
@@ -270,9 +256,6 @@ void FillBevelCross(void)
 			while (1)				//开始斜65找线
 			{
 				PointNew = SearchLeftUpEage(PointOld.Row + 1, PointOld.Col);
-				/*str.Format("\r\n TmpB = %d \r\n", TmpB.Row); PrintDebug(str);
-				str.Format("\r\n TmpBcol = %d \r\n", TmpB.Col); PrintDebug(str);*/
-
 				if (PointOld.Row - PointNew.Row > UP45_TH)	//找到左B点 存在PointOld里
 				{
 					PointNew.Row = RightPnt.ErrRow;		//储存RPER值，为下面做判断
@@ -285,7 +268,6 @@ void FillBevelCross(void)
 				}
 				else if (UP_EAGE >= PointNew.Row || LEFT_EAGE >= PointNew.Col || UP_EAGE + UP45_TH > PointOld.Row)		//找到为边界点 向上补线
 				{
-					//str.Format("\r\n you = %d \r\n", 123); PrintDebug(str);
 					RightPnt = FillLineUp(RL, RightPnt.ErrRow + 5, RightPnt.ErrRow + 2);
 					break;
 				}
@@ -303,12 +285,9 @@ void FillBevelCross(void)
 		if (1 != g_RoadType)
 		{
 			//跳变点向上找点
-			//PointNew = { SearchUpBlack(LeftPnt.ErrRow - 1, LeftPnt.ErrCol + 1) + 1, LeftPnt.ErrCol + 1 };
 			PointNew.Row = SearchUpEage(LeftPnt.ErrRow - 1, LeftPnt.ErrCol + 1) + 1;
 			PointNew.Col = LeftPnt.ErrCol + 1;
 			PointOld = PointNew;
-			//str.Format("\r\n PointOld = %d \r\n", PointOld.Row); PrintDebug(str);
-			//str.Format("\r\n PointOldcol = %d \r\n", PointOld.Col); PrintDebug(str);
 			if (LeftPnt.ErrCol < LL[DOWN_EAGE])			//趋势向左
 			{
 				LeftPnt = FillLineUp(LL, MIN(LeftPnt.ErrRow + 10, DOWN_EAGE), LeftPnt.ErrRow + 2);
@@ -320,9 +299,6 @@ void FillBevelCross(void)
 				while (1)				//开始斜45找线
 				{
 					PointNew = SearchRightUpEage(PointOld.Row + 1, PointOld.Col);
-					//str.Format("\r\n PointNew = %d \r\n", PointNew.Row); PrintDebug(str);
-					//str.Format("\r\n PointNewcol = %d \r\n", PointNew.Col); PrintDebug(str);
-
 					if (PointOld.Row - PointNew.Row > UP45_TH)	//找到右B点 存在PointOld里
 					{
 						LL[PointOld.Row] = PointOld.Col;
@@ -351,13 +327,10 @@ void FillBevelCross(void)
 		}
 		else			//左边丢边十字
 		{
-			//str.Format("\r\n PointNewRow = %d \r\n", PointNew.Row); PrintDebug(str);
-			//str.Format("\r\n RIghtPntrow = %d \r\n", RightPnt.ErrRow); PrintDebug(str);
 			if (UP_EAGE == PointOld.Row || RightPnt.ErrRow + 20 > PointNew.Row)		//右边无补线 
 				;
 			else
 			{
-				//PointOld = { PointOld.Row, SearchLeftBlack(PointOld.Row, PointOld.Col - 1) + 1 };
 				PointOld.Col = SearchLeftEage(PointOld.Row, PointOld.Col - 1) + 1;
 				if (LEFT_EAGE == PointOld.Col)		//边界
 					;
@@ -573,6 +546,7 @@ void FillLinePoint(int* LinePoint, int row1, int row2)
 		*(LinePoint--) = (int)(0.5 + (i - row1) * k + b);
 	}
 }
+
 
 //================================================================//
 //  @brief  :		补中线

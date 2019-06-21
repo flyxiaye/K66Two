@@ -542,80 +542,80 @@ float LinearOut(float dst, float src, float duty)
 //  @return :		输出量
 //  @note   :		源输出向目标输出过渡
 //================================================================//
-void MeetingCtrlFun_1(void) 
-{
-  gpio_init(D0,GPO,0);
-  static int stage = 0;
-  static float last_yaw = 0;
-  static int get_flag = 0;
-  static int delay = 0;
-  if(!get_flag)
-  {
-    g_mode = 1;
-    stage = 0;
-    get_flag = 1;
-    g_flag = 0;
-    last_yaw = _ANGLE;
-  } 
-  switch(stage)
-  {
-    case 0:
-      if(delay <= 200)
-      {
-        delay++;
-      }
-      if(delay > 200)
-      {
-        g_flag = 1;
-        stage = 1;
-        delay = 0;
-      }
-    case 1:
-      sum_left += lCurSpeed;
-      g_errorD = - meet_st;
-      if(_ANGLE * last_yaw < 0)
-      {
-        error_yaw += abs(abs(_ANGLE - last_yaw) - 360);
-      }
-      else
-      {
-        error_yaw += abs(_ANGLE - last_yaw);
-      }
-      last_yaw = _ANGLE;
-      if(sum_left > sum_meet_left && error_yaw > 45)
-      {
-        stage = 2;
-        last_yaw = _ANGLE;
-      }
-      break;
-    case 2:
-      sum_right += rCurSpeed;
-      g_errorD =  meet_st;
-      
-      if(_ANGLE * last_yaw <= 0)
-      {
-        error_yaw = abs(abs(_ANGLE - last_yaw) - 360);
-      }
-      else
-      {
-        error_yaw = abs(_ANGLE - last_yaw);
-      }
-      last_yaw = _ANGLE;
-      if(sum_right > sum_meet_right && error_yaw > 180)
-      {
-	g_StateMaster = 3;
-        BrokenFlag = 2;
-        g_flag = 0;
-        g_mode = 3;
-//        error_yaw = 0;
-      }
-      break;
-    default:
-      break;
-  }
-    
-
-}
+//void MeetingCtrlFun_1(void) 
+//{
+//  gpio_init(D0,GPO,0);
+//  static int stage = 0;
+//  static float last_yaw = 0;
+//  static int get_flag = 0;
+//  static int delay = 0;
+//  if(!get_flag)
+//  {
+//    g_mode = 1;
+//    stage = 0;
+//    get_flag = 1;
+//    g_flag = 0;
+//    last_yaw = _ANGLE;
+//  } 
+//  switch(stage)
+//  {
+//    case 0:
+//      if(delay <= 200)
+//      {
+//        delay++;
+//      }
+//      if(delay > 200)
+//      {
+//        g_flag = 1;
+//        stage = 1;
+//        delay = 0;
+//      }
+//    case 1:
+//      sum_left += lCurSpeed;
+//      g_errorD = - meet_st;
+//      if(_ANGLE * last_yaw < 0)
+//      {
+//        error_yaw += abs(abs(_ANGLE - last_yaw) - 360);
+//      }
+//      else
+//      {
+//        error_yaw += abs(_ANGLE - last_yaw);
+//      }
+//      last_yaw = _ANGLE;
+//      if(sum_left > sum_meet_left && error_yaw > 45)
+//      {
+//        stage = 2;
+//        last_yaw = _ANGLE;
+//      }
+//      break;
+//    case 2:
+//      sum_right += rCurSpeed;
+//      g_errorD =  meet_st;
+//      
+//      if(_ANGLE * last_yaw <= 0)
+//      {
+//        error_yaw = abs(abs(_ANGLE - last_yaw) - 360);
+//      }
+//      else
+//      {
+//        error_yaw = abs(_ANGLE - last_yaw);
+//      }
+//      last_yaw = _ANGLE;
+//      if(sum_right > sum_meet_right && error_yaw > 180)
+//      {
+//	g_StateMaster = 3;
+//        BrokenFlag = 2;
+//        g_flag = 0;
+//        g_mode = 3;
+////        error_yaw = 0;
+//      }
+//      break;
+//    default:
+//      break;
+//  }
+//    
+//
+//}
 
 
 //================================================================//

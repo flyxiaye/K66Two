@@ -127,12 +127,13 @@ extern float g_dire_D_AD;
 
 #define CIRCLE 2			//环岛开关
 #define BROKEN 0			//断路开关
-#define CURVE_BROKEN 1
-#define RAMP 0				 //坡道开关
+#define CURVE_BROKEN 0
+#define RAMP 1				//坡道开关
 #define BLOCK_BROKEN 1		//路障断路开关
-#define STOPLINE 1			//停车开关
+#define STOPLINE 0			//停车开关
 #define CI_IND 1			//出环岛标志
-#define INF 1                           //红外标志
+#define INF 1				//红外识别
+
 typedef struct
 {
 	int Row;
@@ -167,6 +168,8 @@ extern int LightThreshold;						//去高光噪声阈值
 extern int LightThreshold2;						//去高光噪声阈值2
 extern int FindLineType;							//是否加入高光滤波标志
 
+extern int SpeedRow;			//控速边界行数
+
 extern int CircleFlag;
 extern int CircleState;
 
@@ -199,7 +202,6 @@ extern int LowThreshold;						//canny低阈值
 extern int ControlMid;						//图像控制中值
 
 
-//==========================菜单标志=================================//
 //==========================菜单标志=================================//
 #define InitSteer 1147               //舵机初始值 75Hz 1145 50Hz 766
 
@@ -394,8 +396,6 @@ extern int s1;
 extern int st;
 extern int stop_inf;
 extern unsigned char ObstacleEndFlag;
-/*====================================坡道=====================================*/
-extern int RampFlag;
 /*=====================================陀螺仪变量======================================*/
 extern signed int I2C_Wait_Times;        //i2c等待次数
 extern signed int I2C_Wait_Err_Flg;      //i2c等待死循环错误标志

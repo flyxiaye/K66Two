@@ -1,10 +1,10 @@
 #ifndef BasicFun_H
 #define BasicFun_H
 
-float LeastSquare(int *array, int row1, int row2);
+float LeastSquare(int* array, int row1, int row2);
 
-int ArrayMax(int *Array, int n);
-int ArrayMin(int *Array, int n);
+int ArrayMax(int* Array, int n);
+int ArrayMin(int* Array, int n);
 
 int IsEage(int row, int col);
 int SearchUpEage(int row, int col);
