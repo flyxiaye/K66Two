@@ -18,30 +18,14 @@ extern const unsigned char g_Bit_Val_Down[8];
 
 //**********Angle(角度控制)**************//
 extern float angle;
-extern float g_constant1;
-extern float g_gyro_ratio;
 extern float g_AngleControlOut;
 extern float g_angle_set;
 
 
-extern float g_anglerate_x;
-extern float g_anglerate_y;
-extern float g_anglerate_z;
-extern float g_anglerate_P;
-extern float g_anglerate_D;
-extern float g_anglerate_I;
-extern float g_rate_expect;
-extern float g_rate_expect;
-extern float g_rate_expect_old;
-extern float g_rate_expect_integal;
-extern float g_rate_expect_integal_old;
-extern float g_angle_old;
 extern float g_error;
-extern float g_gyro_angle_x;
 extern float g_angle;
 
 extern int g_count;
-extern float g_angle_set_const;
 //串级
 extern float g_AngleOut;
 extern float g_RateP ;
@@ -72,12 +56,11 @@ extern float g_errorS ;
 extern float g_duty_PWMleft;
 extern float g_duty_PWMright;
 extern int g_mode;
-extern int g_flag;
+extern int g_drive_flag;
 extern int MaxSpeed;
 extern int Speed_MAX ;
 extern float g_fI ;//积分项暂存处
 
-extern int starcount;
 //**************************Direction方向环（摄像头）**************//
 extern float gRateKp;            //串级p
 extern float gRateKd;            //串级d
@@ -90,8 +73,6 @@ extern float g_fDirectionControlOut;
 extern float g_nDirectionControlPeriod;//输出平滑
 extern float g_DirectionPeriod;//分的段数
 extern float AD_flag;
-extern float ave_right;
-extern float ave_left ;
 
 extern float g_dire_ad_P;
 extern float g_dire_ad_D ;
@@ -126,10 +107,10 @@ extern float g_dire_D_AD;
 //#define OUT_OFFSET 6 //向外偏移
 #define CIRCLEUP_TH 15		//进入环岛差距行
 
-#define CIRCLE 2			//环岛开关
+#define CIRCLE 0			//环岛开关
 #define BROKEN 0			//断路开关
 #define CURVE_BROKEN 0
-#define RAMP 1				//坡道开关
+#define RAMP 0				//坡道开关
 #define BLOCK_BROKEN 1		//路障断路开关
 #define STOPLINE 0			//停车开关
 #define CI_IND 1			//出环岛标志

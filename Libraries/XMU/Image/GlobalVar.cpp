@@ -38,7 +38,7 @@ float g_single_angle_D = 0;
 //***********MOTOR（电机模式及其输出及开关）***********//
 float g_fleft;
 float g_fright;
-int g_mode=1;
+int g_mode=3;
 float g_duty_left=0;
 float g_duty_right=0;
 //***********Speed(速度控制)**********//
@@ -54,16 +54,9 @@ float g_nRightMotorPulseSigma = 0;//编码器采集的脉冲值
 float g_errorS = 0;
 int MaxSpeed = 3000;
 float g_fI = 1000;//积分项暂存处
+int Speed_MAX = 3800;//积分限幅
 
 
-//**********speed(速度控制)**************//
-float g_speed_error = 0;
-float g_speed_error_i = 0;
-float g_speed_error_p = 0;
-float g_speed_error_d = 0;
-int Speed_MAX = 3800;
-
-int starcount = 0;//开机加速计时
 
 //**************************Direction方向环（摄像头）**************//
 float gRateKp = 8.41;            //串级p
@@ -157,7 +150,7 @@ int g_drive_flag = 0;           //电机开关标志
 int g_ad_flag = 0;              //电感采集标志
 int g_steer_open = 1;           //舵机开关标志
 int g_handle_open = 0;          //补图开关标志
-int g_ramp_open = 1;            //坡道开关标志
+int g_ramp_open = 0;            //坡道开关标志
 int g_broken_open = 1;          //断路开关标志
 int g_block_open = 1;           //路障开关标志
 int g_single_open = 0;          //单车模式开关标志

@@ -12,7 +12,7 @@ void ind_acq(void)                         //电感采集
   ind_left_column = ad_ave(ADC1_SE9, ADC_12bit, 6);
   ind_right_line = ad_ave(ADC0_SE13, ADC_12bit, 6);
   ind_right_column = ad_ave(ADC0_SE12, ADC_12bit, 6);
-  ind_mid = ad_ave(ADC1_SE10, ADC_12bit, 6);
+  ind_mid = ad_ave(ADC1_SE11, ADC_12bit, 6);
 
 //        ind_mid = adc_once(ADC0_SE6,ADC_16bit)
 	//电感值限幅
