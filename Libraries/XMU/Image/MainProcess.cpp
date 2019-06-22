@@ -40,7 +40,7 @@ void MainFill(void)
 		CircleFlag = ImgJudgeCircle(0);
 		if (CL == CircleFlag)
 		{
-			//CircleFlag = CN;
+			CircleFlag = CN;
 			CircleState = 1;
 			GetPointA();
 			GetPointB();
@@ -52,7 +52,7 @@ void MainFill(void)
 		}
 		else if (CR == CircleFlag)
 		{
-			//CircleFlag = CN;
+			CircleFlag = CN;
 			CircleState = 1;
 			GetPointA();
 			GetPointB();

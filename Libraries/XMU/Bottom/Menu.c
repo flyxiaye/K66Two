@@ -516,7 +516,13 @@ void Key_Function(void)
 				LineNumAdd();           //行数下移
 			break;
 		case 9:
+<<<<<<< Updated upstream
 			SD_Gather_Gray_Picture120x188();         break; //采图
+=======
+		g_drive_flag=!g_drive_flag;
+			// SD_Gather_Gray_Picture120x188();    
+			     break; //采图
+>>>>>>> Stashed changes
 		default:                     break;
 		}
 	}
@@ -827,6 +833,10 @@ void Main_Show(void)
          Insert_Float("PA",&g_angle_P);
          Insert_Float("PR",&g_RateP);
          Insert_Float("DR",&g_RateD);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
          
          
          

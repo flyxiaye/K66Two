@@ -106,7 +106,7 @@ extern float g_dire_D_AD;
 //#define OUT_OFFSET 6 //向外偏移
 #define CIRCLEUP_TH 15		//进入环岛差距行
 
-#define CIRCLE 0			//环岛开关
+#define CIRCLE 2			//环岛开关
 #define BROKEN 0			//断路开关
 #define CURVE_BROKEN 0
 #define RAMP 0				//坡道开关

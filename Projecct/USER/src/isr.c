@@ -75,7 +75,12 @@ void PIT0_IRQHandler(void)
 //      ChangeStartMeetingFlag();//识别会车
 //      MeetingCarControl();
 //    }
+<<<<<<< Updated upstream
     StopCar();
+=======
+//    StopCar();
+    TurnAround();
+>>>>>>> Stashed changes
     StartSpeed();
     DistCI();
     get_ind_error();
