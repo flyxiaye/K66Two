@@ -65,6 +65,7 @@ void PIT0_IRQHandler(void)
 {
     Mpu_Data_Prepare(0.002);
     My_IMU_update(0.002);
+    TurnTail();
 //    if (g_block_open)           //路障
 //    {
 //      inf();
@@ -75,7 +76,7 @@ void PIT0_IRQHandler(void)
 //      ChangeStartMeetingFlag();//识别会车
 //      MeetingCarControl();
 //    }
-    StopCar();
+//    StopCar();
     StartSpeed();
     DistCI();
     get_ind_error();

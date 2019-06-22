@@ -7,6 +7,7 @@ int balabaflag = 0;
 float flipgyro = 0;
 void TurnTail()
 {
+  flipgyro+= sensor.Gyro_deg.z * 0.002;
     static float lastangle, lastspeed, first, initangleset, initmode;
     static int TurnTail = 0, acc_speed = 0, count = 0, initcameraopen, initindopen;
     if (balabaflag == 1)
@@ -37,18 +38,18 @@ void TurnTail()
             //        if(2==BrokenFlag)
             //        {
             acc_speed += curSpeed;
-            if (flipgyro < 5)
+            if (flipgyro < 180)
             {
                 //  rightExpect=(1-(AngleError(_ANGLE,lastangle+90))/90)*lastangle;
                 //  leftExpect=lastangle;
                 // leftExpect=40;
                 // rightExpect=10;
                 //	        g_fDirectionControlOut_new+=AngleError(_ANGLE,lastangle);
-                flipgyro += sensor.Gyro_deg.y * 0.002;
-                g_fDirectionControlOut_new = 3000;
+                flipgyro += sensor.Gyro_deg.z * 0.002;
+                g_fDirectionControlOut_new = 5000;
                 lastangle = _ANGLE;
             }
-            else if (flipgyro >= 5)
+            else if (flipgyro >= 180)
             {
                 acc_speed = 0;
                 TurnTail = 2;
@@ -65,10 +66,10 @@ void TurnTail()
             if (count <= 500)
             {
                 g_mode = 1;
-                g_angle_set = 15;
+                g_angle_set = 30;
             }
             count++;
-            if (count > 500 && imu_data.pit > 13)
+            if (count > 500 && imu_data.pit > 28)
             {
                 g_mode = 3;
                 TurnTail = 3;
@@ -82,8 +83,8 @@ void TurnTail()
             acc_speed += curSpeed;
             if (flipgyro <= 0)
             {
-                flipgyro += sensor.Gyro_deg.y * 0.002;
-                g_fDirectionControlOut_new = 3000;
+                flipgyro += sensor.Gyro_deg.z * 0.002;
+                g_fDirectionControlOut_new = 5000;
                 lastangle = _ANGLE;
             }
             else if (flipgyro > 0)
@@ -100,10 +101,10 @@ void TurnTail()
             if (count <= 500)
             {
                 g_mode = 1;
-                g_angle_set = 15;
+                g_angle_set = 30;
             }
             count++;
-            if (count > 500 && imu_data.pit > 13)
+            if (count > 500 && imu_data.pit > 28)
             {
                 g_drive_flag = 0;
                 g_mode = 3;
