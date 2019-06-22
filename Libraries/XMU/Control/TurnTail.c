@@ -1,5 +1,7 @@
 #include "GlobalVar.h"
 #include "headfile.h"
+#include "TurnTail.h"
+#define _ANGLE imu_data.yaw
 int StayDistance = 3000, TurntailDistance = 9000;
 int balabaflag = 0;
 float flipgyro = 0;
@@ -71,7 +73,7 @@ void TurnTail()
                 g_mode = 3;
                 TurnTail = 3;
                 count = 0;
-                initangleset = _ANGLE;
+                g_angle_set = initangleset;
             }
             break;
         }
@@ -103,12 +105,14 @@ void TurnTail()
             count++;
             if (count > 500 && imu_data.pit > 13)
             {
-                g_drive_flag=0;
+                g_drive_flag = 0;
                 g_mode = 3;
                 TurnTail = 3;
                 count = 0;
-                initangleset = _ANGLE;
+                g_angle_set = initangleset;
             }
             break;
         }
         }
+    }
+}

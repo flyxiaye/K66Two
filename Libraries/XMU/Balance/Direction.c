@@ -3,8 +3,7 @@
 #include "Basic.h"
 #include "AD.h"
 #include "Meeting.h"
-float g_fDirectionControlOut_new;
-float g_fDirectionControlOut_before;
+
 
 
 //================================================================//

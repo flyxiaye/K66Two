@@ -76,7 +76,8 @@ float g_fDirectionControlOut;
 float g_nDirectionControlPeriod=0;//输出平滑
 float g_DirectionPeriod=5;//分的段数
 float AD_flag = 0;
-
+float g_fDirectionControlOut_new=0;
+float g_fDirectionControlOut_before=0;
 //**************************Direction方向环（电感）**************//
 float gRateKp_AD = 15;            //串级p
 float gRateKd_AD = 10;            //串级d

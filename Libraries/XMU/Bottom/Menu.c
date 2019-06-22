@@ -517,7 +517,10 @@ void Key_Function(void)
 				LineNumAdd();           //行数下移
 			break;
 		case 9:
-			SD_Gather_Gray_Picture120x188();         break; //采图
+		balabaflag=!balabaflag;
+		g_drive_flag=!g_drive_flag;
+			// SD_Gather_Gray_Picture120x188();    
+			     break; //采图
 		default:                     break;
 		}
 	}
