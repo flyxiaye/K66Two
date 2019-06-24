@@ -516,7 +516,6 @@ void Key_Function(void)
 				LineNumAdd();           //行数下移
 			break;
 		case 9:
-		balabaflag=!balabaflag;
 		g_drive_flag=!g_drive_flag;
 			// SD_Gather_Gray_Picture120x188();    
 			     break; //采图
@@ -831,7 +830,7 @@ void Main_Show(void)
          Insert_Float("PA",&g_angle_P);
          Insert_Float("PR",&g_RateP);
          Insert_Float("DR",&g_RateD);
-          Insert_Float("fli",&flipgyro);
+//          Insert_Float("fli",&flipgyro);
 
          
          
