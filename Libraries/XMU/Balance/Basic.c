@@ -30,12 +30,12 @@ void motormode(float mode)
 	if (1 == mode)//直立
 	{
 		g_drive_left = RateOut_Stand;
-                g_drive_right = RateOut_Stand;
+		g_drive_right = RateOut_Stand;
 	}
 	if (3 == mode)//方向+直立+速度环
 	{
 		g_drive_left = RateOut_Stand - RateOut_Direct;
-                g_drive_right = RateOut_Stand + RateOut_Direct;
+		g_drive_right = RateOut_Stand + RateOut_Direct;
 	}
 
 	if (4 == mode)//手调
@@ -43,7 +43,7 @@ void motormode(float mode)
 		g_drive_left = g_duty_left;
 		g_drive_right = g_duty_right;
 	}
-        if (5 == mode)//拍地模式2
+	if (5 == mode)//拍地模式2
 	{
 		g_drive_left = RateOut_Stand;
 		g_drive_right = RateOut_Stand;
@@ -152,8 +152,7 @@ void StopCar()
 	if (ind_left_line < 100 && ind_right_line < 100 && ind_mid < 100)
 	{
 		g_drive_flag = 0;
-                g_MasterOutFlag = 1;
-              
+		g_MasterOutFlag = 1;
 	}
 }
 //================================================================//
@@ -169,11 +168,11 @@ void DynamicProspect()
 			35,35,35,35,34,34,34,34,34,34,33 };
 	if (curSpeed < 10)
 	{
-		ProSpect = 55 ;
+		ProSpect = 55;
 	}
 	else if (curSpeed > 60)
 	{
-		ProSpect = 40 ;
+		ProSpect = 40;
 	}
 	else if (curSpeed >= 10 && curSpeed <= 60)
 	{
@@ -227,31 +226,31 @@ void DynamicProspect()
 //================================================================//
 void StartSpeed()
 {
-  static int flag = 0;
-  static float angle_init = 0;
-  static int distance = 0;
-  static int flag_2 = 0;
-  if(flag == 0)
-  {
-    angle_init = g_angle_set;
-      flag = 1;
-  }
-  if(g_drive_flag == 1 && ABS(distance) < 10000 && flag == 1)
-  {
-   
-    g_angle_set = angle_init ;
-    distance += curSpeed;
-    flag_2 = 1;
-  }
-  else if(!g_drive_flag)
-  {
-    distance = 0;
-  }
-  if((ABS(distance) >= 10000 || g_drive_flag == 0) && flag_2 == 1 && flag == 1)
-  {
-    flag = 0;
-    flag_2 = 0;
-    g_angle_set = angle_init;
-  }
-  
+	static int flag = 0;
+	static float angle_init = 0;
+	static int distance = 0;
+	static int flag_2 = 0;
+	if (flag == 0)
+	{
+		angle_init = g_angle_set;
+		flag = 1;
+	}
+	if (g_drive_flag == 1 && ABS(distance) < 10000 && flag == 1)
+	{
+
+		g_angle_set = angle_init;
+		distance += curSpeed;
+		flag_2 = 1;
+	}
+	else if (!g_drive_flag)
+	{
+		distance = 0;
+	}
+	if ((ABS(distance) >= 10000 || g_drive_flag == 0) && flag_2 == 1 && flag == 1)
+	{
+		flag = 0;
+		flag_2 = 0;
+		g_angle_set = angle_init;
+	}
+
 }
