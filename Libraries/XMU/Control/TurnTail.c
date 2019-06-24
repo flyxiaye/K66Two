@@ -7,7 +7,7 @@ int balabaflag = 0;
 float flipgyro = 0;
 void TurnTail()
 {
-  flipgyro+= sensor.Gyro_deg.z * 0.002;
+//  flipgyro+= sensor.Gyro_deg.z * 0.002;
     static float lastangle, lastspeed, first, initangleset, initmode;
     static int TurnTail = 0, acc_speed = 0, count = 0, initcameraopen, initindopen;
     if (balabaflag == 1)
@@ -46,7 +46,7 @@ void TurnTail()
                 // rightExpect=10;
                 //	        g_fDirectionControlOut_new+=AngleError(_ANGLE,lastangle);
                 flipgyro += sensor.Gyro_deg.z * 0.002;
-                g_fDirectionControlOut_new = 5000;
+                g_fDirectionControlOut_new = 8000;
                 lastangle = _ANGLE;
             }
             else if (flipgyro >= 180)
@@ -84,7 +84,7 @@ void TurnTail()
             if (flipgyro <= 0)
             {
                 flipgyro += sensor.Gyro_deg.z * 0.002;
-                g_fDirectionControlOut_new = 5000;
+                g_fDirectionControlOut_new = 8000;
                 lastangle = _ANGLE;
             }
             else if (flipgyro > 0)

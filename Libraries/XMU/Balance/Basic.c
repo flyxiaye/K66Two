@@ -48,7 +48,7 @@ void motormode(float mode)
 	{
 		a1 = 1; a2 = 1;
 		b1 = 0; b2 = 0;
-		c1 = 1; c2 = -1;
+		c1 = -1; c2 = 1;
 		g_fSpeedControlOut = 0;
 	}
 	if (3 == mode)//速度+方向+直立
