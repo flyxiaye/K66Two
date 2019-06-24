@@ -6,7 +6,7 @@ const unsigned char g_Bit_Val_Up[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 const unsigned char g_Bit_Val_Down[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
 //**********Angle(角度控制)**************//
-float g_angle_set=15.09;//车平衡位置角度
+float g_angle_set=18.09;//车平衡位置角度
 float g_angle_set_const = 26;
 
 float g_gyro_ratio = 4.8;
@@ -102,11 +102,12 @@ int CircleState = 0;
 
 int LeftIntLine = 0;		//记录左内跳行数
 int RightIntLine = 0;		//记录右内跳行数
-int SpecialElemFlag = 0;    //特殊元素标志
-int BrokenFlag = 0;			//断路标志
-int BlockFlag = 0;			//路障标志
-int StopLineFlag = 0;		//停车线标志
-int RampFlag = 0;			//坡道标志
+
+int Img_SpecialElemFlag = 0;    //特殊元素标志
+int Img_BrokenFlag = 0;			//断路标志
+int Img_BlockFlag = 0;			//路障标志
+int Img_StopLineFlag = 0;		//停车线标志
+int Img_RampFlag = 0;			//坡道标志
 
 int BrokenLastAve = 0;
 int StopLineDist = 0;

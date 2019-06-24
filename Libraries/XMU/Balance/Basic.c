@@ -58,12 +58,12 @@ void motormode(float mode)
 		c1 = -1; c2 = 1;
 
 	}
-	if (RampFlag != 1)
+	if (Img_RampFlag != 1)
 	{
 		g_fleft = a1 * g_AngleControlOut + c1 * g_fDirectionControlOut + b1 * g_fSpeedControlOut;
 		g_fright = a2 * g_AngleControlOut + c2 * g_fDirectionControlOut + b2 * g_fSpeedControlOut;
 	}
-	if (RampFlag == 1)
+	if (Img_RampFlag == 1)
 	{
 		;//避障函数执行
 	}

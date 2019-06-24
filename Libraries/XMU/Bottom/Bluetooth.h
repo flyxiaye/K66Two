@@ -23,26 +23,29 @@
 //取数据的长度与字符串的长度相等，这样在发送数据是会多发送了一些
 //无效位，但是影响不大的
 
-typedef struct 
+typedef struct
 {
-  int Stack;
-  uint8 Data;
-  uint8 PreData;
-  uint8 Buffer[UartRxBufferLen];
-  uint8 Enable;
-  uint8 Check;
+	int Stack;
+	uint8 Data;
+	uint8 PreData;
+	uint8 Buffer[UartRxBufferLen];
+	uint8 Enable;
+	uint8 Check;
 }SerialPortType;
 
 //extern unsigned char uSendBuf[UartDataNum*2];
 
 void BluetoothInt();
-void push(unsigned char chanel,unsigned short int data);
+void push(unsigned char chanel, unsigned short int data);
 void sendDataToScope(void);
 void BluetoothSendData(void);
 void UartDebug(void);
 void uart4_handler(void);
 void SendAngle(void);
 void sendCamImgToCamViewer(void);
+void UserData(void);
+void SendFloat(float Data);
+void SendInt(int Data);
 
 
 #endif

@@ -125,11 +125,11 @@ void DistBroken(void)
 {
 	static int BR_sum_dist = 7000;
 	static int BR_acc_dist = 0;
-          if (1 == BrokenFlag)
+          if (1 == Img_BrokenFlag)
           {
             BR_acc_dist += curSpeed;
             if (BR_acc_dist > BR_sum_dist)
-              BrokenFlag = 0;
+              Img_BrokenFlag = 0;
           }
           else BR_acc_dist = 0;
           

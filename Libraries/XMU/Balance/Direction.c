@@ -19,7 +19,7 @@ void Direction()
 //  if(dialSwitchFlg2&&balabaflag!=0)
 //  {
 //    
-//    if(BrokenFlag == 2 && MEETING_MODE == 2 || BrokenFlag == 3)
+//    if(Img_BrokenFlag == 2 && MEETING_MODE == 2 || Img_BrokenFlag == 3)
 //    {
 //      gpio_init(A7, GPO, 1);
 //      AD_DirectionControl();
@@ -57,12 +57,12 @@ void DirectionControlOutput(void)//平滑输出
 	{
 		g_nDirectionControlPeriod = 0;
 	}
-	if (BlockFlag || g_GetMeetingMaster || BrokenFlag == 3) //限幅
+	if (Img_BlockFlag || g_GetMeetingMaster || Img_BrokenFlag == 3) //限幅
 	{
 		g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
 		g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
 	}
-	if (BrokenFlag)
+	if (Img_BrokenFlag)
 	{
             ;
 	}
@@ -85,7 +85,7 @@ void AD_DirectionControl()
   if(count >= 4)
   {
     count = 0;
-    if ((BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制
+    if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制
     {
       ;
     }
@@ -119,7 +119,7 @@ void Camera_DirectionControl()
   if(count >= 5)
   {
     count = 0;
-    if (BlockFlag|| g_GetMeetingMaster)                //路障控制
+    if (Img_BlockFlag|| g_GetMeetingMaster)                //路障控制
     {
       ;
     }

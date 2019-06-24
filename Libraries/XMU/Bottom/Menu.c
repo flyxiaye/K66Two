@@ -47,6 +47,7 @@ signed char g_Rate = 0;                                      //倍率指数 方便加减
 float g_addValue = 1;                                        //倍率
 signed char g_picture_show = 0;
 signed char g_explore_page = 0;								//调节曝光功能页
+
 unsigned char Cursor[][16] =
 
 {
@@ -436,7 +437,7 @@ void Menu(void)
 	{
 		Extra_Show();
 		Main_Show();
-                OLED_Write_Int(0,0,g_mode);
+		OLED_Write_Int(0, 0, g_mode);
 	}
 }
 
@@ -462,13 +463,13 @@ void Key_Function(void)
 				g_MasterOutFlag = 0;
 				CircleFlag = 0;
 				CircleState = 0;
-				BrokenFlag = 0;
-				BlockFlag = 0;
-//				speed_type = 1;
+				Img_BrokenFlag = 0;
+				Img_BlockFlag = 0;
+				//				speed_type = 1;
 				if (1 == g_camera_open)
 					g_handle_open = 1;
 				g_ad_flag = 1;
-				RampFlag = 0;
+				Img_RampFlag = 0;
 			}
 			// g_ramp_enable = 1;
 		}
@@ -501,11 +502,11 @@ void Key_Function(void)
 			break;
 		case 6:  PageNumAdd();       break;//向下翻页
 		case 7:
-                  if (6 == g_pageNum)
+			if (9 == g_pageNum)
 				g_ad_flag = !g_ad_flag;
 			else changemode();
-//				SD_Gather_Camera_Picture_120x188();        break; //采图
-                        break;
+			//				SD_Gather_Camera_Picture_120x188();        break; //采图
+			break;
 		case 8:
 			if (1 == g_pageNum)
 			{
@@ -516,9 +517,9 @@ void Key_Function(void)
 				LineNumAdd();           //行数下移
 			break;
 		case 9:
-		g_drive_flag=!g_drive_flag;
+			g_drive_flag = !g_drive_flag;
 			// SD_Gather_Gray_Picture120x188();    
-			     break; //采图
+			break; //采图
 		default:                     break;
 		}
 	}
@@ -761,9 +762,9 @@ void Main_Show(void)
 			g_picture_show = 1;
 			break;
 		case 1:        //圆环
-			OLED_Write_Int(2, 8, RampFlag);
-			OLED_Write_Int(4, 8, BrokenFlag);            //断路标志
-			OLED_Write_Int(6, 8, BlockFlag);			//路障标志
+			OLED_Write_Int(2, 8, Img_RampFlag);
+			OLED_Write_Int(4, 8, Img_BrokenFlag);            //断路标志
+			OLED_Write_Int(6, 8, Img_BlockFlag);			//路障标志
 			OLED_Write_Int(2, 96, g_StateMaster);         //会车状态
 			OLED_Write_Int(4, 96, g_StateSlave);            //左右环岛标志
 			OLED_Write_Int(6, 96, CircleState);           //环岛状态标志
@@ -813,106 +814,96 @@ void Main_Show(void)
 		}
 	}
 
-         Insert_Page("Angle"); //四元素//SPI
-         Insert_Float("pit",&imu_data.pit);
-         Insert_Float("rol",&imu_data.rol);
-         Insert_Float("yaw",&imu_data.yaw);
-         Insert_Float("x",&sensor.Gyro_deg.x);
-         Insert_Float("y",&sensor.Gyro_deg.y);
-         Insert_Float("z",&sensor.Gyro_deg.z);
+	Insert_Page("Angle"); //四元素//SPI
+	Insert_Float("pit", &imu_data.pit);
+	Insert_Float("rol", &imu_data.rol);
+	Insert_Float("yaw", &imu_data.yaw);
+	Insert_Float("x", &sensor.Gyro_deg.x);
+	Insert_Float("y", &sensor.Gyro_deg.y);
+	Insert_Float("z", &sensor.Gyro_deg.z);
 
-         
-         
+	Insert_Page("PID_A");//角度
+	Insert_Float("set", &g_angle_set);
+	Insert_Float("out", &g_AngleOut);
+	Insert_Float("PA", &g_angle_P);
+	Insert_Float("PR", &g_RateP);
+	Insert_Float("DR", &g_RateD);
 
-         Insert_Page("PID_A");//角度
-         Insert_Float("set",&g_angle_set);
-         Insert_Float("out",&g_AngleOut);
-         Insert_Float("PA",&g_angle_P);
-         Insert_Float("PR",&g_RateP);
-         Insert_Float("DR",&g_RateD);
-//          Insert_Float("fli",&flipgyro);
+	//         Insert_Page("Obstacle");//避障
+	//         Insert_Float("g_inf",&g_inf);
+	//         Insert_Int("stop_inf",&stop_inf);
+	//         Insert_Int("s1",&s1);
+	//         Insert_Int("st",&st);
+	//         Insert_Int("sum_dist",&sum_dist);
 
-         
-         
-         
+	//         Insert_Page("ImgFlag");//标志位
+	//	 Insert_Char("ImgCircle", &Img_CircleOpen);
+	//	 Insert_Char("ImgBroken", &Img_BrokenOpen);
+	//	 Insert_Char("ImgBlock", &Img_BlockOpen);
+	//	 Insert_Char("ImgRamp", &Img_RampOpen);
+	//	 Insert_Char("ImgStop", &Img_StopOpen);
 
-//         Insert_Page("Obstacle");//避障
-//         Insert_Float("g_inf",&g_inf);
-//         Insert_Int("stop_inf",&stop_inf);
-//         Insert_Int("s1",&s1);
-//         Insert_Int("st",&st);
-//         Insert_Int("sum_dist",&sum_dist);
-         
-//         Insert_Page("ImgFlag");//标志位
-//	 Insert_Char("ImgCircle", &Img_CircleOpen);
-//	 Insert_Char("ImgBroken", &Img_BrokenOpen);
-//	 Insert_Char("ImgBlock", &Img_BlockOpen);
-//	 Insert_Char("ImgRamp", &Img_RampOpen);
-//	 Insert_Char("ImgStop", &Img_StopOpen);
-         
-         
-         Insert_Page("PID_D/C");//方向
-         Insert_Float("error",&g_errorD);
-         Insert_Float("Out" ,&g_fDirectionControlOut);
-         Insert_Float("KP",&gRateKp);
-         Insert_Float("KD",&gRateKd);
-         Insert_Float("P",&g_dire_P);
-         Insert_Float("D",&g_dire_D);
-         Insert_Int("MAX",&max_duty);
-         Insert_Int("ProOUT",&ProSpect);
-         
-         
-         
-         Insert_Page("PID_D/AD");//方向
-         Insert_Float("error",&g_errorD);
-         Insert_Float("Out" ,&g_fDirectionControlOut);
-         Insert_Float("KP",&gRateKp_AD);
-         Insert_Float("KD",&gRateKd_AD);
-         Insert_Float("P",&g_dire_P_AD);
-         Insert_Float("D",&g_dire_D_AD);
 
-         
-         
-          Insert_Page("AD"); //电机
-         Insert_Int("L-",&ind_left_line);
-         Insert_Int("mid",&ind_mid);
-         Insert_Int("R-",&ind_right_line);
-         Insert_Int("L|",&ind_left_column);
-         Insert_Int("R|",&ind_right_column);
+	Insert_Page("PID_D/C");//方向
+	Insert_Float("error", &g_errorD);
+	Insert_Float("Out", &g_fDirectionControlOut);
+	Insert_Float("KP", &gRateKp);
+	Insert_Float("KD", &gRateKd);
+	Insert_Float("P", &g_dire_P);
+	Insert_Float("D", &g_dire_D);
+	Insert_Int("MAX", &max_duty);
+	Insert_Int("ProOUT", &ProSpect);
 
-         Insert_Float("norm_L-",&left_line_norm);
-         Insert_Float("norm_mid",&mid_norm);
-         Insert_Float("norm_R-",&right_line_norm);
-         Insert_Float("norm_L|",&left_column_norm);
-         Insert_Float("noem_R|",&right_column_norm);
-         Insert_Int("Flag",&g_ad_flag);
-         
-            
-         
-         
-        Insert_Page("PID_S");//速度
-         Insert_Float("SpdSet",&g_fSpeed_set);
-         Insert_Float("error",&g_errorS);
-         Insert_Float("P",&g_Speed_P);
-         Insert_Float("I",&g_Speed_I);
-         Insert_Int("MaxSpeed",&MaxSpeed);
-         Insert_Int("MaxI",&Speed_MAX);
-         Insert_Float("g_fI",&g_fI);
-         
-         
-         
-        Insert_Page("PWM"); //电机
-         Insert_Float("left",&g_nLeftMotorPulseSigma);
-         Insert_Float("right",&g_nRightMotorPulseSigma);
-         Insert_Float("out_L",&g_fleft);
-         Insert_Float("out_R",&g_fright);
-         Insert_Float("duty_L",&g_duty_left);
-         Insert_Float("duty_R",&g_duty_right);
-         
-         
-         Insert_Page("camera");//摄像头曝光时间
-         Insert_Int("exp",&exp_time);
-         
+
+	Insert_Page("PID_D/AD");//方向
+	Insert_Float("error", &g_errorD);
+	Insert_Float("Out", &g_fDirectionControlOut);
+	Insert_Float("KP", &gRateKp_AD);
+	Insert_Float("KD", &gRateKd_AD);
+	Insert_Float("P", &g_dire_P_AD);
+	Insert_Float("D", &g_dire_D_AD);
+
+
+	Insert_Page("PID_S");//速度
+	Insert_Float("SpdSet", &g_fSpeed_set);
+	Insert_Float("error", &g_errorS);
+	Insert_Float("P", &g_Speed_P);
+	Insert_Float("I", &g_Speed_I);
+	Insert_Int("MaxSpeed", &MaxSpeed);
+	Insert_Int("MaxI", &Speed_MAX);
+	Insert_Float("g_fI", &g_fI);
+
+
+	Insert_Page("PWM"); //电机
+	Insert_Float("left", &g_nLeftMotorPulseSigma);
+	Insert_Float("right", &g_nRightMotorPulseSigma);
+	Insert_Float("out_L", &g_fleft);
+	Insert_Float("out_R", &g_fright);
+	Insert_Float("duty_L", &g_duty_left);
+	Insert_Float("duty_R", &g_duty_right);
+
+	Insert_Page("camera");//摄像头曝光时间
+	Insert_Int("exp", &exp_time);
+	Insert_Char("explore", &g_explore_page);
+
+	Insert_Page("AD"); //电感
+	Insert_Int("L-", &ind_left_line);
+	Insert_Int("R-", &ind_right_line);
+	Insert_Int("mid", &ind_mid);
+	Insert_Int("L|", &ind_left_column);
+	Insert_Int("R|", &ind_right_column);
+	Insert_Int("L-Max", &ind_left_line_max);
+	Insert_Int("R-Max", &ind_right_line_max);
+	Insert_Int("L|Max", &ind_left_column_max);
+	Insert_Int("R|Max", &ind_right_column_max);
+	Insert_Int("mid_Max", &ind_mid_max);
+	Insert_Float("norm_L-", &left_line_norm);
+	Insert_Float("norm_R-", &right_line_norm);
+	Insert_Float("norm_mid", &mid_norm);
+	Insert_Float("norm_L|", &left_column_norm);
+	Insert_Float("noem_R|", &right_column_norm);
+	Insert_Int("Flag", &g_ad_flag);
+
 }
 
 //*

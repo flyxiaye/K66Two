@@ -107,13 +107,13 @@ extern float g_dire_D_AD;
 //#define OUT_OFFSET 6 //向外偏移
 #define CIRCLEUP_TH 15		//进入环岛差距行
 
-#define CIRCLE 0			//环岛开关
+#define CIRCLE 2			//环岛开关
 #define BROKEN 0			//断路开关
 #define CURVE_BROKEN 0
 #define RAMP 0				//坡道开关
 #define BLOCK_BROKEN 1		//路障断路开关
 #define STOPLINE 0			//停车开关
-#define CI_IND 1			//出环岛标志
+#define CI_IND 0			//出环岛标志
 #define INF 1				//红外识别
 
 typedef struct
@@ -157,11 +157,11 @@ extern int CircleState;
 
 extern int LeftIntLine;		//记录左内跳行数
 extern int RightIntLine;		//记录右内跳行数
-extern int SpecialElemFlag;    //特殊元素标志
-extern int BrokenFlag;			//断路标志
-extern int BlockFlag;			//路障标志
-extern int StopLineFlag;		//停车线标志
-extern int RampFlag;			//坡道标志
+extern int Img_SpecialElemFlag;    //特殊元素标志
+extern int Img_BrokenFlag;			//断路标志
+extern int Img_BlockFlag;			//路障标志
+extern int Img_StopLineFlag;		//停车线标志
+extern int Img_RampFlag;			//坡道标志
 
 extern int BrokenLastAve;
 extern int StopLineDist;

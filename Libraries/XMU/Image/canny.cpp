@@ -1,7 +1,7 @@
 #include "GlobalVar.h"
 
-#define ROW_3 51
-#define COL_3 188
+#define ROW 51
+#define COL 188
 //int HighThreshold = 50;
 //int LowThreshold = HighThreshold * 0.4;
 
@@ -14,7 +14,7 @@ int GetGradHist(unsigned char *p_image, unsigned char *hist)
 	unsigned char maxv = 0;
 	unsigned char hist_size = 255;
 	unsigned char *p = p_image;
-	for (int i = 0; i < ROW_3 * COL_3; i++)
+	for (int i = 0; i < ROW * COL; i++)
 	{
 		if (*p > maxv) maxv = *p;
 		p++;
@@ -22,7 +22,7 @@ int GetGradHist(unsigned char *p_image, unsigned char *hist)
 	hist_size = MIN(maxv, hist_size);
 	//建立直方图
 	p = p_image;
-	for (int i = 0; i < ROW_3 * COL_3; i++)
+	for (int i = 0; i < ROW * COL; i++)
 	{
 		(*(hist + *(p++)))++;
 	}
@@ -32,7 +32,7 @@ int GetGradHist(unsigned char *p_image, unsigned char *hist)
 void GetDoubleThreshold(unsigned char *hist, int hist_size, int *high, int *low)
 {
 	double dPercentOfPixelsNotEdges = 0.25;
-	int total = (int)(ROW_3 * COL_3 * dPercentOfPixelsNotEdges);
+	int total = (int)(ROW * COL * dPercentOfPixelsNotEdges);
 	int sum = 0;
 	int i;
 	for (i = 0; i < hist_size; i++)
