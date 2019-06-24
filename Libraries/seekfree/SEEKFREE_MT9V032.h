@@ -76,10 +76,10 @@ extern uint8 mt9v032_finish_flag;  //一场图像采集完成标志位
 //        比如使用的是PTA这组的引脚那么将这两个修改为PORTA_IRQn、PORTA_ISFR即可
 //        且务必在对应的中断函数中调用VSYNC函数
 //--------------------------------------------------------------------------------------------------
-#define MT9V032_PCLK                C13                            	//摄像头像素时钟
+#define MT9V032_PCLK                C18                            	//摄像头像素时钟
         
-#define MT9V032_VSYNC               C18                            	//摄像头场同步信号
-#define MT9V032_VSYNC_CHANNEL       18                               //MT9V032_VSYNC对应引脚的引脚号 PTC6   -->     6
+#define MT9V032_VSYNC               C12                            	//摄像头场同步信号
+#define MT9V032_VSYNC_CHANNEL       12                               //MT9V032_VSYNC对应引脚的引脚号 PTC6   -->     6
 #define MT9V032_INTERRUPT_NUNBERS   PORTC_IRQn                      //中断编号
 #define MT9V032_INTERRUPT_ISFR      PORTC->ISFR                     //中断标志位
 
@@ -91,7 +91,7 @@ extern uint8 mt9v032_finish_flag;  //一场图像采集完成标志位
 //		  可以选择0、1、2、3，分别对应的是	该端口的X0-X7，X8-X15，X16-X23，X24-X31(这里x代表的是第一个字母，比如现在的就是C8-C15)
 //--------------------------------------------------------------------------------------------------
 
-#define MT9V032_DATAPORT 		D_IN_DATA(0)	                //DMA数据口
+#define MT9V032_DATAPORT 		C_IN_DATA(0)	                //DMA数据口
 
 
 

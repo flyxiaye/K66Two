@@ -109,31 +109,31 @@ void DrivePWM(float g_duty_PWMleft, float g_duty_PWMright)
 	}
 	if (g_duty_PWMright >= 0 && g_duty_PWMleft >= 0)
 	{
-		ftm_pwm_duty(ftm3, RIGHT_GO, 0);
-		ftm_pwm_duty(ftm3, LEFT_GO, 0);
-		ftm_pwm_duty(ftm3, RIGHT_BACK, (int)g_duty_PWMright);
-		ftm_pwm_duty(ftm3, LEFT_BACK, (int)g_duty_PWMleft);
+		ftm_pwm_duty(ftm0, RIGHT_GO, 0);
+		ftm_pwm_duty(ftm0, LEFT_GO, 0);
+		ftm_pwm_duty(ftm0, RIGHT_BACK, (int)g_duty_PWMright);
+		ftm_pwm_duty(ftm0, LEFT_BACK, (int)g_duty_PWMleft);
 	}
 	else if (g_duty_PWMright >= 0 && g_duty_PWMleft <= 0)
 	{
-		ftm_pwm_duty(ftm3, RIGHT_GO, 0);
-		ftm_pwm_duty(ftm3, RIGHT_BACK, (int)g_duty_PWMright);
-		ftm_pwm_duty(ftm3, LEFT_GO, (int)(-g_duty_PWMleft));
-		ftm_pwm_duty(ftm3, LEFT_BACK, 0);
+		ftm_pwm_duty(ftm0, RIGHT_GO, 0);
+		ftm_pwm_duty(ftm0, RIGHT_BACK, (int)g_duty_PWMright);
+		ftm_pwm_duty(ftm0, LEFT_GO, (int)(-g_duty_PWMleft));
+		ftm_pwm_duty(ftm0, LEFT_BACK, 0);
 	}
 	else if (g_duty_PWMright <= 0 && g_duty_PWMleft >= 0)
 	{
-		ftm_pwm_duty(ftm3, RIGHT_GO, (int)(-g_duty_PWMright));
-		ftm_pwm_duty(ftm3, RIGHT_BACK, 0);
-		ftm_pwm_duty(ftm3, LEFT_GO, 0);
-		ftm_pwm_duty(ftm3, LEFT_BACK, (int)g_duty_PWMleft);
+		ftm_pwm_duty(ftm0, RIGHT_GO, (int)(-g_duty_PWMright));
+		ftm_pwm_duty(ftm0, RIGHT_BACK, 0);
+		ftm_pwm_duty(ftm0, LEFT_GO, 0);
+		ftm_pwm_duty(ftm0, LEFT_BACK, (int)g_duty_PWMleft);
 	}
 	else if (g_duty_PWMright <= 0 && g_duty_PWMleft <= 0)
 	{
-		ftm_pwm_duty(ftm3, RIGHT_GO, (int)(-g_duty_PWMright));
-		ftm_pwm_duty(ftm3, RIGHT_BACK, 0);
-		ftm_pwm_duty(ftm3, LEFT_GO, (int)(-g_duty_PWMleft));
-		ftm_pwm_duty(ftm3, LEFT_BACK, 0);
+		ftm_pwm_duty(ftm0, RIGHT_GO, (int)(-g_duty_PWMright));
+		ftm_pwm_duty(ftm0, RIGHT_BACK, 0);
+		ftm_pwm_duty(ftm0, LEFT_GO, (int)(-g_duty_PWMleft));
+		ftm_pwm_duty(ftm0, LEFT_BACK, 0);
 	}
 }
 

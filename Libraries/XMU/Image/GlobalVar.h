@@ -326,10 +326,10 @@ extern int dialSwitchcal;
 //extern signed int DialSwitchFlag2;            //拨码开关2
 //extern signed int DialSwitchFlag3;            //拨码开关3
 //extern signed int DialSwitchFlag4;        
-#define DIALSWITCH_PIN1 D8
-#define DIALSWITCH_PIN2 D9
-#define DIALSWITCH_PIN3 D10
-#define DIALSWITCH_PIN4 D15
+#define DIALSWITCH_PIN1 E8
+#define DIALSWITCH_PIN2 E6
+#define DIALSWITCH_PIN3 E7
+#define DIALSWITCH_PIN4 E9
 /*===================================双车通讯用=========================================*/
 typedef struct 
 {

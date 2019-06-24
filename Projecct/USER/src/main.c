@@ -30,8 +30,6 @@ int main(void)
         {
             
             mt9v032_finish_flag = 0;//标志位清零 
-            //Blackboader_Compensate();//黑边处理  
-            //Start_Process(); 
           if (1 == g_handle_open)
           {
             GetML();
@@ -42,28 +40,27 @@ int main(void)
 	}
     if (1 == dialSwitchFlg1 && g_drive_flag == 0)
     {
-//      DisplayBinary(ImageData[0]);
-      
       displayimage032(image[0]);
       ShowEage();
     }
-         //Bluebooth_Push_Data();
-//    SendAngle();
-//    SendData();
     else 
     {
       Menu();
     }
+             //Bluebooth_Push_Data();
+//    SendAngle();
+//    SendData();
+    
 //    if(CircleState) 
-      gpio_init(E8,GPO,0);
-//    else 
-//      gpio_init(E8,GPO,1);
-//    if(CircleState) 
-      gpio_init(E7,GPO,0);
-//    else 
-//      gpio_init(E7,GPO,1);
-//    if(CircleState) 
-      gpio_init(E6,GPO,0);
+//      gpio_init(E8,GPO,0);
+////    else 
+////      gpio_init(E8,GPO,1);
+////    if(CircleState) 
+//      gpio_init(E7,GPO,0);
+////    else 
+////      gpio_init(E7,GPO,1);
+////    if(CircleState) 
+//      gpio_init(E6,GPO,0);
 //    else 
 //      gpio_init(E6,GPO,1);
   }

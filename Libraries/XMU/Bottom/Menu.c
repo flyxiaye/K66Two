@@ -46,7 +46,7 @@ signed char g_imgFlg = 0;
 signed char g_Rate = 0;                                      //倍率指数 方便加减
 float g_addValue = 1;                                        //倍率
 signed char g_picture_show = 0;
-
+signed char g_explore_page = 0;								//调节曝光功能页
 unsigned char Cursor[][16] =
 
 {
@@ -430,7 +430,7 @@ void Insert_VFloat(signed char String[], volatile float* Number)
 //*
 void Menu(void)
 {
-	g_Key = Key_Check();
+	// g_Key = Key_Check();
 	Key_Function();
 	if (!g_drive_flag)
 	{
@@ -539,6 +539,7 @@ void Key_Function(void)
 		default:                    break;
 		}
 	}
+	INTR_Keyboard_Init();
 }
 
 
@@ -754,7 +755,7 @@ void Main_Show(void)
 	Insert_Page("Display");
 	if (g_pageNum == 1)
 	{
-		displayimage032_zoom(image[0], 64, 10, 70);
+		displayimage032_zoom(image[0], 64, 10, 70, 1);
 		switch (g_picture_show)
 		{
 		case 0:
@@ -913,4 +914,75 @@ void Main_Show(void)
          Insert_Page("camera");//摄像头曝光时间
          Insert_Int("exp",&exp_time);
          
+}
+
+//*
+//*  @brief:		摄像头调节曝光时间
+//*  @param:		void
+//*  @return:	    void
+//*
+void ExploreTime(void)
+{
+	static unsigned char DispPicture = 0;	//显示整幅图像
+	static unsigned char DispEage = 1;		//显示边缘
+	static signed char AddMul = 0;
+	static unsigned char AddValue = 1;
+	CannyEage();
+	//displayimage032(image[0]);
+	displayimage032_zoom(image[0], 64, 10, 70, 0);
+	if (DispEage)
+	{
+		unsigned char* p = ImageEage[0];
+		for (int i = 10; i <= 70; i++)
+		{
+			for (int j = 0; j < 160; j++)
+			{
+				unsigned char temp = *(p + i * ROW / 120 * COL + j * (COL - 1) / (160 - 1));//读取像素点
+				if (HIGH_TH == temp)
+				{
+					Lcd_SetRegion(j, i + 54, j, i + 54);		//坐标设置
+					LCD_WriteData_16Bit(BLUE);
+				}
+			}
+		}
+	}
+	//display
+	Dis_String(1, "exp_time"); Dis_Int(2, exp_time);
+	Dis_String(3, "ave_gray"); Dis_Int(4, LightThreshold);
+	OLED_Write_Int(0, 152, AddValue);
+	if (0 == AddMul) AddValue = 1;
+	else if (1 == AddMul) AddValue = 10;
+	else if (2 == AddMul) AddValue = 100;
+	switch (g_Key)
+	{
+	case 1:
+		MyFlash_Write(0);
+		break;
+	case 3:
+		exp_time += AddValue;
+		break;
+	case 4:
+		AddMul--;
+		if (AddMul < 0)AddMul = 2;
+		break;
+	case 6:
+		AddMul++;
+		if (AddMul > 2) AddMul = 0;
+		break;
+	case 5:
+		set_exposure_time(exp_time);
+		break;
+	case 8:
+		g_explore_page = 0;
+		g_pageNum = 1;
+		g_lineNum = 1;
+		OLED_Clear();
+		break;
+	case 9:
+		exp_time -= AddValue;
+		break;
+	default:
+		break;
+	}
+	INTR_Keyboard_Init();
 }

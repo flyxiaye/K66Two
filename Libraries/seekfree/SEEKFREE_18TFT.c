@@ -553,14 +553,14 @@ void tft_delay(long t)
 void  Lcd_WriteIndex(uint8 dat)			//写命令
 {
 	DC(0);
-	spi_mosi(spi1, SPI_PCS0, &dat, &dat, 1);
+	spi_mosi(spi0, SPI_PCS0, &dat, &dat, 1);
 
 }
 
 void Lcd_WriteData(uint8 dat)			//写数据
 {
 	DC(1);
-	spi_mosi(spi1, SPI_PCS0, &dat, &dat, 1);
+	spi_mosi(spi0, SPI_PCS0, &dat, &dat, 1);
 }
 
 void  LCD_WriteData_16Bit(uint16 dat)	//向液晶屏写一个16位数据
@@ -570,8 +570,8 @@ void  LCD_WriteData_16Bit(uint16 dat)	//向液晶屏写一个16位数据
 	l = (uint8)dat;
 
 	DC(1);
-	spi_mosi(spi1, SPI_PCS0, &h, &h, 1); 	//写入高8位数据
-	spi_mosi(spi1, SPI_PCS0, &l, &l, 1);	//写入低8位数据
+	spi_mosi(spi0, SPI_PCS0, &h, &h, 1); 	//写入高8位数据
+	spi_mosi(spi0, SPI_PCS0, &l, &l, 1);	//写入低8位数据
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -636,7 +636,7 @@ void dsp_single_colour(int color)
 //-------------------------------------------------------------------------------------------------------------------
 void lcd_init(void)
 {
-	(void)spi_init(spi1, SPI_PCS0, MASTER, 25 * 1000 * 1000);//硬件SPI初始化
+	(void)spi_init(spi0, SPI_PCS0, MASTER, 25 * 1000 * 1000);//硬件SPI初始化
 
 	gpio_init(DC_PIN, GPO, 0);
 	gpio_init(REST_PIN, GPO, 0);
@@ -691,8 +691,8 @@ void lcd_init(void)
 	Lcd_WriteData(0x0E);
 
 	Lcd_WriteIndex(0x36);
-//	Lcd_WriteData(0xA0);                //横屏命令
-	Lcd_WriteData(0x60);                //横屏命令
+	Lcd_WriteData(0xA0);                //横屏命令
+//	Lcd_WriteData(0x60);                //横屏命令
 //    Lcd_WriteData(0xC0); 
 //#ifdef USE_LANDSCAPE
 //	Lcd_WriteData(0xA8); //竖屏C8 横屏08 A8 68手册59，109页   高3位
@@ -939,7 +939,7 @@ void displayimage032(uint8 * p)
 //  @since      v1.0
 //  Sample usage:              
 //-------------------------------------------------------------------------------------------------------------------
-void displayimage032_zoom(uint8 * p, uint16 y_position, uint16 row_up, uint16 row_down)
+void displayimage032_zoom(uint8* p, uint16 y_position, uint16 row_up, uint16 row_down, uint8 showeage)
 {
 	int i, j;
 	int offset = y_position - row_up;
@@ -961,30 +961,33 @@ void displayimage032_zoom(uint8 * p, uint16 y_position, uint16 row_up, uint16 ro
 		}
 		y_position++;
 	}
-	//showeage
-	for (i = row_up; i < row_down; i++)
+	if (showeage)
 	{
-		Lcd_SetRegion(ML[i] * 159 / 188, i + offset, ML[i] * 159 / 188, i + offset);
-		LCD_WriteData_16Bit(BLUE);
-		Lcd_SetRegion(LL[i] * 159 / 188, i + offset, LL[i] * 159 / 188, i + offset);
-		LCD_WriteData_16Bit(GREEN);
-		Lcd_SetRegion(RL[i] * 159 / 188, i + offset, RL[i] * 159 / 188, i + offset);
-		LCD_WriteData_16Bit(RED);
-	}
-	Lcd_SetRegion(0, UP_EAGE + offset, 159, UP_EAGE + offset);
-	for (i = 0; i < 160; ++i)
-	{
-		LCD_WriteData_16Bit(RED);
-	}
-	Lcd_SetRegion(0, DOWN_EAGE + offset, 159, DOWN_EAGE + offset);
-	for (i = 0; i < 160; ++i)
-	{
-		LCD_WriteData_16Bit(GREEN);
-	}
-	Lcd_SetRegion(0, ProSpect + offset, 159, ProSpect + offset);
-	for (i = 0; i < 160; ++i)
-	{
-		LCD_WriteData_16Bit(YELLOW);
+		//showeage
+		for (i = row_up; i < row_down; i++)
+		{
+			Lcd_SetRegion(ML[i] * 159 / 188, i + offset, ML[i] * 159 / 188, i + offset);
+			LCD_WriteData_16Bit(BLUE);
+			Lcd_SetRegion(LL[i] * 159 / 188, i + offset, LL[i] * 159 / 188, i + offset);
+			LCD_WriteData_16Bit(GREEN);
+			Lcd_SetRegion(RL[i] * 159 / 188, i + offset, RL[i] * 159 / 188, i + offset);
+			LCD_WriteData_16Bit(RED);
+		}
+		Lcd_SetRegion(0, UP_EAGE + offset, 159, UP_EAGE + offset);
+		for (i = 0; i < 160; ++i)
+		{
+			LCD_WriteData_16Bit(RED);
+		}
+		Lcd_SetRegion(0, DOWN_EAGE + offset, 159, DOWN_EAGE + offset);
+		for (i = 0; i < 160; ++i)
+		{
+			LCD_WriteData_16Bit(GREEN);
+		}
+		Lcd_SetRegion(0, ProSpect + offset, 159, ProSpect + offset);
+		for (i = 0; i < 160; ++i)
+		{
+			LCD_WriteData_16Bit(YELLOW);
+		}
 	}
 }
 

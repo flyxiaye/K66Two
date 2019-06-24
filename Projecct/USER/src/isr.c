@@ -22,6 +22,7 @@
 #include "isr.h"
 #include "bluetooth.h"
 #include "MK60_uart.h"
+#include "keyboard.h"
 
    
 
@@ -37,7 +38,8 @@ int startcarlinewait = 0;
 void PORTA_IRQHandler(void)
 {
     //清除中断标志第一种方法直接操作寄存器，每一位对应一个引脚
-	PORTA->ISFR = 0xffffffff;
+		g_Key = Key_Scan();		//键盘获取数值
+    PORTA->ISFR = 0xffffffff;
 	//使用我们编写的宏定义清除发生中断的引脚
 	//PORTA_FLAG_CLR(A1);
 
@@ -49,7 +51,7 @@ void PORTC_IRQHandler(void)
     //清除中断标志第一种方法直接操作寄存器，每一位对应一个引脚
 	//PORTB->ISFR = 0xffffffff;
 	//使用我们编写的宏定义清除发生中断的引脚
-	PORTC_FLAG_CLR(C18);
+	PORTC_FLAG_CLR(C12);
         VSYNC();
 }
 
@@ -65,7 +67,6 @@ void PIT0_IRQHandler(void)
 {
     Mpu_Data_Prepare(0.002);
     My_IMU_update(0.002);
-    TurnTail();
 //    if (g_block_open)           //路障
 //    {
 //      inf();

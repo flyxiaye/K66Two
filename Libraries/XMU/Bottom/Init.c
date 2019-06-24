@@ -64,10 +64,10 @@ void encoder_Init(void)
 void DriveInit()      
 
 {
-   ftm_pwm_init(ftm3, ftm_ch4, 16000,0);
-   ftm_pwm_init(ftm3, ftm_ch5, 16000,0);
-   ftm_pwm_init(ftm3, ftm_ch6, 16000,0);
-   ftm_pwm_init(ftm3, ftm_ch7, 16000,0);
+   ftm_pwm_init(ftm0, ftm_ch4, 16000,0);
+   ftm_pwm_init(ftm0, ftm_ch5, 16000,0);
+   ftm_pwm_init(ftm0, ftm_ch6, 16000,0);
+   ftm_pwm_init(ftm0, ftm_ch7, 16000,0);
 }
 
 
@@ -133,11 +133,13 @@ void system_Init(void)
 ////     SD_BMP_Init();
 ////     crcInit();
      DialSwitchInit();
+     	INTR_Keyboard_Init();		//键盘初始化
 //     BluetoothInt();
      PIT_Init();    
     /**********设置中断优先级**********/
-    NVIC_SetPriorityGrouping(2);   
+    NVIC_SetPriorityGrouping(3);   
     NVIC_SetPriority(PORTC_IRQn,0);            //场中断
     NVIC_SetPriority(PIT0_IRQn,1);            //PIT
     NVIC_SetPriority(DMA0_IRQn,2);            //DMA0
+    NVIC_SetPriority(PORTA_IRQn,3);
 }

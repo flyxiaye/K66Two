@@ -68,10 +68,10 @@
 #define FTM3_CH1_PIN    D1        //D1、E6    
 #define FTM3_CH2_PIN    D2        //D2、E7    
 #define FTM3_CH3_PIN    D3        //D3、E8    
-#define FTM3_CH4_PIN    E9        //C8、E9    
+#define FTM3_CH4_PIN    C8        //C8、E9    
 #define FTM3_CH5_PIN    E10        //C9、E10                A0不要用（与Jtag、SWD冲突）
-#define FTM3_CH6_PIN    E11        //C10、E11                A1不要用（与Jtag冲突）
-#define FTM3_CH7_PIN    E12       //C11、E12            
+#define FTM3_CH6_PIN    C10        //C10、E11                A1不要用（与Jtag冲突）
+#define FTM3_CH7_PIN    C11       //C11、E12            
 
 //正交解码模块通道      端口      可选范围                建议
 #define FTM1_QDPHA_PIN  A8       //A8、A12、B0
@@ -117,9 +117,9 @@
 #define SPI1_PCS3_PIN   E6        // E6、               全部都是 ALT2
 
 
-#define SPI2_SCK_PIN    D12       // B21、D12           全部都是 ALT2
-#define SPI2_SOUT_PIN   D13       // B22、D13           全部都是 ALT2
-#define SPI2_SIN_PIN    D14       // B23、D14           全部都是 ALT2
+#define SPI2_SCK_PIN    B21       // B21、D12           全部都是 ALT2
+#define SPI2_SOUT_PIN   B22       // B22、D13           全部都是 ALT2
+#define SPI2_SIN_PIN    B23       // B23、D14           全部都是 ALT2
 #define SPI2_PCS0_PIN   D11       // B20、D11           全部都是 ALT2
 #define SPI2_PCS1_PIN   D15       // D15                全部都是 ALT2
 

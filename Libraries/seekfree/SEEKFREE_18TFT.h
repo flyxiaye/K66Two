@@ -47,8 +47,8 @@
 
 //#define _USE_LCD          //开启LCD取消注释
 
-#define DC_PIN		B18	//液晶命令位硬件定义		
-#define REST_PIN	B17 //液晶复位引脚定义
+#define DC_PIN		A24	//液晶命令位硬件定义		
+#define REST_PIN	A25 //液晶复位引脚定义
 #define DC(x)   	gpio_set(DC_PIN,x);
 #define REST(x) 	gpio_set(REST_PIN,x);
 
@@ -98,7 +98,7 @@ void lcd_showint8(uint16 x,uint16 y,int8 dat);
 void lcd_showint16(uint16 x,uint16 y,int16 dat);
 void showimage(const unsigned char *p);
 void displayimage032(uint8 *p);
-void displayimage032_zoom(uint8* p, uint16 y_position, uint16 row_up, uint16 row_down);
+void displayimage032_zoom(uint8* p, uint16 y_position, uint16 row_up, uint16 row_down, uint8 showeage);
 void displayimage7725(unsigned char *p);
 
 void ShowEage(void);
