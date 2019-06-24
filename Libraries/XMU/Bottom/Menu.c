@@ -884,7 +884,13 @@ void Main_Show(void)
 
 	Insert_Page("camera");//摄像头曝光时间
 	Insert_Int("exp", &exp_time);
-	Insert_Char("explore", &g_explore_page);
+	Insert_Int("HighTH", &HighThreshold);
+	Insert_Int("LowTH", &LowThreshold);
+	Insert_Int("ConMid", &ControlMid);
+	Insert_Char("exp_page", &g_explore_page);
+	Insert_Int("Diff", &DiffThreshold);
+	Insert_Int("Light", &LightThreshold);
+
 
 	Insert_Page("AD"); //电感
 	Insert_Int("L-", &ind_left_line);
