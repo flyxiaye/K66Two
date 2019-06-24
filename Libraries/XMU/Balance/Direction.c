@@ -14,30 +14,30 @@ void AD_DirectionControl();
 //================================================================//
 void Direction()
 {
-  
+  Camera_DirectionControl();
   //拨码开关向下拨，摄像头算法
-  if(dialSwitchFlg2&&balabaflag!=0)
-  {
-    
-    if(BrokenFlag == 2 && MEETING_MODE == 2 || BrokenFlag == 3)
-    {
-      gpio_init(A7, GPO, 1);
-      AD_DirectionControl();
-    }
-    else
-    {
-      gpio_init(A7, GPO, 0);
-      Camera_DirectionControl();
-    }
-  }
-  //拨码开关向上拨，电磁算法
-  else if(!dialSwitchFlg2&&balabaflag!=0)
-  {
-    
-      AD_DirectionControl();
-//      AD_CircleIsland_Control();
-    
-  }
+//  if(dialSwitchFlg2&&balabaflag!=0)
+//  {
+//    
+//    if(BrokenFlag == 2 && MEETING_MODE == 2 || BrokenFlag == 3)
+//    {
+//      gpio_init(A7, GPO, 1);
+//      AD_DirectionControl();
+//    }
+//    else
+//    {
+//      gpio_init(A7, GPO, 0);
+//      Camera_DirectionControl();
+//    }
+//  }
+//  //拨码开关向上拨，电磁算法
+//  else if(!dialSwitchFlg2&&balabaflag!=0)
+//  {
+//    
+//      AD_DirectionControl();
+////      AD_CircleIsland_Control();
+//    
+//  }
 }
 
 //================================================================//

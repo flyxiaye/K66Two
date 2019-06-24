@@ -78,8 +78,8 @@ void PIT0_IRQHandler(void)
 //      MeetingCarControl();
 //    }
 //    StopCar();
-    TurnTail();
-    StartSpeed();
+//    TurnTail();
+//    StartSpeed();
     DistCI();
     get_ind_error();
     AngleControl();

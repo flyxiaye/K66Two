@@ -269,7 +269,7 @@ void StartSpeed()
   if(g_drive_flag == 1 && ABS(distance) < 10000 && flag == 1)
   {
    
-    g_angle_set = angle_init + 5;
+    g_angle_set = angle_init ;
     distance += curSpeed;
     flag_2 = 1;
   }
