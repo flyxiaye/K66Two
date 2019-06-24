@@ -53,51 +53,40 @@ void SpeedControl()
 	}
        
 }
-
-void  SpeedControlOutput()
-{
-        static int get_flag = 0;
-        static int StartCount = 0;
-        //开机加速
-//        if(g_drive_flag == 0 && !get_flag)
-//        {
-//           get_flag = 1;
-//        }
-//        else if(g_drive_flag && get_flag && StartCount < 1000)
-//        {
-//              g_fSpeedControlOut = 4000;
-//              StartCount++;
-//              if(StartCount >= 1000)
-//              {
-//                get_flag = 0;
-//                StartCount = 0;
-//              }
-//        }
-//        else if(g_drive_flag && !get_flag)
-//        {
-                
-          g_nSpeedControlPeriod++;
-          g_fSpeedControlOut = (g_fSpeedControlOut_new - g_fSpeedControlOut_before) * (g_nSpeedControlPeriod + 1) / g_SpeedPeriod + g_fSpeedControlOut_before;
-          if (10 <= g_nSpeedControlPeriod)
-          {
-		g_nSpeedControlPeriod = 0;
-          }
-//        }
-}
-
-//void SpeedControlChangeAngle(void)//速度与角度串级暂时控不住
+////================================================================//
+////  @brief  :		速度环平滑输出
+////  @param  :		
+////  @return :		
+////  @note   :		void
+////================================================================//
+//void  SpeedControlOutput()
 //{
-//      //脉冲读取
-//    rCurSpeed =-ftm_quad_get(ftm1);
-//    lCurSpeed = ftm_quad_get(ftm2);
-//    curSpeed = (lCurSpeed+rCurSpeed)>>1;
-//    ftm_quad_clean(ftm1);
-//    ftm_quad_clean(ftm2);
-//    static float last_error = 0;
-//    g_speed_error = (spdExp1 - curSpeed) / 1000.0f;
-//    g_angle_set = g_angle_set_const -(g_speed_error_p * g_speed_error + g_speed_error_d * (g_speed_error - last_error));
-//    last_error = g_speed_error;
-//    g_angle_set = MAX(g_angle_set, -20);
-//    g_angle_set = MIN(g_angle_set, 40);
+//        static int get_flag = 0;
+//        static int StartCount = 0;
+//          g_nSpeedControlPeriod++;
+//          g_fSpeedControlOut = (g_fSpeedControlOut_new - g_fSpeedControlOut_before) * (g_nSpeedControlPeriod + 1) / g_SpeedPeriod + g_fSpeedControlOut_before;
+//          if (10 <= g_nSpeedControlPeriod)
+//          {
+//		g_nSpeedControlPeriod = 0;
+//          }
 //}
-
+//================================================================//
+//  @brief  :		角度环速度环串级
+//  @param  :		
+//  @return :		
+//  @note   :		void
+//================================================================//
+void SpeedAngle()
+{
+  static float Angle_init = 0;
+  static int flag = 0;
+  if(flag == 0 && g_drive_flag == 1)
+  {
+    Angle_init = g_angle_set;
+    flag = 1;
+  }  
+  if(flag == 1)
+  {
+    g_expect_angle = g_angle_set + g_fSpeedControlOut_new * 0.001;
+  }
+}

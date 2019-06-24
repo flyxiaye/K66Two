@@ -58,7 +58,7 @@ void TurnAround()
      {
        g_errorD = -deviation;
         integral += ABS(_RATE_YAW * 0.002);
-       if(ABS(integral) >= 180 || !BrokenFlag )
+       if(ABS(integral) >= 45 || !BrokenFlag )
        {
          step = 0;
          integral = 0;

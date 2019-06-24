@@ -5,77 +5,34 @@ int text_flag = 0;
 const unsigned char g_Bit_Val_Up[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};//液晶图像压缩;
 const unsigned char g_Bit_Val_Down[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
-//**********Angle(角度控制)**************//
-float g_angle_set=15.09;//车平衡位置角度
-float g_angle_set_const = 26;
-
-float g_gyro_ratio = 4.8;
-float g_AngleControlOut = 0;
-
-
-float g_rate_expect = 0;
-float g_rate_expect_old = 0;
-float g_rate_expect_integal = 0;
-float g_rate_expect_integal_old = 0;
-float g_angle_old = 0;
-float g_error = 0;
-float g_gyro_angle_x = 0;
-float g_angle = 0;
-
-int g_count = 0;
-
-
-//串级
-float g_AngleOut = 0.0f;
-float g_RateP = 39.09;
-float g_RateD = 61.69;
-float g_angle_P=19.3; 
-float g_angle_D=30; 
-//单级
-float g_single_angle_P = 1;
-float g_single_angle_D = 0;
-
-//***********MOTOR（电机模式及其输出及开关）***********//
-float g_fleft;
-float g_fright;
+//======================平衡=====================================//
 int g_mode=3;
-float g_duty_left=0;
+float g_duty_left=0;//自调PWM
 float g_duty_right=0;
-//***********Speed(速度控制)**********//
-int g_flag=0;  //是否发车
-float g_Speed_P = 240;
-float g_Speed_I = 0.97;
-float g_fSpeedControlOut = 0;//输出速度控制
-float g_fSpeed_set = 20;//设置的速度值
-float g_nSpeedControlPeriod=-1;
-float g_SpeedPeriod=10;
+float g_drive_left=0;//电机
+float g_drive_right=0;
+float g_angle_set;//设置的角度值
+float g_speed_set;//设置的速度值
 float g_nLeftMotorPulseSigma = 0;//编码器采集的脉冲值
 float g_nRightMotorPulseSigma = 0;//编码器采集的脉冲值
-float g_errorS = 0;
-int MaxSpeed = 3000;
-float g_fI = 1000;//积分项暂存处
-int Speed_MAX = 3800;//积分限幅
+float g_errorD = 0;
 
+PID RATE_STAND_PID = {0,0,0},   //角速度环控制直立
+    RATE_DIRECT_PID = {0,0,0},  //角速度环控制方向
+    ANGLE_PID = {0,0,0},        //角度环
+    SPEED_PID = {0,0,0},        //速度环
+    RADIUS_PID = {0,0,0};        //转弯半径
+ERROR RATE_STAND_ERROR = {0,0,0},
+      RATE_DIRECT_ERROR = {0,0,0},
+      ANGLE_ERROR = {0,0,0},
+      SPEED_ERROR = {0,0,0},
+      RADIUS_ERROR = {0,0,0};
+float RateOut_Stand = 0.0f,
+       RateOut_Direct = 0,
+       AngleOut = 0,
+       SpeedOut = 0,
+       radius = 0;              //转弯半径
 
-
-//**************************Direction方向环（摄像头）**************//
-float gRateKp = 8.41;            //串级p
-float gRateKd = 10.1;            //串级d
-
-float g_dire_P=9;
-float g_dire_D=9.2;
-float g_errorD=0;//差值
-float g_fDirectionControlOut;
-float g_nDirectionControlPeriod=0;//输出平滑
-float g_DirectionPeriod=5;//分的段数
-float AD_flag = 0;
-
-//**************************Direction方向环（电感）**************//
-float gRateKp_AD = 15;            //串级p
-float gRateKd_AD = 10;            //串级d
-
-float g_dire_P_AD=6;
-float g_dire_D_AD=10;
 //==========================图像变量============================//
 const int MidOffset[] = {
 	 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 11, 12, 13, 14, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 52, 53, 54, 55, 56, 57, 58, 59, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93,

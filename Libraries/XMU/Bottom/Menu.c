@@ -516,13 +516,10 @@ void Key_Function(void)
 				LineNumAdd();           //行数下移
 			break;
 		case 9:
-<<<<<<< Updated upstream
 			SD_Gather_Gray_Picture120x188();         break; //采图
-=======
 		g_drive_flag=!g_drive_flag;
 			// SD_Gather_Gray_Picture120x188();    
 			     break; //采图
->>>>>>> Stashed changes
 		default:                     break;
 		}
 	}
@@ -824,20 +821,42 @@ void Main_Show(void)
          Insert_Float("y",&sensor.Gyro_deg.y);
          Insert_Float("z",&sensor.Gyro_deg.z);
 
-         
-         
+         Insert_Page("RateStand"); //角速度环直立
+         Insert_Float("ERROR",&RATE_STAND_ERROR.ERROR);
+         Insert_Float("P",&RATE_STAND_PID.KP);
+         Insert_Float("D",&RATE_STAND_PID.KD);
+         Insert_Float("I",&RATE_STAND_PID.KI);
 
-         Insert_Page("PID_A");//角度
-         Insert_Float("set",&g_angle_set);
-         Insert_Float("out",&g_AngleOut);
-         Insert_Float("PA",&g_angle_P);
-         Insert_Float("PR",&g_RateP);
-         Insert_Float("DR",&g_RateD);
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
+         Insert_Page("RateDirect"); //角速度环方向
+         Insert_Float("ERROR",&RATE_DIRECT_ERROR.ERROR);
+         Insert_Float("P",&RATE_DIRECT_PID.KP);
+         Insert_Float("D",&RATE_DIRECT_PID.KD);
+         Insert_Float("I",&RATE_DIRECT_PID.KI);
          
+         Insert_Page("Angle"); //角度环直立
+         Insert_Float("ERROR",&ANGLE_ERROR.ERROR);
+         Insert_Float("P",&ANGLE_PID.KP);
+         Insert_Float("D",&ANGLE_PID.KD);
+         Insert_Float("I",&ANGLE_PID.KI);
+         
+         Insert_Page("Speed"); //速度环
+         Insert_Float("ERROR",&SPEED_ERROR.ERROR);
+         Insert_Float("P",&SPEED_PID.KP);
+         Insert_Float("D",&SPEED_PID.KD);
+         Insert_Float("I",&SPEED_PID.KI);
+         
+          Insert_Page("Radius"); //转弯半径
+         Insert_Float("ERROR",&RADIUS_ERROR.ERROR);
+         Insert_Float("P",&RADIUS_PID.KP);
+         Insert_Float("D",&RADIUS_PID.KD);
+         Insert_Float("I",&RADIUS_PID.KI);
+//         Insert_Page("PID_A");//角度
+//         Insert_Float("set",&g_angle_set);
+//         Insert_Float("out",&g_AngleOut);
+//         Insert_Float("PA",&g_angle_P);
+//         Insert_Float("PR",&g_RateP);
+//         Insert_Float("DR",&g_RateD);
+//         
          
          
 
@@ -856,25 +875,25 @@ void Main_Show(void)
 //	 Insert_Char("ImgStop", &Img_StopOpen);
          
          
-         Insert_Page("PID_D/C");//方向
-         Insert_Float("error",&g_errorD);
-         Insert_Float("Out" ,&g_fDirectionControlOut);
-         Insert_Float("KP",&gRateKp);
-         Insert_Float("KD",&gRateKd);
-         Insert_Float("P",&g_dire_P);
-         Insert_Float("D",&g_dire_D);
-         Insert_Int("MAX",&max_duty);
-         Insert_Int("ProOUT",&ProSpect);
+//         Insert_Page("PID_D/C");//方向
+//         Insert_Float("error",&g_errorD);
+//         Insert_Float("Out" ,&g_fDirectionControlOut);
+//         Insert_Float("KP",&gRateKp);
+//         Insert_Float("KD",&gRateKd);
+//         Insert_Float("P",&g_dire_P);
+//         Insert_Float("D",&g_dire_D);
+//         Insert_Int("MAX",&max_duty);
+//         Insert_Int("ProOUT",&ProSpect);
          
          
-         
-         Insert_Page("PID_D/AD");//方向
-         Insert_Float("error",&g_errorD);
-         Insert_Float("Out" ,&g_fDirectionControlOut);
-         Insert_Float("KP",&gRateKp_AD);
-         Insert_Float("KD",&gRateKd_AD);
-         Insert_Float("P",&g_dire_P_AD);
-         Insert_Float("D",&g_dire_D_AD);
+//         
+//         Insert_Page("PID_D/AD");//方向
+//         Insert_Float("error",&g_errorD);
+//         Insert_Float("Out" ,&g_fDirectionControlOut);
+//         Insert_Float("KP",&gRateKp_AD);
+//         Insert_Float("KD",&gRateKd_AD);
+//         Insert_Float("P",&g_dire_P_AD);
+//         Insert_Float("D",&g_dire_D_AD);
 
          
          
@@ -895,22 +914,22 @@ void Main_Show(void)
             
          
          
-        Insert_Page("PID_S");//速度
-         Insert_Float("SpdSet",&g_fSpeed_set);
-         Insert_Float("error",&g_errorS);
-         Insert_Float("P",&g_Speed_P);
-         Insert_Float("I",&g_Speed_I);
-         Insert_Int("MaxSpeed",&MaxSpeed);
-         Insert_Int("MaxI",&Speed_MAX);
-         Insert_Float("g_fI",&g_fI);
-         
+//        Insert_Page("PID_S");//速度
+//         Insert_Float("SpdSet",&g_fSpeed_set);
+//         Insert_Float("error",&g_errorS);
+//         Insert_Float("P",&g_Speed_P);
+//         Insert_Float("I",&g_Speed_I);
+//         Insert_Int("MaxSpeed",&MaxSpeed);
+//         Insert_Int("MaxI",&Speed_MAX);
+//         Insert_Float("g_fI",&g_fI);
+//         
          
          
         Insert_Page("PWM"); //电机
          Insert_Float("left",&g_nLeftMotorPulseSigma);
          Insert_Float("right",&g_nRightMotorPulseSigma);
-         Insert_Float("out_L",&g_fleft);
-         Insert_Float("out_R",&g_fright);
+         Insert_Float("out_L",&g_drive_left);
+         Insert_Float("out_R",&g_drive_right);
          Insert_Float("duty_L",&g_duty_left);
          Insert_Float("duty_R",&g_duty_right);
          

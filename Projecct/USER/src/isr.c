@@ -65,31 +65,18 @@ void PIT0_IRQHandler(void)
 {
     Mpu_Data_Prepare(0.002);
     My_IMU_update(0.002);
-//    if (g_block_open)           //路障
-//    {
-//      inf();
-//      roadblock3();
-//    }
-//    if (!g_single_open)         //会车
-//    {
-//      ChangeStartMeetingFlag();//识别会车
-//      MeetingCarControl();
-//    }
-<<<<<<< Updated upstream
-    StopCar();
-=======
 //    StopCar();
-    TurnAround();
->>>>>>> Stashed changes
-    StartSpeed();
-    DistCI();
-    get_ind_error();
-    AngleControl();
-    Direction();
-    DirectionControlOutput();
-    SpeedControl();             //读取编码器计数
-    SpeedControlOutput();
-    power();
+//    TurnAround();
+//    StartSpeed();
+//    DistCI();
+//    get_ind_error();
+//    AngleControl();
+//    Direction();
+//    DirectionControlOutput();
+//    SpeedControl();             //读取编码器计数
+//    SpeedControlOutput();
+//    power();
+    
     PIT_FlAG_CLR(pit0);
 }
 //-------------------------------------------------------------------------------------------------------------------

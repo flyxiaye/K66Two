@@ -2,16 +2,6 @@
 #include "headfile.h"
 #include "MK60_ftm.h"
 #include "PID.h"
-//------------电机管脚-------------------------------------------------
-
-
-
-
-
-
-
-
-
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      转换模式函数
 //  @param      		
@@ -37,46 +27,26 @@ void changemode()
 //-------------------------------------------------------------------------------------------------------------------
 void motormode(float mode)
 {
-	int a1 = 0, b1 = 0, c1 = 0, a2 = 0, b2 = 0, c2 = 0;
 	if (1 == mode)//直立
 	{
-		a1 = 1; a2 = 1;
-		b1 = 0; b2 = 0;
-		c1 = 0; c2 = 0;
+		g_drive_left = RateOut_Stand;
+                g_drive_right = RateOut_Stand;
 	}
-	if (2 == mode)//方向+直立
+	if (3 == mode)//方向+直立+速度环
 	{
-		a1 = 1; a2 = 1;
-		b1 = 0; b2 = 0;
-		c1 = 1; c2 = -1;
-		g_fSpeedControlOut = 0;
-	}
-	if (3 == mode)//速度+方向+直立
-	{
-		a1 = 1; a2 = 1;
-		b1 = -1; b2 = -1;
-		c1 = -1; c2 = 1;
-
-	}
-	if (RampFlag != 1)
-	{
-		g_fleft = a1 * g_AngleControlOut + c1 * g_fDirectionControlOut + b1 * g_fSpeedControlOut;
-		g_fright = a2 * g_AngleControlOut + c2 * g_fDirectionControlOut + b2 * g_fSpeedControlOut;
-	}
-	if (RampFlag == 1)
-	{
-		;//避障函数执行
+		g_drive_left = RateOut_Stand - RateOut_Direct;
+                g_drive_right = RateOut_Stand + RateOut_Direct;
 	}
 
 	if (4 == mode)//手调
 	{
-		g_fleft = g_duty_left;
-		g_fright = g_duty_right;
+		g_drive_left = g_duty_left;
+		g_drive_right = g_duty_right;
 	}
-        if (5 == mode)//拍地模式
+        if (5 == mode)//拍地模式2
 	{
-		g_fleft = g_AngleControlOut;
-		g_fright = g_AngleControlOut;
+		g_drive_left = RateOut_Stand;
+		g_drive_right = RateOut_Stand;
 	}
 
 }
@@ -152,7 +122,7 @@ void power()
 	if (1 == g_drive_flag)
 	{
 		motormode(g_mode);
-		DrivePWM(g_fleft, g_fright);
+		DrivePWM(g_drive_left, g_drive_right);
 	}
 	else if (0 == g_drive_flag)
 	{
@@ -186,12 +156,12 @@ void StopCar()
               
 	}
 }
-================================================================//
-  @brief  :	动态前瞻
-  @param  :		
-  @return :		
-  @note   :      void
-================================================================//
+//================================================================//
+//  @brief  :	动态前瞻
+//  @param  :		
+//  @return :		
+//  @note   :      void
+//================================================================//
 void DynamicProspect()
 {
 	int array[50] = { 54,54,54,54,54,53,53,53,52,52,52,51,51,51,50,50,49,49,48,
@@ -285,21 +255,3 @@ void StartSpeed()
   }
   
 }
-////-------------------------------------------------------------------------------------------------------------------
-////  @brief      停车函数
-////  @param      	
-////  @param      	
-////  @param     	 	
-////  @return     
-////---------------------------------------------------------------------------------------------------------------------
-//void StopCar(void)
-//{
-//  int sum = 0;
-//  for (int i = 0; i < 188; i++)
-//  {
-//    if (image[DOWN_EAGE][i] < 50)sum++;
-//  }
-//
-//    if (sum > 150)
-//      g_drive_flag = 0;
-//}
