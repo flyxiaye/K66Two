@@ -15,78 +15,47 @@ extern unsigned char g_Img_All_120x188[ROW][COL];
 
 extern const unsigned char g_Bit_Val_Up[8];
 extern const unsigned char g_Bit_Val_Down[8];
-
-//**********Angle(角度控制)**************//
-extern float angle;
-extern float g_AngleControlOut;
-extern float g_angle_set;
-
-
-extern float g_error;
-extern float g_angle;
-
-extern int g_count;
-//串级
-extern float g_AngleOut;
-extern float g_RateP ;
-extern float g_RateD;
-extern float g_angle_P; 
-extern float g_angle_D; 
-//单级
-extern float g_single_angle_P;
-extern float g_single_angle_D;
-//***********MOTOR（电机模式及其输出及开关）***********//
-extern float g_fleft;
-extern float g_fright;
+//============================平衡=======================//
 extern int g_mode;
+extern float g_drive_left;
+extern float g_drive_right;
 extern float g_duty_left;
 extern float g_duty_right;
-//***********Speed(速度控制)**********//
-extern float g_Speed_P;
-extern float g_Speed_I;
-extern float g_fSpeedControlOut;//输出速度控制
-extern float g_fSpeed_set;//设置的速度值
-extern float g_nSpeedControlPeriod;
-extern float g_SpeedPeriod;
+extern float g_angle_set;//设置的角度值
+extern float g_speed_set;//设置的速度值
 extern float g_nLeftMotorPulseSigma;
 extern float g_nRightMotorPulseSigma;
-extern float g_s;
-extern float g_errorS ;
+extern float g_errorD;//方向环差值
+extern int g_ad_flag;
 
-extern float g_duty_PWMleft;
-extern float g_duty_PWMright;
-extern int g_mode;
-extern int g_drive_flag;
-extern int MaxSpeed;
-extern int Speed_MAX ;
-extern float g_fI ;//积分项暂存处
+typedef struct PID
+{
+	float KP;
+	float KD;
+        float KI;
+}PID;
+typedef struct ERROR
+{
+	float ERROR;
+        float ERROR_LAST;
+        float ERROR_SUM;
+}ERROR;
 
-//**************************Direction方向环（摄像头）**************//
-extern float gRateKp;            //串级p
-extern float gRateKd;            //串级d
-
-extern int g_need ;//摄像头取得行数
-extern float g_dire_P;
-extern float g_dire_D;
-extern float g_errorD;//差值
-extern float g_fDirectionControlOut;
-extern float g_nDirectionControlPeriod;//输出平滑
-extern float g_DirectionPeriod;//分的段数
-extern float AD_flag;
-
-extern float g_dire_ad_P;
-extern float g_dire_ad_D ;
-
-extern float g_fDirectionControlOut_new;
-extern float g_fDirectionControlOut_before;
-//**************************Direction方向环（电感）**************//
-extern float gRateKp_AD ;            //串级p
-extern float gRateKd_AD ;            //串级d
-
-extern float g_dire_P_AD;
-extern float g_dire_D_AD;
-
-
+extern PID RATE_STAND_PID ,   //角速度环控制直立
+    RATE_DIRECT_PID ,  //角速度环控制方向
+    ANGLE_PID ,        //角度环
+    SPEED_PID ,        //速度环
+    RADIUS_PID;        //转弯半径
+extern ERROR RATE_STAND_ERROR ,
+      RATE_DIRECT_ERROR ,
+      ANGLE_ERROR ,
+      SPEED_ERROR ,
+      RADIUS_ERROR ;
+extern float RateOut_Stand ,
+               RateOut_Direct,
+               AngleOut ,
+               SpeedOut ,
+               radius ;    
 
 //==========================图像变量============================//
 #define LEFT_EAGE 0			//图像左边界
@@ -417,70 +386,6 @@ extern float g_speed_error;
 extern float g_speed_error_i;
 extern float g_speed_error_p;
 extern float g_speed_error_d;
-///*=====================================速度控制========================================*/
-//
-//extern int opposite_ready,opposite_wait,opposite_done;
-//extern int KDet;
-//
-////电机输出限幅
-//#define SPEED_OUT_MAX  9999  //正转最大
-//#define SPEED_OUT_MIN -9999  //反转最大
-//#define IOUT_MAX       9500  //积分最大
-//#define IOUT_MIN      -6000  //积分最小
-//
-//
-//
-//extern int g_steer_error; //舵机偏差
-//
-//typedef struct
-//{
-//    float error;//偏差
-//    float iError;//偏差积分项
-//    float iOut;//积分输出项
-//    
-//     float p;
-//     float i;
-//}SPEED;
-//
-//
-//extern float curSpeed;
-//extern int lCurSpeed;
-//extern int rCurSpeed;
-//extern int sidetype;//赛道类型
-//extern SPEED leftDrv;
-//extern SPEED rightDrv;
-////期望速度
-//extern int spdExp;
-//extern int spdExp0;
-//extern int spdExp1;
-//extern int spdExp2;
-//extern int spdExp3;
-//extern int spdExp4;
-//extern float leftExpect; //左轮期望速度
-//extern float rightExpect;//右轮期望速度
-//
-//extern signed int leftSpeedOut; //左轮速度输出
-//extern signed int rightSpeedOut;//右轮速度输出
-////速度控制pi
-//extern float g_speed_p;
-//extern float g_speed_i;
-//
-//extern signed int lOverflowFlg;//左轮遇限方向积分溢出标志
-//extern signed int rOverflowFlg;//右轮遇限方向积分溢出标志
-////extern int s4;
-////extern int s5;
-////extern int s6;
-////extern int s7;
-//
-//extern int d_spd_max;
-//extern int d_spd_high;
-//extern int d_spd_mid;
-//extern int d_spd_low;
-//
-//extern int s_width;
-//extern int m_width;
-//extern int l_width;
-
 
 
 //==========================硬件参数区============================//
