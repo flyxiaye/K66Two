@@ -23,7 +23,7 @@ void TurnAround()
    {
    case 0:
      {
-       if(BrokenFlag == 1 )
+       if(Img_BrokenFlag == 1 )
        {
          angle_init = g_angle_set;
          g_angle_set = angle_init + 3;
@@ -33,7 +33,7 @@ void TurnAround()
      }
    case 1:
      {
-       if(BrokenFlag == 2)
+       if(Img_BrokenFlag == 2)
        {
          g_mode = 2;
          step = 2;
@@ -58,7 +58,7 @@ void TurnAround()
      {
        g_errorD = -deviation;
         integral += ABS(_RATE_YAW * 0.002);
-       if(ABS(integral) >= 45 || !BrokenFlag )
+       if(ABS(integral) >= 45 || !Img_BrokenFlag )
        {
          step = 0;
          integral = 0;

@@ -78,7 +78,7 @@ void PIT0_IRQHandler(void)
 //    SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
 //    SpeedControlOutput();
 //    power();
-    
+    OutControl();
     PIT_FlAG_CLR(pit0);
 }
 //-------------------------------------------------------------------------------------------------------------------

@@ -897,21 +897,21 @@ void Main_Show(void)
 //         Insert_Float("D",&g_dire_D_AD);
 
 
-	Insert_Page("PID_S");//速度
-	Insert_Float("SpdSet", &g_fSpeed_set);
-	Insert_Float("error", &g_errorS);
-	Insert_Float("P", &g_Speed_P);
-	Insert_Float("I", &g_Speed_I);
-	Insert_Int("MaxSpeed", &MaxSpeed);
-	Insert_Int("MaxI", &Speed_MAX);
-	Insert_Float("g_fI", &g_fI);
+//	Insert_Page("PID_S");//速度
+//	Insert_Float("SpdSet", &g_fSpeed_set);
+//	Insert_Float("error", &g_errorS);
+//	Insert_Float("P", &g_Speed_P);
+//	Insert_Float("I", &g_Speed_I);
+//	Insert_Int("MaxSpeed", &MaxSpeed);
+//	Insert_Int("MaxI", &Speed_MAX);
+//	Insert_Float("g_fI", &g_fI);
 
 
 	Insert_Page("PWM"); //电机
 	Insert_Float("left", &g_nLeftMotorPulseSigma);
 	Insert_Float("right", &g_nRightMotorPulseSigma);
-	Insert_Float("out_L", &g_fleft);
-	Insert_Float("out_R", &g_fright);
+	Insert_Float("out_L", &g_drive_left);
+	Insert_Float("out_R", &g_drive_right);
 	Insert_Float("duty_L", &g_duty_left);
 	Insert_Float("duty_R", &g_duty_right);
 
