@@ -149,7 +149,7 @@ int ControlMid = 90;						//图像控制中值
 
 
 int g_drive_flag = 0;           //电机开关标志
-int g_ad_flag = 0;              //电感采集标志
+int g_ad_flag = 1;              //电感采集标志
 int g_steer_open = 1;           //舵机开关标志
 int g_handle_open = 0;          //补图开关标志
 int g_ramp_open = 0;            //坡道开关标志

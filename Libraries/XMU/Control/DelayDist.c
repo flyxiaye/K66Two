@@ -101,18 +101,22 @@ void DistCI(void)
 //================================================================//
 void IndCI(void)
 {
-	if (right_line_norm > 1.1 && !CircleFlag)
+  static int mid_normflag=0,col_normflag=0;
+	if (mid_norm > 1.4&&(right_column_norm>0.25||left_column_norm>0.25) &&!CircleFlag&&!col_normflag&&!mid_normflag)
 	{
+          mid_normflag=1;
+        }
+         else if((right_column_norm>0.5||left_column_norm>0.5)&&mid_normflag)
+          {
+            col_normflag=1;
+          }
+         else if(mid_normflag&&col_normflag)
+          {
+            mid_normflag=0;
+            col_normflag=0;
 		CircleFlag = 2;
-		CircleState = 3;
-		gpio_init(D0, GPO, 0);
-	}
-	if (left_line_norm > 1.1 && !CircleFlag)
-	{
-		CircleFlag = 1;
-		CircleState = 3;
-		gpio_init(D0, GPO, 0);
-	}
+		CircleState = 2;
+          }
 }
 
 //================================================================//

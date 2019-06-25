@@ -80,7 +80,8 @@ void PIT0_IRQHandler(void)
 	//    StopCar();
 	//    TurnTail();
 	//    StartSpeed();
-	DistCI();
+//	DistCI();
+        IndCI();
 	get_ind_error();
 	AngleControl();
 	Direction();

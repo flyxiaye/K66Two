@@ -91,7 +91,7 @@ void MainFill(void)
 			FillLineAB();
 			FillLineCD();
 			FillAllEage();
-			//                        CircleFlag = CN;
+			                       CircleFlag = CN;
 		}
 		else if (CR == CircleFlag)
 		{
@@ -103,7 +103,7 @@ void MainFill(void)
 			FillLineAB();
 			FillLineCD();
 			FillAllEage();
-			//                        CircleFlag = CN;
+			                        CircleFlag = CN;
 		}
 		else
 #endif
