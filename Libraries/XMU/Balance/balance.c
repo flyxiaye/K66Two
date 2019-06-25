@@ -98,7 +98,7 @@ float DynamicPID(PID pid, ERROR error, float now, float expect)
    float out = 0;
    error.ERROR = expect - now;
    pid.KP = error.ERROR * error.ERROR / pid.KD + pid.KI;
-   error.ERROR_SUM = error.ERROR * pid.KI;
+   error.ERROR_SUM += error.ERROR * pid.KI;
    out = error.ERROR * pid.KP + (error.ERROR - error.ERROR_LAST) * pid.KD + error.ERROR_SUM;
    error.ERROR_LAST = error.ERROR;
    return out;
