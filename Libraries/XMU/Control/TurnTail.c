@@ -8,6 +8,7 @@ float flipgyro = 0;
 void TurnTail()
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   static float angle_init = 0;
   static int step = 0;
   static int integral = 0;
@@ -61,6 +62,8 @@ void TurnTail()
      }
    }
 =======
+=======
+>>>>>>> parent of 31a416a... 常神代码移植
 //  flipgyro+= sensor.Gyro_deg.z * 0.002;
     static float lastangle, lastspeed, first, initangleset, initmode;
     static int TurnTail = 0, acc_speed = 0, count = 0, initcameraopen, initindopen;
@@ -170,5 +173,8 @@ void TurnTail()
         }
         }
     }
+<<<<<<< HEAD
+>>>>>>> parent of 31a416a... 常神代码移植
+=======
 >>>>>>> parent of 31a416a... 常神代码移植
 }

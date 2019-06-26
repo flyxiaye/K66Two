@@ -68,6 +68,7 @@ void PIT0_IRQHandler(void)
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//    StopCar();
 	//    TurnAround();
 	//    StartSpeed();
@@ -82,6 +83,8 @@ void PIT0_IRQHandler(void)
 	OutControl();
 	StopCar();
 =======
+=======
+>>>>>>> parent of 31a416a... å¸¸ç¥ä»£ç ç§»æ¤
 	//    if (g_block_open)           //Â·ÕÏ
 	//    {
 	//      inf();
@@ -102,6 +105,9 @@ void PIT0_IRQHandler(void)
 	DirectionControlOutput();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊı
 	SpeedControlOutput();
+<<<<<<< HEAD
+>>>>>>> parent of 31a416a... å¸¸ç¥ä»£ç ç§»æ¤
+=======
 >>>>>>> parent of 31a416a... å¸¸ç¥ä»£ç ç§»æ¤
 	power();
 	PIT_FlAG_CLR(pit0);
