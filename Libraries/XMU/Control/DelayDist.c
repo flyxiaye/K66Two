@@ -105,13 +105,13 @@ void IndCI(void)
 	{
 		CircleFlag = 2;
 		CircleState = 3;
-		gpio_init(D0, GPO, 0);
+//		gpio_init(D0, GPO, 0);
 	}
 	if (left_line_norm > 1.1 && !CircleFlag)
 	{
 		CircleFlag = 1;
 		CircleState = 3;
-		gpio_init(D0, GPO, 0);
+//		gpio_init(D0, GPO, 0);
 	}
 }
 

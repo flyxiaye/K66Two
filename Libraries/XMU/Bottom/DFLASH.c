@@ -68,24 +68,24 @@ void MyFlash_Write(signed int flashnum)
 
 
        /********** 以下为存储的数据 **********/
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);//角度设置
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_angle_P);//角度环
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, g_RateP);//内环角速度环
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 4, g_RateD);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 5, g_dire_P);//方向环
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 6, g_dire_D);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 7, g_fSpeed_set);//速度环设置
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 8, g_Speed_P);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 9, g_Speed_I);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 10, gRateKd);//方向串级
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 11, gRateKp);
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, MaxSpeed);//速度环限幅
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 13, ProSpect);//前瞻
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 14, meet_st);//会车给的固定偏差
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, max_duty);//速度环输出限幅
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 16, st);//V字形避障偏差
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 17, stop_inf); //路障拐弯红外
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 18, sum_dist);//V字形避障路程积分
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);//角度设置
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_speed_set);//角度环
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, RATE_STAND_PID.KP);//内环角速度环控制角度
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 4, RATE_STAND_PID.KD);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 5, RATE_STAND_PID.KI);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 6, RATE_DIRECT_PID.KP);//内角速度环控制方向
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 7, RATE_DIRECT_PID.KD);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 8, RATE_DIRECT_PID.KI);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 9, ANGLE_PID.KP);//角度环
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 10, ANGLE_PID.KD);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 11, ANGLE_PID.KI);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, SPEED_PID.KP);//速度环
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 13, SPEED_PID.KD);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 14, SPEED_PID.KI);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, RADIUS_PID.KP);//方向环动态PID
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 16, RADIUS_PID.KD);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 17, RADIUS_PID.KI); 
+//    DFlash_Write_Int(SECTOR_NUM + flashnum, 18, sum_dist);//V字形避障路程积分
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 19, ave_left_cross);//电感归一化
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 20,  ave_right_cross);//
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 21,  ave_left_column);//
@@ -116,23 +116,23 @@ void MyFlash_Read(signed int flashnum)
 
      
 //      
-//        g_angle_set = DFlash_Read_Float(SECTOR_NUM + flashnum, 1);
-//        g_angle_P = DFlash_Read_Float(SECTOR_NUM + flashnum, 2);
-//        g_RateP = DFlash_Read_Float(SECTOR_NUM + flashnum, 3);
-//        g_RateD = DFlash_Read_Float(SECTOR_NUM + flashnum, 4);
-//        g_dire_P = DFlash_Read_Float(SECTOR_NUM + flashnum, 5);
-//        g_dire_D = DFlash_Read_Float(SECTOR_NUM + flashnum, 6);
-//        g_fSpeed_set = DFlash_Read_Float(SECTOR_NUM + flashnum, 7);
-//        g_Speed_P= DFlash_Read_Float(SECTOR_NUM + flashnum, 8);    
-//        g_Speed_I = DFlash_Read_Float(SECTOR_NUM + flashnum, 9);
-//        gRateKd = DFlash_Read_Float(SECTOR_NUM + flashnum, 10);
-//        gRateKp = DFlash_Read_Float(SECTOR_NUM + flashnum, 11);
-//        MaxSpeed= DFlash_Read_Int(SECTOR_NUM + flashnum, 12);
-//        ProSpect = DFlash_Read_Int(SECTOR_NUM + flashnum,13);
-////        meet_st = DFlash_Read_Int(SECTOR_NUM + flashnum,14);
-//        max_duty = DFlash_Read_Int(SECTOR_NUM + flashnum,15);
-//        st = DFlash_Read_Int(SECTOR_NUM + flashnum,16);
-//        stop_inf = DFlash_Read_Int(SECTOR_NUM + flashnum,17);
+        g_angle_set = DFlash_Read_Float(SECTOR_NUM + flashnum, 1);
+        g_speed_set = DFlash_Read_Float(SECTOR_NUM + flashnum, 2);
+        RATE_STAND_PID.KP = DFlash_Read_Float(SECTOR_NUM + flashnum, 3);
+        RATE_STAND_PID.KD = DFlash_Read_Float(SECTOR_NUM + flashnum, 4);
+        RATE_STAND_PID.KI = DFlash_Read_Float(SECTOR_NUM + flashnum, 5);
+        RATE_DIRECT_PID.KP = DFlash_Read_Float(SECTOR_NUM + flashnum, 6);
+        RATE_DIRECT_PID.KD = DFlash_Read_Float(SECTOR_NUM + flashnum, 7);
+        RATE_DIRECT_PID.KI= DFlash_Read_Float(SECTOR_NUM + flashnum, 8);    
+        ANGLE_PID.KP = DFlash_Read_Float(SECTOR_NUM + flashnum, 9);
+        ANGLE_PID.KD = DFlash_Read_Float(SECTOR_NUM + flashnum, 10);
+        ANGLE_PID.KI = DFlash_Read_Float(SECTOR_NUM + flashnum, 11);
+        SPEED_PID.KP= DFlash_Read_Int(SECTOR_NUM + flashnum, 12);
+        SPEED_PID.KD = DFlash_Read_Int(SECTOR_NUM + flashnum,13);
+        SPEED_PID.KI = DFlash_Read_Int(SECTOR_NUM + flashnum,14);
+        RADIUS_PID.KP = DFlash_Read_Int(SECTOR_NUM + flashnum,15);
+        RADIUS_PID.KD = DFlash_Read_Int(SECTOR_NUM + flashnum,16);
+        RADIUS_PID.KI = DFlash_Read_Int(SECTOR_NUM + flashnum,17);
 //        sum_dist = DFlash_Read_Int(SECTOR_NUM + flashnum,18);       
 //         ave_left_cross = DFlash_Read_Int(SECTOR_NUM + flashnum,19);
 //        ave_right_cross = DFlash_Read_Int(SECTOR_NUM + flashnum,20);

@@ -50,6 +50,7 @@ int main(void)
          //Bluebooth_Push_Data();
 //    SendAngle();
 //    SendData();
+<<<<<<< Updated upstream
     else 
     {
       Menu();
@@ -68,4 +69,11 @@ int main(void)
 //      gpio_init(E6,GPO,1);
   }
   
+=======
+//		if (CircleFlag)
+//			gpio_init(A7, GPO, 1);
+//		else gpio_init(A7, GPO, 0);
+	}
+
+>>>>>>> Stashed changes
 }

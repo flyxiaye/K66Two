@@ -834,12 +834,14 @@ void Main_Show(void)
          Insert_Float("I",&RATE_DIRECT_PID.KI);
          
          Insert_Page("Angle"); //角度环直立
+         Insert_Float("SET",&g_angle_set);
          Insert_Float("ERROR",&ANGLE_ERROR.ERROR);
          Insert_Float("P",&ANGLE_PID.KP);
          Insert_Float("D",&ANGLE_PID.KD);
          Insert_Float("I",&ANGLE_PID.KI);
          
          Insert_Page("Speed"); //速度环
+         Insert_Float("SET",&g_speed_set);
          Insert_Float("ERROR",&SPEED_ERROR.ERROR);
          Insert_Float("P",&SPEED_PID.KP);
          Insert_Float("D",&SPEED_PID.KD);
