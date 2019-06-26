@@ -49,6 +49,7 @@ void MainFill(void)
 			FillLineAB();
 			FillLineCD();
 			FillAllEage();
+			
 		}
 		else if (CR == CircleFlag)
 		{
@@ -90,6 +91,7 @@ void MainFill(void)
 			FillLineAB();
 			FillLineCD();
 			FillAllEage();
+			//                        CircleFlag = CN;
 		}
 		else if (CR == CircleFlag)
 		{
@@ -101,6 +103,7 @@ void MainFill(void)
 			FillLineAB();
 			FillLineCD();
 			FillAllEage();
+			//                        CircleFlag = CN;
 		}
 		else
 #endif
@@ -136,9 +139,9 @@ void GetML(void)
 	else
 #endif // CIRCLE
 	{
-		if (SpecialElemFlag)
+		if (Img_SpecialElemFlag)
 			SpecialElemFill();
-		if (!SpecialElemFlag)
+		if (!Img_SpecialElemFlag)
 			MainFill();
 	}
 
@@ -150,6 +153,4 @@ void GetML(void)
 	}
 	if (!ErrorFlag)
 		SpeedRow = GetSpeedRow(ML[DOWN_EAGE], LeftPnt.ErrRow, RightPnt.ErrRow);
-
-
 }

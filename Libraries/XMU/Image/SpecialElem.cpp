@@ -13,7 +13,7 @@
 
 //================================================================//
 //  @brief  :		»·µºÅÐ¶Ï
-//  @param  :		void 
+//  @param  :		0ÅÐ¶Ï×´Ì¬1 1ÅÐ¶Ï×´Ì¬2 
 //  @return :		void
 //  @note   :		void
 //================================================================//
@@ -21,11 +21,11 @@ int ImgJudgeCircle(int type)
 {
 	if (0 == type)
 	{
-		if (Img_CircleOpen && !SpecialElemFlag
+		if (Img_CircleOpen && !Img_SpecialElemFlag
 			&& LeftPnt.Type == 2 && LeftPnt.ErrRow > UP_EAGE + 20 && RightPnt.ErrRow < UP_EAGE + 10
 			&& LeftPnt.ErrCol < MIDDLE && RightPnt.ErrCol > MIDDLE - 7 && IsCircleIsland(CL))
 			return CL;
-		else if (Img_CircleOpen && !SpecialElemFlag
+		else if (Img_CircleOpen && !Img_SpecialElemFlag
 			&& RightPnt.Type == 2 && RightPnt.ErrRow > UP_EAGE + 20 && LeftPnt.ErrRow < UP_EAGE + 10
 			&& RightPnt.ErrCol > MIDDLE && LeftPnt.ErrCol < MIDDLE + 7 && IsCircleIsland(CR))
 			return CR;
@@ -33,11 +33,13 @@ int ImgJudgeCircle(int type)
 	}
 	else
 	{
-		if (Img_CircleOpen && !SpecialElemFlag
-			&& LL[DOWN_EAGE] == LEFT_EAGE && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7)
+		if (Img_CircleOpen && !Img_SpecialElemFlag
+			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7
+			&& RightPnt.ErrCol < RIGHT_EAGE - 30)
 			return CL;
-		else if (Img_CircleOpen && !SpecialElemFlag
-			&& RL[DOWN_EAGE] == RIGHT_EAGE && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7)
+		else if (Img_CircleOpen && !Img_SpecialElemFlag
+			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7
+			&& LeftPnt.ErrCol > LEFT_EAGE + 30)
 			return CR;
 		else return CN;
 	}
@@ -71,13 +73,13 @@ void ImgJudgeStopLine(void)
 void ImgJudgeRamp(void)
 {
 #if RAMP
-	if (Img_RampOpen && !SpecialElemFlag
+	if (Img_RampOpen && !Img_SpecialElemFlag
 		&& LeftPnt.ErrRow <= UP_EAGE + 1 && RightPnt.ErrRow <= UP_EAGE + 1)
 	{
 		if (IsRamp())
 		{
-			RampFlag = 1;
-			SpecialElemFlag = 1;
+			Img_RampFlag = 1;
+			Img_SpecialElemFlag = 1;
 		}
 	}
 #endif
@@ -115,30 +117,30 @@ void ImgJudgeCurveBroken(void)
 void ImgJudgeBlock(void)
 {
 #if BLOCK_BROKEN
-	if ((Img_BlockOpen || Img_BrokenOpen) && !SpecialElemFlag)		//¶ÏÂ·Â·ÕÏÅÐ¶Ï
+	if ((Img_BlockOpen || Img_BrokenOpen) && !Img_SpecialElemFlag)		//¶ÏÂ·Â·ÕÏÅÐ¶Ï
 	{
 		int flag = ImgJudgeSpecialElem(LeftIntLine, RightIntLine);
 		if (1 == Img_BlockOpen && 1 == flag)
 		{
-			BlockFlag = 1;
-			SpecialElemFlag = 1;
+			Img_BlockFlag = 1;
+			Img_SpecialElemFlag = 1;
 		}
 		else if (2 == Img_BlockOpen && flag)			//ºìÍâÊ¶±ðÂ·ÕÏ
 		{
-			BrokenFlag = 1;
-			SpecialElemFlag = 1;
+			Img_BrokenFlag = 1;
+			Img_SpecialElemFlag = 1;
 #if INF
 			if (g_inf > stop_inf)
 			{
-				BlockFlag = 1;
-				BrokenFlag = 0;
+				Img_BlockFlag = 1;
+				Img_BrokenFlag = 0;
 			}
 #endif 
 		}
 		else if (Img_BrokenOpen && 2 == flag)
 		{
-			BrokenFlag = 1;
-			SpecialElemFlag = 1;
+			Img_BrokenFlag = 1;
+			Img_SpecialElemFlag = 1;
 		}
 		else;
 	}
@@ -162,60 +164,60 @@ void SpecialElemFill(void)
 	LeftPnt.Type = RightPnt.Type = 0;
 	SelectFirstLine();
 	FindLineNormal(0);
-	if (1 == BrokenFlag)
+	if (1 == Img_BrokenFlag)
 	{
 		if (LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
 			&& LeftPnt.ErrRow < UP_EAGE + 15 && RightPnt.ErrRow < UP_EAGE + 15
 			&& DistStopLine(UP_EAGE + 15))
 		{
-			StopLineFlag = 1;
-			BrokenFlag = 0;
+			Img_StopLineFlag = 1;
+			Img_BrokenFlag = 0;
 		}
-		else if (1 == BlockFlag && 1 == ImgJudgeSpecialElem(LeftIntLine, RightIntLine))
+		else if (1 == Img_BlockFlag && 1 == ImgJudgeSpecialElem(LeftIntLine, RightIntLine))
 		{
-			BlockFlag = 1;			//Â·ÕÏ
-			BrokenFlag = 0;
+			Img_BlockFlag = 1;			//Â·ÕÏ
+			Img_BrokenFlag = 0;
 		}
 		else if (ImgJudgeOutBroken())
 		{
-			BrokenFlag = 2;			//¶ÏÂ·
+			Img_BrokenFlag = 2;			//¶ÏÂ·
 		}
 		LeftPnt.ErrRow = MAX(LeftPnt.ErrRow, LeftIntLine);
 		RightPnt.ErrRow = MAX(RightPnt.ErrRow, RightIntLine);
 		FillMiddleLine();
 	}
-	else if (2 == BrokenFlag)
+	else if (2 == Img_BrokenFlag)
 	{
 		if (ImgJudgeOutBroken())
 		{
-			BrokenFlag = 0;
-			SpecialElemFlag = 0;
+			Img_BrokenFlag = 0;
+			Img_SpecialElemFlag = 0;
 		}
 	}
-	else if (3 == BrokenFlag)
+	else if (3 == Img_BrokenFlag)
 	{
 		if (ImgJudgeOutBroken())
 		{
-			BrokenFlag = 2;			//¶ÏÂ·
+			Img_BrokenFlag = 2;			//¶ÏÂ·
 		}
 	}
-	else if (BlockFlag)
+	else if (Img_BlockFlag)
 	{
 		LeftPnt.ErrRow = MAX(LeftPnt.ErrRow, LeftIntLine);
 		RightPnt.ErrRow = MAX(RightPnt.ErrRow, RightIntLine);
 		FillMiddleLine();
 	}
-	else if (RampFlag)
+	else if (Img_RampFlag)
 	{
 		FillMiddleLine();
 	}
-	else if (StopLineFlag)
+	else if (Img_StopLineFlag)
 	{
 		FillMiddleLine();
 	}
 	else
 	{
-		SpecialElemFlag = 0;
+		Img_SpecialElemFlag = 0;
 	}
 }
 
@@ -391,7 +393,7 @@ int ImgJudgeOutBroken(void)
 {
 	static int Num_i = 0;
 	static int BrokenAve[5] = { 0 };
-	if (BrokenFlag == 1 || BrokenFlag == 3)
+	if (Img_BrokenFlag == 1 || Img_BrokenFlag == 3)
 	{
 		if (Num_i < 5)
 		{
@@ -442,7 +444,7 @@ int ImgJudgeOutBroken(void)
 		//                        }
 		//		}
 	}
-	else if (2 == BrokenFlag)
+	else if (2 == Img_BrokenFlag)
 	{
 		if (Num_i < 5)
 		{

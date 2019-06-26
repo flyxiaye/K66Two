@@ -32,14 +32,14 @@ void MeetingFour(void)
 	switch (g_StartMaster)
 	{
 	case 0:
-		if (BrokenFlag == 2 && !RampFlag && !g_GetMeetingMaster)             //进入断路区 
+		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 		{
 			acc_speed += curSpeed;
 			if (acc_speed > StartDistance)
 			{
 				g_GetMeetingMaster = 1;
 				g_handle_open = 0;
-				BrokenFlag = 0;
+				Img_BrokenFlag = 0;
 				BlockFlag = 0;
 				acc_speed = 0;
 				//改变状态 调整下一状态标志
@@ -112,19 +112,19 @@ void MeetingFour(void)
 			g_StateMaster = 6;
 			spdExp3 = MEETING_SPEED;
 			g_handle_open = 1;
-			BrokenFlag = 2;
+			Img_BrokenFlag = 2;
 			BlockFlag = 1;
 		}
 		break;
 	case 6:
-		if (!BrokenFlag)			//出断路 进入下一状态
+		if (!Img_BrokenFlag)			//出断路 进入下一状态
 		{
 			g_StateMaster = WaitingStop;
 			speed_type = 1;
 		}
 		break;
 	case WaitingStop:		//等待识别停车线
-		if (StopLineFlag)		//识别停车线 判断从车状态
+		if (Img_StopLineFlag)		//识别停车线 判断从车状态
 		{
 			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
@@ -168,7 +168,7 @@ void MeetingFour(void)
 	switch (g_StateMaster)
 	{
 	case 0:
-		if (BrokenFlag == 2 && !RampFlag && !g_GetMeetingMaster)             //进入断路区 
+		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 		{
 			acc_speed += curSpeed;
 			if (acc_speed > StartDistance)
@@ -251,19 +251,19 @@ void MeetingFour(void)
 	case 5:
 		//改变状态 调整下一状态标志
 		g_StateMaster = 6;
-		BrokenFlag = 2;
+		Img_BrokenFlag = 2;
 		g_handle_open = 1;
 		g_GetMeetingMaster = 0;
 		break;
 	case 6:
-		if (!BrokenFlag)			//出断路 进入下一状态
+		if (!Img_BrokenFlag)			//出断路 进入下一状态
 		{
 			g_StateMaster = WaitingStop;
 			speed_type = 1;
 		}
 		break;
 	case WaitingStop://15		//等待识别停车线
-		if (StopLineFlag)		//识别停车线 判断从车状态
+		if (Img_StopLineFlag)		//识别停车线 判断从车状态
 		{
 			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
@@ -334,7 +334,7 @@ void MeetingTwo(void)
 	switch (g_StateMaster)
 	{
 	case 0:
-		if (BrokenFlag == 2 && !RampFlag && !g_GetMeetingMaster)             //进入断路区 
+		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 		{
 			BlockFlag = 0;//clear block 
                         acc_speed+=curSpeed;
@@ -345,7 +345,7 @@ void MeetingTwo(void)
 				//改变状态 调整下一状态标志
 				g_StateMaster = 1;
 				g_drive_flag = 0;//停车
-				BrokenFlag = 0;
+				Img_BrokenFlag = 0;
 
 			}
 		}
@@ -362,12 +362,12 @@ void MeetingTwo(void)
                 MeetingCtrlFun_1();
 		//结束标志位变化
 //		g_StateMaster = 3;
-//		BrokenFlag = 2;
+//		Img_BrokenFlag = 2;
 
 		break;
 	case 3:
 		//启动
-		if (0 == BrokenFlag)
+		if (0 == Img_BrokenFlag)
 		{
 			//出断路结束会车状态发送标志位
 			g_StateMaster = WaitingStop;		//结束会车
@@ -375,7 +375,7 @@ void MeetingTwo(void)
 		}
 		break;
 	case WaitingStop:		//出断路 等待识别停车线
-		if (StopLineFlag)	//识别到停车线
+		if (Img_StopLineFlag)	//识别到停车线
 		{
 			if (g_StateSlave == IsStopLine) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
@@ -416,7 +416,7 @@ void MeetingTwo(void)
 	switch (g_StateMaster)
 	{
 	case 0:
-		if (BrokenFlag == 2 && !RampFlag && !g_GetMeetingMaster)             //进入断路区 
+		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 		{
 			BlockFlag = 0;//clear block 
                         acc_speed+=curSpeed;
@@ -430,7 +430,7 @@ void MeetingTwo(void)
 		}
 		break;
 	case 1:		//电磁跑断路
-//                if(BrokenFlag == 2)
+//                if(Img_BrokenFlag == 2)
 //                {
 ////                  MeetingCtrlFun_2();
 //                } 
@@ -446,13 +446,13 @@ void MeetingTwo(void)
                   CircleFlag = 0;
                   CircleState = 0;
                   BlockFlag = 0;
-                  RampFlag = 0;
+                  Img_RampFlag = 0;
                   g_handle_open = 1;
                   CircleIsland_into_flag = 0;
                   g_MasterOutFlag = 0;
-                  SpecialElemFlag = 1;
+                  Img_BlockFlag = 1;
                 }
-		if (0 == BrokenFlag)
+		if (0 == Img_BrokenFlag)
 		{
 			//出断路结束会车状态发送标志位
 			g_StateMaster = WaitingStop;		//结束会车
@@ -460,12 +460,12 @@ void MeetingTwo(void)
                         CircleFlag = 0;
                         CircleState = 0;
                         BlockFlag = 0;
-                        RampFlag = 0;
+                        Img_RampFlag = 0;
                         acc_speed = 0;
 		}
 		break;
 	case WaitingStop:		//出断路 等待识别停车线
-		if (StopLineFlag)	//识别到停车线
+		if (Img_StopLineFlag)	//识别到停车线
 		{
 			if (g_StateSlave == IsStopLine || g_SlaveOutFlag) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
@@ -475,8 +475,8 @@ void MeetingTwo(void)
 				
 			}
 		}
-//                else if ((BrokenFlag== 3 || BrokenFlag == 1)&&4 ==  dialSwitchFlg4)
-//                  BrokenFlag = 0;
+//                else if ((Img_BrokenFlag== 3 || Img_BrokenFlag == 1)&&4 ==  dialSwitchFlg4)
+//                  Img_BrokenFlag = 0;
 		break;
 		//case IsStopLine:
 		//	if (g_StateSlave == IsStopLine) //从车已到 继续跑一段距离停下
@@ -604,7 +604,7 @@ float LinearOut(float dst, float src, float duty)
 //      if(sum_right > sum_meet_right && error_yaw > 180)
 //      {
 //	g_StateMaster = 3;
-//        BrokenFlag = 2;
+//        Img_BrokenFlag = 2;
 //        g_drive_flag = 0;
 //        g_mode = 3;
 ////        error_yaw = 0;
@@ -680,7 +680,7 @@ float LinearOut(float dst, float src, float duty)
 //			g_GetMeetingMaster = 0;
 //			g_GetMeetingSlave = 0;
 //			speed_type = 1;
-//			BrokenFlag = 2;
+//			Img_BrokenFlag = 2;
 //			g_handle_open = 1;
 //			g_MeetingCtrlEndFlag = 0;
 //		}

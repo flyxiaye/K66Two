@@ -3,8 +3,7 @@
 #include "Basic.h"
 #include "AD.h"
 #include "Meeting.h"
-float g_fDirectionControlOut_new;
-float g_fDirectionControlOut_before;
+
 
 void AD_DirectionControl();
 //================================================================//
@@ -15,30 +14,30 @@ void AD_DirectionControl();
 //================================================================//
 void Direction()
 {
-  
+  Camera_DirectionControl();
   //拨码开关向下拨，摄像头算法
-  if(dialSwitchFlg2)
-  {
-    
-    if(BrokenFlag == 2 && MEETING_MODE == 2 || BrokenFlag == 3)
-    {
-      gpio_init(A7, GPO, 1);
-      AD_DirectionControl();
-    }
-    else
-    {
-      gpio_init(A7, GPO, 0);
-      Camera_DirectionControl();
-    }
-  }
-  //拨码开关向上拨，电磁算法
-  else if(!dialSwitchFlg2)
-  {
-    
-      AD_DirectionControl();
-//      AD_CircleIsland_Control();
-    
-  }
+//  if(dialSwitchFlg2&&balabaflag!=0)
+//  {
+//    
+//    if(Img_BrokenFlag == 2 && MEETING_MODE == 2 || Img_BrokenFlag == 3)
+//    {
+//      gpio_init(A7, GPO, 1);
+//      AD_DirectionControl();
+//    }
+//    else
+//    {
+//      gpio_init(A7, GPO, 0);
+//      Camera_DirectionControl();
+//    }
+//  }
+//  //拨码开关向上拨，电磁算法
+//  else if(!dialSwitchFlg2&&balabaflag!=0)
+//  {
+//    
+//      AD_DirectionControl();
+////      AD_CircleIsland_Control();
+//    
+//  }
 }
 
 //================================================================//
@@ -58,12 +57,12 @@ void DirectionControlOutput(void)//平滑输出
 	{
 		g_nDirectionControlPeriod = 0;
 	}
-	if (BlockFlag || g_GetMeetingMaster || BrokenFlag == 3) //限幅
+	if (Img_BlockFlag || g_GetMeetingMaster || Img_BrokenFlag == 3) //限幅
 	{
 		g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
 		g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
 	}
-	if (BrokenFlag)
+	if (Img_BrokenFlag)
 	{
             ;
 	}
@@ -83,10 +82,10 @@ void AD_DirectionControl()
   static float g_fDirectionAngleControlOut = 0.0f;
   static float sensorGyroZLast = 0.0f;
   static float g_error_before = 0.0f;
-  if(count >= 5)
+  if(count >= 4)
   {
     count = 0;
-    if ((BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制
+    if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制
     {
       ;
     }
@@ -120,7 +119,7 @@ void Camera_DirectionControl()
   if(count >= 5)
   {
     count = 0;
-    if (BlockFlag|| g_GetMeetingMaster)                //路障控制
+    if (Img_BlockFlag|| g_GetMeetingMaster)                //路障控制
     {
       ;
     }

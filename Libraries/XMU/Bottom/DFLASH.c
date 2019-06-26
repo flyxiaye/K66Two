@@ -21,18 +21,18 @@ extern void OLED_Clear(void);
 #define First_Time_Init 29
 
 
-/********** ÒÔÏÂÎª´æ´¢µÄÊý¾Ý **********/
-#define DFLASH_PARAM1       CNST           //ãÐÖµ                  unsigned char
+/********** ï¿½ï¿½ï¿½ï¿½Îªï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **********/
+#define DFLASH_PARAM1       CNST           //ï¿½ï¿½Öµ                  unsigned char
 
-#define DFLASH_PARAM2       KDp  // ¶æ»ú
+#define DFLASH_PARAM2       KDp  // ï¿½ï¿½ï¿½
 #define DFLASH_PARAM3       Kd
 
-#define DFLASH_PARAM4       KIp         //µç»ú
+#define DFLASH_PARAM4       KIp         //ï¿½ï¿½ï¿½
 #define DFLASH_PARAM5       Ki
 
 #define DFLASH_PARAM6       Con_line    // Ç°Õ°
 
-#define DFLASH_PARAM7       st   //ËÙ¶È
+#define DFLASH_PARAM7       st   //ï¿½Ù¶ï¿½
 #define DFLASH_PARAM8       sum_dist
 
 #define DFLASH_PARAM9      // Circle_path
@@ -54,10 +54,10 @@ extern void OLED_Clear(void);
 #define DFLASH_PARAM21      img.bendErrorEnlarge
 #define DFLASH_PARAM22      prospect
 
-/********** ÒÔÉÏÎª´æ´¢µÄÊý¾Ý **********/
+/********** ï¿½ï¿½ï¿½ï¿½Îªï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **********/
 
 //*************************************************************************//
-//--------------------------------´æ´¢Êý¾Ý---------------------------------//
+//--------------------------------ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½---------------------------------//
 //*************************************************************************//
 void MyFlash_Write(signed int flashnum)
 {
@@ -67,42 +67,42 @@ void MyFlash_Write(signed int flashnum)
     
 
 
-       /********** ÒÔÏÂÎª´æ´¢µÄÊý¾Ý **********/
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);//½Ç¶ÈÉèÖÃ
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_speed_set);//½Ç¶È»·
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, RATE_STAND_PID.KP);//ÄÚ»·½ÇËÙ¶È»·¿ØÖÆ½Ç¶È
+       /********** ï¿½ï¿½ï¿½ï¿½Îªï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **********/
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);//ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½ï¿½
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_speed_set);//ï¿½Ç¶È»ï¿½
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, RATE_STAND_PID.KP);//ï¿½Ú»ï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½Æ½Ç¶ï¿½
     DFlash_Write_Float(SECTOR_NUM + flashnum, 4, RATE_STAND_PID.KD);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 5, RATE_STAND_PID.KI);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 6, RATE_DIRECT_PID.KP);//ÄÚ½ÇËÙ¶È»·¿ØÖÆ·½Ïò
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 6, RATE_DIRECT_PID.KP);//ï¿½Ú½ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½
     DFlash_Write_Float(SECTOR_NUM + flashnum, 7, RATE_DIRECT_PID.KD);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 8, RATE_DIRECT_PID.KI);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 9, ANGLE_PID.KP);//½Ç¶È»·
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 9, ANGLE_PID.KP);//ï¿½Ç¶È»ï¿½
     DFlash_Write_Float(SECTOR_NUM + flashnum, 10, ANGLE_PID.KD);
     DFlash_Write_Float(SECTOR_NUM + flashnum, 11, ANGLE_PID.KI);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, SPEED_PID.KP);//ËÙ¶È»·
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, SPEED_PID.KP);//ï¿½Ù¶È»ï¿½
     DFlash_Write_Int(SECTOR_NUM + flashnum, 13, SPEED_PID.KD);
     DFlash_Write_Int(SECTOR_NUM + flashnum, 14, SPEED_PID.KI);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, RADIUS_PID.KP);//·½Ïò»·¶¯Ì¬PID
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, RADIUS_PID.KP);//ï¿½ï¿½ï¿½ò»·¶ï¿½Ì¬PID
     DFlash_Write_Int(SECTOR_NUM + flashnum, 16, RADIUS_PID.KD);
     DFlash_Write_Int(SECTOR_NUM + flashnum, 17, RADIUS_PID.KI); 
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 18, sum_dist);//V×ÖÐÎ±ÜÕÏÂ·³Ì»ý·Ö
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 19, ave_left_cross);//µç¸Ð¹éÒ»»¯
+//    DFlash_Write_Int(SECTOR_NUM + flashnum, 18, sum_dist);//Vï¿½ï¿½ï¿½Î±ï¿½ï¿½ï¿½Â·ï¿½Ì»ï¿½ï¿½ï¿½
+//    DFlash_Write_Int(SECTOR_NUM + flashnum, 19, ave_left_cross);//ï¿½ï¿½Ð¹ï¿½Ò»ï¿½ï¿½
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 20,  ave_right_cross);//
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 21,  ave_left_column);//
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 22,  ave_right_column);//
 //        DFlash_Write_Float(SECTOR_NUM + flashnum, 23, ave_mid);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 24, sum_meet_left);//»á³µµôÍ·
+//    DFlash_Write_Int(SECTOR_NUM + flashnum, 24, sum_meet_left);//ï¿½á³µï¿½ï¿½Í·
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 25, sum_meet_right);
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 26, Speed_MAX);//ËÙ¶È»ý·ÖÏÞ·ù
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 26, Speed_MAX);//ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½Þ·ï¿½
 //    DFlash_Write_Float(SECTOR_NUM + flashnum, 27, Img_BlockOpen);//Ç°Õ°
 
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 28, exp_time);//µ¥¼¶¿ØÖÆ²ÎÊý
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, gRateKd_AD);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, gRateKp_AD);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, g_dire_P_AD);
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, g_dire_D_AD);
+    DFlash_Write_Int(SECTOR_NUM + flashnum, 28, exp_time);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ²ï¿½ï¿½ï¿½
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, gRateKd_AD);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, gRateKp_AD);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, g_dire_P_AD);
+    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, g_dire_D_AD);
 
-    /********** ÒÔÉÏÎª´æ´¢µÄÊý¾Ý **********/
+    /********** ï¿½ï¿½ï¿½ï¿½Îªï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **********/
 OLED_Clear();
 }
 void MyFlash_Read(signed int flashnum)
@@ -111,7 +111,7 @@ void MyFlash_Read(signed int flashnum)
     FirstStart = DFlash_Read_Int(SECTOR_NUM + flashnum,0);
     if(FirstStart == First_Time_Init)
     {
-        /********** ÒÔÏÂÎª´æ´¢µÄÊý¾Ý **********/
+        /********** ï¿½ï¿½ï¿½ï¿½Îªï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **********/
       
 
      
@@ -145,19 +145,19 @@ void MyFlash_Read(signed int flashnum)
         
 //        sum_meet_left = DFlash_Read_Int(SECTOR_NUM + flashnum,24);
 //        sum_meet_right = DFlash_Read_Int(SECTOR_NUM + flashnum,25);
-//        Speed_MAX = DFlash_Read_Int(SECTOR_NUM + flashnum,26);
+        Speed_MAX = DFlash_Read_Int(SECTOR_NUM + flashnum,26);
 //        Img_BlockOpen = DFlash_Read_Float(SECTOR_NUM + flashnum,27);
 //  
 //        
         exp_time = DFlash_Read_Int(SECTOR_NUM + flashnum,28);
-//        gRateKd_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
-//        gRateKp_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
-//        g_dire_P_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
-//        g_dire_D_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
+        gRateKd_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
+        gRateKp_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
+        g_dire_P_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
+        g_dire_D_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
 
          
  
-        /********** ÒÔÉÏÎª´æ´¢µÄÊý¾Ý **********/
+        /********** ï¿½ï¿½ï¿½ï¿½Îªï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **********/
       
      }
     
