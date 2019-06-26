@@ -42,6 +42,7 @@ void motormode(float mode)
 	{
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		g_drive_left = RateOut_Stand;
 		g_drive_right = RateOut_Stand;
 =======
@@ -72,6 +73,22 @@ void motormode(float mode)
 	{
 >>>>>>> parent of 31a416a... 常神代码移植
 		a1 = 1; a2 = 1;
+=======
+		a1 = 1; a2 = 1;
+		b1 = 0; b2 = 0;
+		c1 = 0; c2 = 0;
+	}
+	if (2 == mode)//方向+直立
+	{
+		a1 = 1; a2 = 1;
+		b1 = 0; b2 = 0;
+		c1 = -1; c2 = 1;
+		g_fSpeedControlOut = 0;
+	}
+	if (3 == mode)//速度+方向+直立
+	{
+		a1 = 1; a2 = 1;
+>>>>>>> parent of 31a416a... 常神代码移植
 		b1 = -1; b2 = -1;
 		c1 = -1; c2 = 1;
 
@@ -85,6 +102,9 @@ void motormode(float mode)
 	{
 		;//避障函数执行
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 31a416a... 常神代码移植
+=======
 >>>>>>> parent of 31a416a... 常神代码移植
 =======
 >>>>>>> parent of 31a416a... 常神代码移植
@@ -97,7 +117,11 @@ void motormode(float mode)
 	}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (5 == mode)//拍地模式2
+=======
+        if (5 == mode)//拍地模式
+>>>>>>> parent of 31a416a... 常神代码移植
 =======
         if (5 == mode)//拍地模式
 >>>>>>> parent of 31a416a... 常神代码移植

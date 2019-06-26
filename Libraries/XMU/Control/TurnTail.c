@@ -9,6 +9,7 @@ void TurnTail()
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   static float angle_init = 0;
   static int step = 0;
   static int integral = 0;
@@ -62,6 +63,8 @@ void TurnTail()
      }
    }
 =======
+=======
+>>>>>>> parent of 31a416a... 常神代码移植
 =======
 >>>>>>> parent of 31a416a... 常神代码移植
 //  flipgyro+= sensor.Gyro_deg.z * 0.002;
@@ -174,6 +177,9 @@ void TurnTail()
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 31a416a... 常神代码移植
+=======
 >>>>>>> parent of 31a416a... 常神代码移植
 =======
 >>>>>>> parent of 31a416a... 常神代码移植

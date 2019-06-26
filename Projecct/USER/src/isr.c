@@ -69,6 +69,7 @@ void PIT0_IRQHandler(void)
 	My_IMU_update(0.002);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//    StopCar();
 	//    TurnAround();
 	//    StartSpeed();
@@ -83,6 +84,8 @@ void PIT0_IRQHandler(void)
 	OutControl();
 	StopCar();
 =======
+=======
+>>>>>>> parent of 31a416a... 常神代码移植
 =======
 >>>>>>> parent of 31a416a... 常神代码移植
 	//    if (g_block_open)           //·��
@@ -106,6 +109,9 @@ void PIT0_IRQHandler(void)
 	SpeedControl();             //��ȡ����������
 	SpeedControlOutput();
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 31a416a... 常神代码移植
+=======
 >>>>>>> parent of 31a416a... 常神代码移植
 =======
 >>>>>>> parent of 31a416a... 常神代码移植

@@ -865,6 +865,7 @@ void Main_Show(void)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //	Insert_Page("PID_S");//速度
 //	Insert_Float("SpdSet", &g_fSpeed_set);
 //	Insert_Float("error", &g_errorS);
@@ -874,6 +875,8 @@ void Main_Show(void)
 //	Insert_Int("MaxI", &Speed_MAX);
 //	Insert_Float("g_fI", &g_fI);
 =======
+=======
+>>>>>>> parent of 31a416a... 甯哥浠ｇ爜绉绘
 	Insert_Page("PID_S");//速度
 	Insert_Float("SpdSet", &g_fSpeed_set);
 	Insert_Float("error", &g_errorS);
