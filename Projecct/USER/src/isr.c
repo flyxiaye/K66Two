@@ -67,6 +67,7 @@ void PIT0_IRQHandler(void)
 {
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
+<<<<<<< HEAD
 	//    StopCar();
 	//    TurnAround();
 	//    StartSpeed();
@@ -80,6 +81,28 @@ void PIT0_IRQHandler(void)
 
 	OutControl();
 	StopCar();
+=======
+	//    if (g_block_open)           //路障
+	//    {
+	//      inf();
+	//      roadblock3();
+	//    }
+	//    if (!g_single_open)         //会车
+	//    {
+	//      ChangeStartMeetingFlag();//识别会车
+	//      MeetingCarControl();
+	//    }
+	//    StopCar();
+	//    TurnTail();
+	//    StartSpeed();
+	DistCI();
+	get_ind_error();
+	AngleControl();
+	Direction();
+	DirectionControlOutput();
+	SpeedControl();             //读取编码器计数
+	SpeedControlOutput();
+>>>>>>> parent of 31a416a... 甯哥浠ｇ爜绉绘
 	power();
 	PIT_FlAG_CLR(pit0);
 }

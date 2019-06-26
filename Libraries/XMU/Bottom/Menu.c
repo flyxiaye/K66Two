@@ -822,79 +822,46 @@ void Main_Show(void)
 	Insert_Float("y", &sensor.Gyro_deg.y);
 	Insert_Float("z", &sensor.Gyro_deg.z);
 
-         Insert_Page("RateStand"); //角速度环直立
-         Insert_Float("ERROR",&RATE_STAND_ERROR.ERROR);
-         Insert_Float("P",&RATE_STAND_PID.KP);
-         Insert_Float("D",&RATE_STAND_PID.KD);
-         Insert_Float("I",&RATE_STAND_PID.KI);
+	Insert_Page("PID_A");//角度
+	Insert_Float("set", &g_angle_set);
+	Insert_Float("out", &g_AngleOut);
+	Insert_Float("PA", &g_angle_P);
+	Insert_Float("PR", &g_RateP);
+	Insert_Float("DR", &g_RateD);
 
-         Insert_Page("RateDirect"); //角速度环方向
-         Insert_Float("ERROR",&RATE_DIRECT_ERROR.ERROR);
-         Insert_Float("P",&RATE_DIRECT_PID.KP);
-         Insert_Float("D",&RATE_DIRECT_PID.KD);
-         Insert_Float("I",&RATE_DIRECT_PID.KI);
-         
-         Insert_Page("Angle"); //角度环直立
-         Insert_Float("ERROR",&ANGLE_ERROR.ERROR);
-         Insert_Float("P",&ANGLE_PID.KP);
-         Insert_Float("D",&ANGLE_PID.KD);
-         Insert_Float("I",&ANGLE_PID.KI);
-         
-         Insert_Page("Speed"); //速度环
-         Insert_Float("ERROR",&SPEED_ERROR.ERROR);
-         Insert_Float("P",&SPEED_PID.KP);
-         Insert_Float("D",&SPEED_PID.KD);
-         Insert_Float("I",&SPEED_PID.KI);
-         
-          Insert_Page("Radius"); //转弯半径
-         Insert_Float("ERROR",&RADIUS_ERROR.ERROR);
-         Insert_Float("P",&RADIUS_PID.KP);
-         Insert_Float("D",&RADIUS_PID.KD);
-         Insert_Float("I",&RADIUS_PID.KI);
-//         Insert_Page("PID_A");//角度
-//         Insert_Float("set",&g_angle_set);
-//         Insert_Float("out",&g_AngleOut);
-//         Insert_Float("PA",&g_angle_P);
-//         Insert_Float("PR",&g_RateP);
-//         Insert_Float("DR",&g_RateD);
-//         
-         
-         
+	//         Insert_Page("Obstacle");//避障
+	//         Insert_Float("g_inf",&g_inf);
+	//         Insert_Int("stop_inf",&stop_inf);
+	//         Insert_Int("s1",&s1);
+	//         Insert_Int("st",&st);
+	//         Insert_Int("sum_dist",&sum_dist);
 
-//         Insert_Page("Obstacle");//避障
-//         Insert_Float("g_inf",&g_inf);
-//         Insert_Int("stop_inf",&stop_inf);
-//         Insert_Int("s1",&s1);
-//         Insert_Int("st",&st);
-//         Insert_Int("sum_dist",&sum_dist);
-         
-//         Insert_Page("ImgFlag");//标志位
-//	 Insert_Char("ImgCircle", &Img_CircleOpen);
-//	 Insert_Char("ImgBroken", &Img_BrokenOpen);
-//	 Insert_Char("ImgBlock", &Img_BlockOpen);
-//	 Insert_Char("ImgRamp", &Img_RampOpen);
-//	 Insert_Char("ImgStop", &Img_StopOpen);
-         
-         
-//         Insert_Page("PID_D/C");//方向
-//         Insert_Float("error",&g_errorD);
-//         Insert_Float("Out" ,&g_fDirectionControlOut);
-//         Insert_Float("KP",&gRateKp);
-//         Insert_Float("KD",&gRateKd);
-//         Insert_Float("P",&g_dire_P);
-//         Insert_Float("D",&g_dire_D);
-//         Insert_Int("MAX",&max_duty);
-//         Insert_Int("ProOUT",&ProSpect);
-         
-         
-//         
-//         Insert_Page("PID_D/AD");//方向
-//         Insert_Float("error",&g_errorD);
-//         Insert_Float("Out" ,&g_fDirectionControlOut);
-//         Insert_Float("KP",&gRateKp_AD);
-//         Insert_Float("KD",&gRateKd_AD);
-//         Insert_Float("P",&g_dire_P_AD);
-//         Insert_Float("D",&g_dire_D_AD);
+	//         Insert_Page("ImgFlag");//标志位
+	//	 Insert_Char("ImgCircle", &Img_CircleOpen);
+	//	 Insert_Char("ImgBroken", &Img_BrokenOpen);
+	//	 Insert_Char("ImgBlock", &Img_BlockOpen);
+	//	 Insert_Char("ImgRamp", &Img_RampOpen);
+	//	 Insert_Char("ImgStop", &Img_StopOpen);
+
+
+	Insert_Page("PID_D/C");//方向
+	Insert_Float("error", &g_errorD);
+	Insert_Float("Out", &g_fDirectionControlOut);
+	Insert_Float("KP", &gRateKp);
+	Insert_Float("KD", &gRateKd);
+	Insert_Float("P", &g_dire_P);
+	Insert_Float("D", &g_dire_D);
+	Insert_Int("MAX", &max_duty);
+	Insert_Int("ProOUT", &ProSpect);
+
+
+	Insert_Page("PID_D/AD");//方向
+	Insert_Float("error", &g_errorD);
+	Insert_Float("Out", &g_fDirectionControlOut);
+	Insert_Float("KP", &gRateKp_AD);
+	Insert_Float("KD", &gRateKd_AD);
+	Insert_Float("P", &g_dire_P_AD);
+	Insert_Float("D", &g_dire_D_AD);
 
 
 //	Insert_Page("PID_S");//速度

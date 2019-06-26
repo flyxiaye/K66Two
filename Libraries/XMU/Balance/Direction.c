@@ -82,7 +82,7 @@ void AD_DirectionControl()
   static float g_fDirectionAngleControlOut = 0.0f;
   static float sensorGyroZLast = 0.0f;
   static float g_error_before = 0.0f;
-  if(count >= 5)
+  if(count >= 4)
   {
     count = 0;
     if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //Â·ÕÏ¿ØÖÆ
