@@ -134,7 +134,7 @@ void system_Init(void)
 ////     crcInit();
      DialSwitchInit();
      	INTR_Keyboard_Init();		//键盘初始化
-//     BluetoothInt();
+     BluetoothInt();
      PIT_Init();    
     /**********设置中断优先级**********/
     NVIC_SetPriorityGrouping(3);   

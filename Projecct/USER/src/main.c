@@ -48,6 +48,7 @@ int main(void)
 			Menu();
 		}
 		//Bluebooth_Push_Data();
+                UserData();
 //    SendAngle();
 //    SendData();
 		if (CircleFlag)

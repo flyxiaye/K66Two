@@ -3,8 +3,7 @@
 #include "Basic.h"
 #include "AD.h"
 #include "Meeting.h"
-
-
+int g_ErrorImageNumber=0;
 void AD_DirectionControl();
 //================================================================//
 //  @brief  :		方向环算法
@@ -14,7 +13,7 @@ void AD_DirectionControl();
 //================================================================//
 void Direction()
 {
-  Camera_DirectionControl();
+//  Camera_DirectionControl();
   //拨码开关向下拨，摄像头算法
 //  if(dialSwitchFlg2&&balabaflag!=0)
 //  {
@@ -34,7 +33,7 @@ void Direction()
 //  else if(!dialSwitchFlg2&&balabaflag!=0)
 //  {
 //    
-//      AD_DirectionControl();
+      AD_DirectionControl();
 ////      AD_CircleIsland_Control();
 //    
 //  }
@@ -91,7 +90,7 @@ void AD_DirectionControl()
     }
 //    if(!CircleIsland_into_flag)//圆环
 //    {
-      g_errorD = (right_line_norm - left_line_norm) / (right_line_norm + left_line_norm) * 100;
+      g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
 //    }
 //    else if(CircleIsland_into_flag)
 //    {
@@ -129,6 +128,7 @@ void Camera_DirectionControl()
     
 	if (ErrorFlag)
         {
+          g_ErrorImageNumber++;
           g_errorD = g_error_before;
         }
     }

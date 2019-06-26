@@ -101,22 +101,36 @@ void DistCI(void)
 //================================================================//
 void IndCI(void)
 {
-  static int mid_normflag=0,col_normflag=0;
-	if (mid_norm > 1.4&&(right_column_norm>0.25||left_column_norm>0.25) &&!CircleFlag&&!col_normflag&&!mid_normflag)
-	{
-          mid_normflag=1;
-        }
-         else if((right_column_norm>0.5||left_column_norm>0.5)&&mid_normflag)
-          {
-            col_normflag=1;
-          }
-         else if(mid_normflag&&col_normflag)
-          {
-            mid_normflag=0;
-            col_normflag=0;
-		CircleFlag = 2;
-		CircleState = 2;
-          }
+//  static int mid_normflag=0,col_normflag=0,acc_speed=0;;
+//	if ((mid_norm > 1.3&&(right_column_norm>0.15||left_column_norm>0.15)&&((left_column_norm-right_column_norm)>0.1||(right_column_norm-left_column_norm)>0.1)&&!CircleFlag&&!col_normflag&&!mid_normflag)||
+//	(mid_norm<0.8&&((right_column_norm>0.25)||(left_column_norm>0.25))&&((left_column_norm-right_column_norm)>0.15||(right_column_norm-left_column_norm)>0.15) &&!CircleFlag&&!col_normflag&&!mid_normflag))
+//	{
+//          mid_normflag=1;
+//        }  
+//          {
+//            col_normflag=1;
+//          }
+//         else if(mid_normflag&&col_normflag)
+//          {
+//            mid_normflag=0;
+//            col_normflag=0;
+//		CircleFlag = 2;
+//		CircleState = 2;
+//          }
+//		  if(mid_normflag)
+//		  {
+//			  acc_speed+=curSpeed;
+//			  if(acc_speed>3000)
+//			  {
+//				  mid_normflag=0;
+//				  acc_speed=0;
+//			  }
+//		  }
+//        else if(!CircleFlag&&!CircleState)
+//        {
+//          mid_normflag=0;
+//          col_normflag=0;
+//        }
 }
 
 //================================================================//
