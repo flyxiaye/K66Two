@@ -101,6 +101,51 @@ void DistCI(void)
 //================================================================//
 void IndCI(void)
 {
+	static int DIndLeftcol=0,DIndRightcol=0,DIndMid=0,DistFlag=0,count=0;
+	static int DIndLeftcol_before=0,DIndRightcol_before=0,DIndMid_before=0;
+	static float Dpit=0,pit_before=0; //angle pit
+	DIndLeftcol=ABS(ind_left_column-DIndLeftcol_before);   //«ÛTMDŒ¢∑÷
+	DIndRightcol=ABS(ind_right_column-DIndRightcol_before);
+	DIndMid=ABS(ind_mid-DIndMid_before);
+	Dpit=imu_data.pit-pit_before;
+	DIndLeftcol_before=DIndLeftcol;
+	DIndRightcol_before=DIndRightcol;
+	pit_before=imu_data.pit;
+	if(Dpit<1&&!DistFlag&&g_drive_flag)
+	{
+		if((DIndLeftcol>0.1*DIndLeftcol_before)||(DIndRightcol>0.1*DIndRightcol_before)||(DIndMid>0.1*DIndMid_before))
+		{
+			if(DIndMid>0.2&&mid_norm>1.3)
+			{
+						CircleFlag = 2;
+						CircleState = 2;
+			}
+			else if(mid_norm<0.6&&(DIndLeftcol>0.3||DIndRightcol>0.3))
+			{
+					CircleFlag = 2;
+					CircleState = 2;
+			}
+			else
+			{
+				/* code */
+			}
+			
+		}
+
+		
+	}
+		if(Dpit>1&&g_drive_flag)
+		{
+			DistFlag=1;
+		}
+		else if(DistFlag)
+		{
+			count++;
+			if(count>500&&Dpit<1)
+			{
+				DistFlag=0;
+			}
+		}
 //  static int mid_normflag=0,col_normflag=0,acc_speed=0;;
 //	if ((mid_norm > 1.3&&(right_column_norm>0.15||left_column_norm>0.15)&&((left_column_norm-right_column_norm)>0.1||(right_column_norm-left_column_norm)>0.1)&&!CircleFlag&&!col_normflag&&!mid_normflag)||
 //	(mid_norm<0.8&&((right_column_norm>0.25)||(left_column_norm>0.25))&&((left_column_norm-right_column_norm)>0.15||(right_column_norm-left_column_norm)>0.15) &&!CircleFlag&&!col_normflag&&!mid_normflag))

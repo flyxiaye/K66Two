@@ -96,10 +96,13 @@ void AD_DirectionControl()
 //    {
 //      ;
 //    }
+    if(!TurnTailFlag)
+    {
     g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD + (g_errorD - g_error_before) * g_dire_D_AD;
     g_fDirectionControlOut_new = (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z -  sensorGyroZLast) * gRateKd_AD;
     sensorGyroZLast = sensor.Gyro_deg.z;
     g_error_before = g_errorD;
+    }
   }
   else count++;
 }

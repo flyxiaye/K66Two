@@ -37,37 +37,27 @@ void changemode()
 //-------------------------------------------------------------------------------------------------------------------
 void motormode(float mode)
 {
-	int a1 = 0, b1 = 0, c1 = 0, a2 = 0, b2 = 0, c2 = 0;
-	if (1 == mode)//直立
-	{
-		a1 = 1; a2 = 1;
-		b1 = 0; b2 = 0;
-		c1 = 0; c2 = 0;
-	}
-	if (2 == mode)//方向+直立
-	{
-		a1 = 1; a2 = 1;
-		b1 = 0; b2 = 0;
-		c1 = -1; c2 = 1;
-		g_fSpeedControlOut = 0;
-	}
-	if (3 == mode)//速度+方向+直立
-	{
-		a1 = 1; a2 = 1;
-		b1 = -1; b2 = -1;
-		c1 = -1; c2 = 1;
 
-	}
-	if (Img_RampFlag != 1)
+//	if (Img_RampFlag != 1)
+        if(1==g_mode)
 	{
-		g_fleft = a1 * g_AngleControlOut + c1 * g_fDirectionControlOut + b1 * g_fSpeedControlOut;
-		g_fright = a2 * g_AngleControlOut + c2 * g_fDirectionControlOut + b2 * g_fSpeedControlOut;
+		g_fleft =g_AngleControlOut ;
+		g_fright = g_AngleControlOut ;
 	}
-	if (Img_RampFlag == 1)
-	{
-		;//避障函数执行
-	}
-
+//	if (Img_RampFlag == 1)
+//	{
+//		;//避障函数执行
+//	}
+        if(2==g_mode)
+        {
+                g_fleft =g_AngleControlOut - g_fDirectionControlOut ;
+		g_fright =g_AngleControlOut +g_fDirectionControlOut;
+        }
+        if(3==g_mode)
+        {
+                g_fleft =g_AngleControlOut - g_fDirectionControlOut - g_fSpeedControlOut;
+		g_fright =g_AngleControlOut +g_fDirectionControlOut - g_fSpeedControlOut;
+        }
 	if (4 == mode)//手调
 	{
 		g_fleft = g_duty_left;
@@ -78,6 +68,11 @@ void motormode(float mode)
 		g_fleft = g_AngleControlOut;
 		g_fright = g_AngleControlOut;
 	}
+        if(6 == g_mode)
+        {
+          g_fleft = - g_fDirectionControlOut;
+          g_fright = + g_fDirectionControlOut;
+        }
 
 }
 //-------------------------------------------------------------------------------------------------------------------

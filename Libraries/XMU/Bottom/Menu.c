@@ -453,8 +453,8 @@ void Key_Function(void)
 	{
 		switch (g_Key)
 		{
-		case 1: if (g_steer_open)           //启动
-		{
+		case 1:           //启动
+                  {
 			FlagChange(&g_drive_flag);//开电机
 			if (g_drive_flag)
 			{
@@ -472,7 +472,7 @@ void Key_Function(void)
 				Img_RampFlag = 0;
 			}
 			// g_ramp_enable = 1;
-		}
+                  }
 				break;
 		case 2:
 			if (g_pageNum == 1)
@@ -516,8 +516,30 @@ void Key_Function(void)
 			else
 				LineNumAdd();           //行数下移
 			break;
-		case 9:
-			g_drive_flag = !g_drive_flag;
+				case 9: 
+                                  {
+			FlagChange(&g_drive_flag);//开电机
+                        FlagChange(&TurnTailFlag);
+			if (g_drive_flag)
+			{
+				g_StateMaster = 0;
+				g_StartMaster = 0;
+				g_MasterOutFlag = 0;
+				CircleFlag = 0;
+				CircleState = 0;
+				Img_BrokenFlag = 0;
+				Img_BlockFlag = 0;
+				//				speed_type = 1;
+                           
+				if (1 == g_camera_open)
+					g_handle_open = 1;
+				g_ad_flag = 1;
+				Img_RampFlag = 0;
+			}
+			// g_ramp_enable = 1;
+		}
+//			g_drive_flag = !g_drive_flag;
+//			TurnTailFlag=!TurnTailFlag;
 			// SD_Gather_Gray_Picture120x188();    
 			break; //采图
 		default:                     break;
@@ -828,6 +850,7 @@ void Main_Show(void)
 	Insert_Float("PA", &g_angle_P);
 	Insert_Float("PR", &g_RateP);
 	Insert_Float("DR", &g_RateD);
+	// Insert_Float("flygyro",)
 
 	//         Insert_Page("Obstacle");//避障
 	//         Insert_Float("g_inf",&g_inf);
