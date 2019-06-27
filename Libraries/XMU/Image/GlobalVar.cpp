@@ -78,6 +78,10 @@ float gRateKd_AD = 10;            //串级d
 float g_dire_P_AD=6;
 float g_dire_D_AD=10;
 int protect_flag=0;
+//==========================元素计数变量============================//
+
+unsigned char CircleDir[10];		//环岛计数
+unsigned char Ind_CircleOpen = 0;	//电磁判断环岛开关
 //==========================图像变量============================//
 const int MidOffset[] = {
 	 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 11, 12, 13, 14, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 52, 53, 54, 55, 56, 57, 58, 59, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93,
@@ -108,7 +112,6 @@ int Img_BrokenFlag = 0;			//断路标志
 int Img_BlockFlag = 0;			//路障标志
 int Img_StopLineFlag = 0;		//停车线标志
 int Img_RampFlag = 0;			//坡道标志
-
 int BrokenLastAve = 0;
 int StopLineDist = 0;
 
@@ -314,3 +317,13 @@ int st = -40;
 int stop_inf = 90;
 unsigned char ObstacleEndFlag = 0;
 
+/**************电磁环岛*************/
+float Circlelanderror=0;
+int circlelandflag=0;
+float circlelandSigma=0;
+int circlelandtimecount=0;
+int circlelandget=0; 
+int circlelandnumber=0;
+int circlelandsymbol=0;
+
+uint8 phototube=0;

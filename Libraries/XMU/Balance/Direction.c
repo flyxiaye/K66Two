@@ -32,9 +32,16 @@ void Direction()
 	//  //拨码开关向上拨，电磁算法
 	//  else if(!dialSwitchFlg2&&balabaflag!=0)
 	//  {
-	//    
+	//
+  if(dialSwitchFlg2)
+  {
+    Camera_DirectionControl();
+  }
+  else if(!dialSwitchFlg2||Img_BrokenFlag)
+  {
 	AD_DirectionControl();
-	////      AD_CircleIsland_Control();
+  }
+        ////      AD_CircleIsland_Control();
 	//    
 	//  }
 }

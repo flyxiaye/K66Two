@@ -519,6 +519,21 @@ void Key_Function(void)
 				case 9: 
                                   
 			FlagChange(&g_drive_flag);//¿ªµç»ú
+                        		if (g_drive_flag)
+			{
+				g_StateMaster = 0;
+				g_StartMaster = 0;
+				g_MasterOutFlag = 0;
+				CircleFlag = 0;
+				CircleState = 0;
+				Img_BrokenFlag = 0;
+				Img_BlockFlag = 0;
+				//				speed_type = 1;
+				if (1 == g_camera_open)
+					g_handle_open = 1;
+				g_ad_flag = 1;
+				Img_RampFlag = 0;
+			}
 //                        FlagChange(&TurnTailFlag);
 //			if (g_drive_flag)
 //			{

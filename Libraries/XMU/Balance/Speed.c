@@ -7,6 +7,35 @@ float g_CarSpeed = 0;
 float g_fSpeedControlOut_before = 0;
 float g_fSpeedControlOut_new = 0;
 float g_CarSpeed_constant = 1;//8053;//转换单位常数
+void ExpectSpeedGet()
+{
+  switch(speed_type)
+  {
+    case 0:
+          spdExp = spdExp0;    
+          //g_speedUpFlg = 0;
+          break;
+    case 1:
+          spdExp = spdExp1;   
+          //g_speedUpFlg = 1;
+          break;
+    case 2:
+          spdExp = spdExp2;    
+         // g_speedUpFlg = 2;
+          break; 
+    case 3:
+          spdExp = spdExp3; 
+          //g_speedUpFlg = 3;
+          break;
+    case 4:
+          spdExp = spdExp4; 
+          //g_speedUpFlg = 4;
+          break;
+    default:
+          spdExp = spdExp0;      
+         // g_speedUpFlg = 0;
+  }
+}
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      速度计算函数
 //  @param      	
@@ -32,7 +61,8 @@ void SpeedControl()
 		count = 0;
                 
 		g_fSpeedControlOut_before = g_fSpeedControlOut_new;
-		g_errorS = g_fSpeed_set - curSpeed;
+                		g_errorS = spdExp - curSpeed;
+//		g_errorS = g_fSpeed_set - curSpeed;
               
 //                if(curSpeed < 0.2)
                 g_fI += g_errorS * g_Speed_I;

@@ -9,15 +9,15 @@ void circleland()
 //          {
 //            return;
 //          }
-                if((leftcol_norm>0.3||rightcol_norm>0.3)&&(abs(leftcol_norm-rightcol_norm)>0.4*MAX(leftcol_norm,rightcol_norm))&&(ABS(left_norm)>0.3||ABS(right_norm)>0.3)&&mid_norm>0.8&&0==circlelandflag)
+                if((left_column_norm>0.3||right_column_norm>0.3)&&(abs(left_column_norm-right_column_norm)>0.4*MAX(left_column_norm,right_column_norm))&&(ABS(left_line_norm)>0.3||ABS(right_line_norm)>0.3)&&mid_norm>0.8&&0==circlelandflag)
           {
-              if(leftcol_norm>rightcol_norm)
+              if(left_column_norm>right_column_norm)
                   {
                       LRflag=1;
                        circlelandflag=1;
                        circlelandSigma=0;
                   }
-               if(leftcol_norm<rightcol_norm)
+               if(left_column_norm<right_column_norm)
                   {
                       LRflag=2;
             circlelandflag=1;
@@ -29,9 +29,9 @@ void circleland()
                   Circlelanderror=0;
                   circlelandtimecount++;
                   
-		if((ABS(leftcol_norm)>0.3||ABS(rightcol_norm)>0.3)&&circlelandtimecount<1000&&1==LRflag&&circlelandSigma>1000)
+		if((ABS(left_column_norm)>0.3||ABS(right_column_norm)>0.3)&&circlelandtimecount<1000&&1==LRflag&&circlelandSigma>1000)
 		{
-                  if(leftcol_norm>rightcol_norm)
+                  if(left_column_norm>right_column_norm)
                   {
                       LRflag=0;
 			circlelandflag=2;
@@ -39,7 +39,7 @@ void circleland()
                                 circlelandtimecount=0;
                                 circlelandsymbol=0;
                   }
-                  else if((ABS(leftcol_norm)<0.3&&ABS(rightcol_norm)<0.3)&&circlelandtimecount>1000&&1==LRflag&&circlelandSigma>1000)
+                  else if((ABS(left_column_norm)<0.3&&ABS(right_column_norm)<0.3)&&circlelandtimecount>1000&&1==LRflag&&circlelandSigma>1000)
                   {
                      LRflag=0;
 			circlelandflag=0;
@@ -48,9 +48,9 @@ void circleland()
                                 circlelandsymbol=0;
                   }
                 }
-                	else	if((ABS(leftcol_norm)>0.3||ABS(rightcol_norm)>0.3)&&circlelandtimecount<1000&&2==LRflag&&circlelandSigma>1000)
+                	else	if((ABS(left_column_norm)>0.3||ABS(right_column_norm)>0.3)&&circlelandtimecount<1000&&2==LRflag&&circlelandSigma>1000)
 		{
-                  if(leftcol_norm<rightcol_norm)
+                  if(left_column_norm<right_column_norm)
                   {
                       LRflag=0;
 			circlelandflag=2;
@@ -58,7 +58,7 @@ void circleland()
                                 circlelandtimecount=0;
                                 circlelandsymbol=0;
                   }
-            else if((ABS(leftcol_norm)<0.3&&ABS(rightcol_norm)<0.3)&&circlelandtimecount>1000&&2==LRflag&&circlelandSigma>1000)
+            else if((ABS(left_column_norm)<0.3&&ABS(right_column_norm)<0.3)&&circlelandtimecount>1000&&2==LRflag&&circlelandSigma>1000)
                   {
                      LRflag=0;
 			circlelandflag=0;
@@ -96,11 +96,11 @@ void circleland()
 //                }
 		if(2==circlelandflag)
 		{
-			if(ABS(leftcol_norm)>0.3||ABS(rightcol_norm)>0.3)
+			if(ABS(left_column_norm)>0.3||ABS(right_column_norm)>0.3)
 			{
                           if(circlelandSigma>2000)
                           {
-//                                  if(ABS(leftcol_norm)<0.3&&ABS(rightcol_norm)<0.3)
+//                                  if(ABS(left_column_norm)<0.3&&ABS(right_column_norm)<0.3)
 //                          {
 //                            circlelandflag=0;
 //                                circlelandSigma=0;
@@ -141,14 +141,14 @@ void circleland()
                   {
                    if(circlelandSigma<4500)
                       {
-                  Circlelanderror=0.8*(((float)(leftcol_norm)-(float)(rightcol_norm))/((float)(leftcol_norm)+(float)(rightcol_norm)));
+                  Circlelanderror=0.8*(((float)(left_column_norm)-(float)(right_column_norm))/((float)(left_column_norm)+(float)(right_column_norm)));
 //                  if(Circlelanderror<0.3)
 //                  {
 //                    Circlelanderror=Circlelanderror*1.5;
 //                  }
 
                       }
-                  if((ABS(left_norm)>0.3||ABS(right_norm)>0.3)&&circlelandSigma>20000)
+                  if((ABS(left_line_norm)>0.3||ABS(right_line_norm)>0.3)&&circlelandSigma>20000)
                   {
 //                    if(circlelandSigma>15000)
 //                    {
@@ -156,7 +156,7 @@ void circleland()
                     Circlelanderror=0;
 //                    }
                     }
-                                   if((ABS(left_norm)>0.3||ABS(right_norm)>0.3)&&circlelandSigma>30000)
+                                   if((ABS(left_line_norm)>0.3||ABS(right_line_norm)>0.3)&&circlelandSigma>30000)
                   {
 //                    if(circlelandSigma>15000)
 //                    {
@@ -164,7 +164,7 @@ void circleland()
                     Circlelanderror=0;
 //                    }
                     }
-//                    if((ABS(left_norm)>0.3||ABS(right_norm)>0.3)&&circlelandSigma>9000)
+//                    if((ABS(left_line_norm)>0.3||ABS(right_line_norm)>0.3)&&circlelandSigma>9000)
 //                   {
 //                     Circlelanderror=0;
 //                   }
@@ -178,7 +178,7 @@ void circleland()
                      circlelandSigma=0;
                      circlelandtimecount=0;
                    }
-                         if((ABS(leftcol_norm)>0.3||ABS(rightcol_norm)>0.3)&&mid_norm>0.8&&(abs(leftcol_norm-rightcol_norm)>0.4*MAX(leftcol_norm,rightcol_norm)))
+                         if((ABS(left_column_norm)>0.3||ABS(right_column_norm)>0.3)&&mid_norm>0.8&&(abs(left_column_norm-right_column_norm)>0.4*MAX(left_column_norm,right_column_norm)))
                   {
                       if(circlelandSigma>10000)
                       {
@@ -192,11 +192,11 @@ void circleland()
 		}
                if(4==circlelandflag)
                 {
-                  if(leftcol_norm>0.3||rightcol_norm>0.3)
+                  if(left_column_norm>0.3||right_column_norm>0.3)
                   {
                             if(circlelandSigma>2000&&1==circlelandsymbol)
                       {
-//                                            if(ABS(leftcol_norm)<0.3&&ABS(rightcol_norm)<0.3)
+//                                            if(ABS(left_column_norm)<0.3&&ABS(right_column_norm)<0.3)
 //                          {
 //                            circlelandsymbol=0;
 //                            circlelandflag=0;
@@ -236,11 +236,11 @@ void circleland()
                   circlelandtimecount++;
                   if(circlelandSigma<7000)
                       {
-//                  Circlelanderror=-0.7*(((float)(leftcol_norm)-(float)(rightcol_norm))/((float)(leftcol_norm)+(float)(rightcol_norm)));
-                         Circlelanderror=-0.9*(((float)(left_norm)-(float)(right_norm))/((float)(left_norm)+(float)(right_norm)));
+//                  Circlelanderror=-0.7*(((float)(left_column_norm)-(float)(right_column_norm))/((float)(left_column_norm)+(float)(right_column_norm)));
+                         Circlelanderror=-0.9*(((float)(left_line_norm)-(float)(right_line_norm))/((float)(left_line_norm)+(float)(right_line_norm)));
                       }
 			
-                 else if(ABS(leftcol_norm)<0.4&&ABS(rightcol_norm)<0.4&&circlelandtimecount>1000)
+                 else if(ABS(left_column_norm)<0.4&&ABS(right_column_norm)<0.4&&circlelandtimecount>1000)
                   {
                        if(circlelandSigma>4000)
                       {

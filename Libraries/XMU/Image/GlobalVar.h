@@ -85,7 +85,10 @@ extern float gRateKd_AD ;            //串级d
 
 extern float g_dire_P_AD;
 extern float g_dire_D_AD;
+//==========================元素计数变量============================//
 
+extern unsigned char CircleDir[10];		//环岛计数
+extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 
 
 //==========================图像变量============================//
@@ -108,10 +111,10 @@ extern float g_dire_D_AD;
 #define CIRCLEUP_TH 15		//进入环岛差距行
 
 #define CIRCLE 2			//环岛开关
-#define BROKEN 0			//断路开关
+#define BROKEN 1			//断路开关
 #define CURVE_BROKEN 0
 #define RAMP 0				//坡道开关
-#define BLOCK_BROKEN 1		//路障断路开关
+#define BLOCK_BROKEN 0		//路障断路开关
 #define STOPLINE 0			//停车开关
 #define CI_IND 0			//出环岛标志
 #define INF 1				//红外识别
@@ -493,6 +496,15 @@ extern signed int DialSwitchFlag4;
 //#define DIALSWITCH_PIN2 E7
 //#define DIALSWITCH_PIN3 E8
 //#define DIALSWITCH_PIN4 E9
+/**************电磁环岛*************/
+extern float Circlelanderror;
+extern int circlelandflag;
+extern float circlelandSigma;
+extern int circlelandtimecount;
+extern int circlelandget; 
+extern int circlelandnumber;
+extern int circlelandsymbol;
 
+//uint8 phototube;
 
 #endif

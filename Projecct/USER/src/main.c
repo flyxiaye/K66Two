@@ -22,6 +22,8 @@ int main(void)
 	{
 		dialSwitchFlg1 = gpio_get(DIALSWITCH_PIN1);
 		dialSwitchFlg2 = gpio_get(DIALSWITCH_PIN2);
+                	dialSwitchFlg3 = gpio_get(DIALSWITCH_PIN3);
+		dialSwitchFlg4 = gpio_get(DIALSWITCH_PIN4);
 		//    ftm_pwm_duty(ftm0,RIGHT_GO,0);
 		//    ftm_pwm_duty(ftm0,RIGHT_BACK,8000);
 		//    ftm_pwm_duty(ftm0,LEFT_GO,0);
@@ -51,9 +53,12 @@ int main(void)
                 UserData();
 //    SendAngle();
 //    SendData();
-		if (CircleFlag)
+                		if (Img_BrokenFlag)
 			gpio_init(A7, GPO, 1);
 		else gpio_init(A7, GPO, 0);
-	}
-
+//		if (CircleFlag)
+//			gpio_init(A7, GPO, 1);
+//		else gpio_init(A7, GPO, 0);
+         
+}
 }
