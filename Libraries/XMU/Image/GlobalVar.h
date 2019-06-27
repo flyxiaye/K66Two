@@ -16,78 +16,47 @@ extern unsigned char g_Img_All_120x188[ROW][COL];
 extern const unsigned char g_Bit_Val_Up[8];
 extern const unsigned char g_Bit_Val_Down[8];
 
-//**********Angle(角度控制)**************//
-extern float angle;
-extern float g_AngleControlOut;
-extern float g_angle_set;
+//------------------------------平衡----------------------------//
+typedef struct
+{
+	float KP;
+	float KD;
+        float KI;
+}PID;
+typedef struct
+{
+	float ERROR;
+        float ERROR_LAST;
+        float ERROR_SUM;
+}ERROR;
 
-
-extern float g_error;
-extern float g_angle;
-
-extern int g_count;
-//串级
-extern float g_AngleOut;
-extern float g_RateP ;
-extern float g_RateD;
-extern float g_angle_P; 
-extern float g_angle_D; 
-//单级
-extern float g_single_angle_P;
-extern float g_single_angle_D;
-//***********MOTOR（电机模式及其输出及开关）***********//
-extern float g_fleft;
-extern float g_fright;
-extern int g_mode;
-extern float g_duty_left;
-extern float g_duty_right;
-//***********Speed(速度控制)**********//
-extern float g_Speed_P;
-extern float g_Speed_I;
-extern float g_fSpeedControlOut;//输出速度控制
-extern float g_fSpeed_set;//设置的速度值
-extern float g_nSpeedControlPeriod;
-extern float g_SpeedPeriod;
-extern float g_nLeftMotorPulseSigma;
+extern PID RATE_STAND_PID ,   //角速度环控制直立
+    RATE_DIRECT_PID ,  //角速度环控制方向
+    ANGLE_PID ,        //角度环
+    SPEED_PID ,        //速度环
+    RADIUS_PID;        //转弯半径
+extern ERROR RATE_STAND_ERROR ,
+      RATE_DIRECT_ERROR ,
+      ANGLE_ERROR ,
+      SPEED_ERROR ,
+      RADIUS_ERROR ;
+extern float RateOut_Stand ,
+               RateOut_Direct,
+               AngleOut,
+               SpeedOut,
+               radius ;    
+extern float g_errorD ;//方向偏差
+extern float g_angle_set;//设置角度值
+extern float g_speed_set;//速度设置
+extern int g_mode;//模式
+extern float g_drive_left;//电机
+extern float g_drive_right;
+extern float g_nLeftMotorPulseSigma;//编码器
 extern float g_nRightMotorPulseSigma;
-extern float g_s;
-extern float g_errorS ;
-
-extern float g_duty_PWMleft;
-extern float g_duty_PWMright;
-extern int g_mode;
-extern int g_drive_flag;
-extern int MaxSpeed;
-extern int Speed_MAX ;
-extern float g_fI ;//积分项暂存处
-
-//**************************Direction方向环（摄像头）**************//
-extern float gRateKp;            //串级p
-extern float gRateKd;            //串级d
-
-extern int g_need ;//摄像头取得行数
-extern float g_dire_P;
-extern float g_dire_D;
-extern float g_errorD;//差值
-extern float g_fDirectionControlOut;
-extern float g_nDirectionControlPeriod;//输出平滑
-extern float g_DirectionPeriod;//分的段数
-extern float AD_flag;
-
-extern float g_dire_ad_P;
-extern float g_dire_ad_D ;
-
-extern float g_fDirectionControlOut_new;
-extern float g_fDirectionControlOut_before;
-//**************************Direction方向环（电感）**************//
-extern float gRateKp_AD ;            //串级p
-extern float gRateKd_AD ;            //串级d
-
-extern float g_dire_P_AD;
-extern float g_dire_D_AD;
-
-
-
+extern float g_duty_left ;//给定占空比
+extern float g_duty_right ;
+extern int deviation;
+extern int stop_flag;
 //==========================图像变量============================//
 #define LEFT_EAGE 0			//图像左边界
 #define RIGHT_EAGE 187		//图像右边界

@@ -50,38 +50,8 @@ int main(void)
 		//Bluebooth_Push_Data();
 //    SendAngle();
 //    SendData();
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-    else 
-    {
-      Menu();
-    }
-//    if(CircleState) 
-      gpio_init(E8,GPO,0);
-//    else 
-//      gpio_init(E8,GPO,1);
-//    if(CircleState) 
-      gpio_init(E7,GPO,0);
-//    else 
-//      gpio_init(E7,GPO,1);
-//    if(CircleState) 
-      gpio_init(E6,GPO,0);
-//    else 
-//      gpio_init(E6,GPO,1);
-  }
-  
-=======
 //		if (CircleFlag)
 //			gpio_init(A7, GPO, 1);
 //		else gpio_init(A7, GPO, 0);
 	}
-
->>>>>>> Stashed changes
-=======
-		if (CircleFlag)
-			gpio_init(A7, GPO, 1);
-		else gpio_init(A7, GPO, 0);
-	}
-
->>>>>>> flyxia
 }

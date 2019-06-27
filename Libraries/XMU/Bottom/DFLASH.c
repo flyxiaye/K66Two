@@ -93,14 +93,14 @@ void MyFlash_Write(signed int flashnum)
 //        DFlash_Write_Float(SECTOR_NUM + flashnum, 23, ave_mid);//
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 24, sum_meet_left);//�ᳵ��ͷ
 //    DFlash_Write_Int(SECTOR_NUM + flashnum, 25, sum_meet_right);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 26, Speed_MAX);//�ٶȻ����޷�
+//    DFlash_Write_Int(SECTOR_NUM + flashnum, 26, Speed_MAX);//�ٶȻ����޷�
 //    DFlash_Write_Float(SECTOR_NUM + flashnum, 27, Img_BlockOpen);//ǰհ
 
     DFlash_Write_Int(SECTOR_NUM + flashnum, 28, exp_time);//�������Ʋ���
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, gRateKd_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, gRateKp_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, g_dire_P_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, g_dire_D_AD);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, gRateKd_AD);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, gRateKp_AD);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, g_dire_P_AD);
+//    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, g_dire_D_AD);
 
     /********** ����Ϊ�洢������ **********/
 OLED_Clear();
@@ -145,15 +145,15 @@ void MyFlash_Read(signed int flashnum)
         
 //        sum_meet_left = DFlash_Read_Int(SECTOR_NUM + flashnum,24);
 //        sum_meet_right = DFlash_Read_Int(SECTOR_NUM + flashnum,25);
-        Speed_MAX = DFlash_Read_Int(SECTOR_NUM + flashnum,26);
+//        Speed_MAX = DFlash_Read_Int(SECTOR_NUM + flashnum,26);
 //        Img_BlockOpen = DFlash_Read_Float(SECTOR_NUM + flashnum,27);
 //  
 //        
         exp_time = DFlash_Read_Int(SECTOR_NUM + flashnum,28);
-        gRateKd_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
-        gRateKp_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
-        g_dire_P_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
-        g_dire_D_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
+//        gRateKd_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
+//        gRateKp_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
+//        g_dire_P_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
+//        g_dire_D_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
 
          
  

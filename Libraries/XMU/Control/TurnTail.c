@@ -2,185 +2,131 @@
 #include "headfile.h"
 #include "TurnTail.h"
 #define _ANGLE imu_data.yaw
-int StayDistance = 3000, TurntailDistance = 9000;
-int balabaflag = 0;
-float flipgyro = 0;
+#define _RATE_YAW sensor.Gyro_deg.y
 void TurnTail()
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   static float angle_init = 0;
   static int step = 0;
-  static int integral = 0;
-  
-   switch(step)
+  static int error = 0;
+  static int distance = 0;
+  static int piece = 0;
+  static float integral = 0;
+  switch(step)
    {
    case 0:
      {
-       if(Img_BrokenFlag == 1 )
+       if(Img_BrokenFlag)//¹Ø²¹Í¼
        {
-         angle_init = g_angle_set;
-         g_angle_set = angle_init + 3;
+         angle_init = _ANGLE;
+         stop_flag = 1;
          step = 1;
+        
        }
        break;
      }
    case 1:
      {
-       if(Img_BrokenFlag == 2)
+       integral += _RATE_YAW * 0.002;
+       if(Img_BrokenFlag == 2) 
        {
-         g_mode = 2;
-         step = 2;
+         distance += curSpeed;
+         if(distance > 100 && deviation > piece)
+         { 
+           piece += 5;
+           distance = 0;
+//           g_errorD = piece;
+         }
+         if(deviation < piece)
+         {
+            piece = deviation;
+            step = 2;
+         }
+         g_errorD = piece;
+
        }
        break;
      }
    case 2://´Ë´¦ÐèÒª¹Ø±Õ·½Ïò»·µÄÆ«²î¼ÆËã£¬¿ªÆô¹ßÐÔµ¼º½
      {
-       if(ABS(integral) < 270)
+       integral += _RATE_YAW * 0.002;
+       error = 220 - integral;
+//       error = AngleError(_ANGLE, angle_init + 220);
+       if(error > 0 )
        {
-         g_errorD = deviation;
-          integral += ABS(_RATE_YAW * 0.002);
-       }
-       else if(ABS(integral) >= 270)
+         g_errorD = deviation;  
+       } 
+       else if(error <= 0 )
        {
          step = 3;
-         integral = 0;
+         error = 0;
+//         piece = deviation;
        }
        break;
      }
    case 3:
      {
-       g_errorD = -deviation;
-        integral += ABS(_RATE_YAW * 0.002);
-       if(ABS(integral) >= 45 || !Img_BrokenFlag )
+       integral += _RATE_YAW * 0.002;
+       error = 260 - integral;
+//       error = AngleError(_ANGLE, angle_init + 260);
+       if(error > 0 && piece > 0)
+       {
+         piece -= 5;
+       }
+       if(error <= 10 || piece < 0)
+       {
+         piece = 0;
+         step = 4;
+         
+       }
+         g_errorD = piece;
+       break;
+     }
+   case 4:
+     {
+       integral += _RATE_YAW * 0.002;
+       error = 380 - integral;
+//       error = AngleError(_ANGLE, angle_init + 380);
+       if( -deviation < piece && Img_BrokenFlag )
+       {
+         piece -= 8;
+       }
+       if(-deviation > piece)
+       {
+         piece += 8;
+       }
+       g_errorD  = piece;
+       if(error <= 0 || Img_BrokenFlag)
        {
          step = 0;
+         error = 0;
+         piece = 0; 
          integral = 0;
-         g_angle_set = angle_init;
-         g_mode = 5;
+         angle_init = 0;
        }
+        
      }
    }
-=======
-=======
->>>>>>> parent of 31a416a... å¸¸ç¥žä»£ç ç§»æ¤
-=======
->>>>>>> parent of 31a416a... å¸¸ç¥žä»£ç ç§»æ¤
-//  flipgyro+= sensor.Gyro_deg.z * 0.002;
-    static float lastangle, lastspeed, first, initangleset, initmode;
-    static int TurnTail = 0, acc_speed = 0, count = 0, initcameraopen, initindopen;
-    if (balabaflag == 1)
-    {
-        switch (TurnTail)
-        {
-        case 0:
-        {
-            acc_speed += curSpeed;
-            if (acc_speed >= 2000)
-            {
-                initcameraopen = g_camera_open;
-                initindopen = g_ind_open;
-                initmode = g_mode;
-                g_camera_open = 0;
-                g_ind_open = 0;
-                lastspeed = curSpeed;
-                lastangle = _ANGLE;
-                initangleset = g_angle_set;
-                TurnTail = 1;
-                acc_speed = 0;
-                flipgyro = 0;
-            }
-            break;
-        }
-        case 1:
-        {
-            //        if(2==BrokenFlag)
-            //        {
-            acc_speed += curSpeed;
-            if (flipgyro < 180)
-            {
-                //  rightExpect=(1-(AngleError(_ANGLE,lastangle+90))/90)*lastangle;
-                //  leftExpect=lastangle;
-                // leftExpect=40;
-                // rightExpect=10;
-                //	        g_fDirectionControlOut_new+=AngleError(_ANGLE,lastangle);
-                flipgyro += sensor.Gyro_deg.z * 0.002;
-                g_fDirectionControlOut_new = 8000;
-                lastangle = _ANGLE;
-            }
-            else if (flipgyro >= 180)
-            {
-                acc_speed = 0;
-                TurnTail = 2;
-                g_fDirectionControlOut_new = 0;
-                lastangle = _ANGLE;
-                initangleset = _ANGLE;
-                flipgyro = 0;
-            }
-            break;
-            //        }
-        }
-        case 2:
-        {
-            if (count <= 500)
-            {
-                g_mode = 1;
-                g_angle_set = 30;
-            }
-            count++;
-            if (count > 500 && imu_data.pit > 28)
-            {
-                g_mode = 3;
-                TurnTail = 3;
-                count = 0;
-                g_angle_set = initangleset;
-            }
-            break;
-        }
-        case 3:
-        {
-            acc_speed += curSpeed;
-            if (flipgyro <= 0)
-            {
-                flipgyro += sensor.Gyro_deg.z * 0.002;
-                g_fDirectionControlOut_new = 8000;
-                lastangle = _ANGLE;
-            }
-            else if (flipgyro > 0)
-            {
-                acc_speed = 0;
-                TurnTail = 4;
-                g_fDirectionControlOut_new = 0;
-                lastangle = _ANGLE;
-            }
-            break;
-        }
-        case 4:
-        {
-            if (count <= 500)
-            {
-                g_mode = 1;
-                g_angle_set = 30;
-            }
-            count++;
-            if (count > 500 && imu_data.pit > 28)
-            {
-                g_drive_flag = 0;
-                g_mode = 3;
-                TurnTail = 3;
-                count = 0;
-                g_angle_set = initangleset;
-            }
-            break;
-        }
-        }
-    }
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 31a416a... å¸¸ç¥žä»£ç ç§»æ¤
-=======
->>>>>>> parent of 31a416a... å¸¸ç¥žä»£ç ç§»æ¤
-=======
->>>>>>> parent of 31a416a... å¸¸ç¥žä»£ç ç§»æ¤
+}
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      ·µ»ØÍÓÂÝÒÇ²îÖµ
+//  @param      real_angle    //Êµ¼Ê½Ç¶È
+//  @param      obj_angle  //Ä¿±ê½Ç¶È
+//  Sample usage:				
+//------------------------------------------------------------------------------------------------------------------- 
+float AngleError(float real_angle, float obj_angle)
+{
+  if (obj_angle > 180) obj_angle -= 360;
+  else if (obj_angle < -180) obj_angle += 360;
+  if (obj_angle - real_angle > 180)
+  {
+    return (obj_angle - 360 - real_angle);
+  }
+  else if (real_angle - obj_angle > 180)
+  {
+    return (obj_angle + 360 - real_angle);
+  }
+  else
+  {
+    return (obj_angle - real_angle);
+  }
 }

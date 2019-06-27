@@ -65,27 +65,6 @@ void DMA0_IRQHandler(void)
 int time = 0;
 void PIT0_IRQHandler(void)
 {
-<<<<<<< Updated upstream
-    Mpu_Data_Prepare(0.002);
-    My_IMU_update(0.002);
-//    StopCar();
-//    TurnAround();
-//    StartSpeed();
-//    DistCI();
-//    get_ind_error();
-//    AngleControl();
-//    Direction();
-//    DirectionControlOutput();
-//    SpeedControl();             //读取编码器计数
-//    SpeedControlOutput();
-<<<<<<< HEAD
-    power();
-=======
-//    power();
->>>>>>> flyxia
-    OutControl();
-    PIT_FlAG_CLR(pit0);
-=======
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
 	//    StopCar();
@@ -103,7 +82,6 @@ void PIT0_IRQHandler(void)
 //	StopCar();
 	power();
 	PIT_FlAG_CLR(pit0);
->>>>>>> Stashed changes
 }
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      UART3中断执行函数

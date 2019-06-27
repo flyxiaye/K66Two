@@ -119,15 +119,19 @@ void DrivePWM(float g_duty_PWMleft, float g_duty_PWMright)
 //-------------------------------------------------------------------------------------------------------------------
 void power()
 {
-	if (1 == g_drive_flag)
+	if (1 == g_drive_flag && !stop_flag)
 	{
 		motormode(g_mode);
 		DrivePWM(g_drive_left, g_drive_right);
 	}
-	else if (0 == g_drive_flag)
+	else if (0 == g_drive_flag && !stop_flag)
 	{
 		DrivePWM(0, 0);
 	}
+        else if(1 == stop_flag);
+        {
+                DrivePWM(-2000, -2000);
+        }
 }
 void on_off_flag()
 {
