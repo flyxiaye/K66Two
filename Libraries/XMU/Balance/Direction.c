@@ -33,14 +33,16 @@ void Direction()
 	//  else if(!dialSwitchFlg2&&balabaflag!=0)
 	//  {
 	//
-  if(dialSwitchFlg2)
-  {
-    Camera_DirectionControl();
-  }
-  else if(!dialSwitchFlg2||Img_BrokenFlag)
+//  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
+    if(!dialSwitchFlg2||Img_BrokenFlag&&!TurnTailFlag)
   {
 	AD_DirectionControl();
   }
+  else if(dialSwitchFlg2&&!TurnTailFlag)
+  {
+    Camera_DirectionControl();
+  }
+
         ////      AD_CircleIsland_Control();
 	//    
 	//  }

@@ -114,7 +114,7 @@ extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 #define BROKEN 1			//断路开关
 #define CURVE_BROKEN 0
 #define RAMP 0				//坡道开关
-#define BLOCK_BROKEN 0		//路障断路开关
+#define BLOCK_BROKEN 1		//路障断路开关
 #define STOPLINE 0			//停车开关
 #define CI_IND 0			//出环岛标志
 #define INF 1				//红外识别

@@ -84,8 +84,10 @@ void PIT0_IRQHandler(void)
         DistBroken();
         IndCI();
 	get_ind_error();
-          
+          if(!TurnTailFlag)
+          {
 	AngleControl();
+          }
 	Direction();
 	DirectionControlOutput();
         ExpectSpeedGet();
@@ -94,7 +96,8 @@ void PIT0_IRQHandler(void)
 //        {
 	SpeedControlOutput();
 //	}
-//        TurnTail();
+    
+        TurnTail();
         power();
 	PIT_FlAG_CLR(pit0);
 }

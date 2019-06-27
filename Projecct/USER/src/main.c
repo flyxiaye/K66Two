@@ -54,8 +54,8 @@ int main(void)
 //    SendAngle();
 //    SendData();
                 		if (Img_BrokenFlag)
-			gpio_init(A7, GPO, 1);
-		else gpio_init(A7, GPO, 0);
+			gpio_init(D0, GPO, 0);
+		else gpio_init(D0, GPO, 1);
 //		if (CircleFlag)
 //			gpio_init(A7, GPO, 1);
 //		else gpio_init(A7, GPO, 0);

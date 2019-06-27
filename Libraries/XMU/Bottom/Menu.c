@@ -518,22 +518,22 @@ void Key_Function(void)
 			break;
 				case 9: 
                                   
-			FlagChange(&g_drive_flag);//开电机
-                        		if (g_drive_flag)
-			{
-				g_StateMaster = 0;
-				g_StartMaster = 0;
-				g_MasterOutFlag = 0;
-				CircleFlag = 0;
-				CircleState = 0;
-				Img_BrokenFlag = 0;
-				Img_BlockFlag = 0;
-				//				speed_type = 1;
-				if (1 == g_camera_open)
-					g_handle_open = 1;
-				g_ad_flag = 1;
-				Img_RampFlag = 0;
-			}
+//			FlagChange(&g_drive_flag);//开电机
+//                        		if (g_drive_flag)
+//			{
+//				g_StateMaster = 0;
+//				g_StartMaster = 0;
+//				g_MasterOutFlag = 0;
+//				CircleFlag = 0;
+//				CircleState = 0;
+//				Img_BrokenFlag = 0;
+//				Img_BlockFlag = 0;
+//				//				speed_type = 1;
+//				if (1 == g_camera_open)
+//					g_handle_open = 1;
+//				g_ad_flag = 1;
+//				Img_RampFlag = 0;
+//			}
 //                        FlagChange(&TurnTailFlag);
 //			if (g_drive_flag)
 //			{
@@ -555,7 +555,7 @@ void Key_Function(void)
 		
 //			g_drive_flag = !g_drive_flag;
 //			TurnTailFlag=!TurnTailFlag;
-			// SD_Gather_Gray_Picture120x188();    
+			 SD_Gather_Gray_Picture120x188();    
 			break; //采图
 		default:                     break;
 		}
@@ -891,7 +891,7 @@ void Main_Show(void)
 	Insert_Float("D", &g_dire_D);
 	Insert_Int("MAX", &max_duty);
 	Insert_Int("ProOUT", &ProSpect);
-
+Insert_Float("xxx", &acc_Xpeed);
 
 	Insert_Page("PID_D/AD");//方向
 	Insert_Float("error", &g_errorD);

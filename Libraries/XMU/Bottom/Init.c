@@ -130,7 +130,7 @@ void system_Init(void)
      
 //     adc_init(ADC1_SE12);               //红外初始化
 //     //sd_init();
-////     SD_BMP_Init();
+     SD_BMP_Init();
 ////     crcInit();
      DialSwitchInit();
      	INTR_Keyboard_Init();		//键盘初始化
