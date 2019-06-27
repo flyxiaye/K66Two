@@ -84,10 +84,10 @@ void AD_DirectionControl()
   if(count >= 4)
   {
     count = 0;
-    if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制
-    {
-      ;
-    }
+//    if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //路障控制
+//    {
+//      ;
+//    }
 //    if(!CircleIsland_into_flag)//圆环
 //    {
       g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
@@ -96,13 +96,13 @@ void AD_DirectionControl()
 //    {
 //      ;
 //    }
-    if(!TurnTailFlag)
-    {
+//    if(!TurnTailFlag)
+//    {
     g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD + (g_errorD - g_error_before) * g_dire_D_AD;
     g_fDirectionControlOut_new = (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z -  sensorGyroZLast) * gRateKd_AD;
     sensorGyroZLast = sensor.Gyro_deg.z;
     g_error_before = g_errorD;
-    }
+//    }
   }
   else count++;
 }

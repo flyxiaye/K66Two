@@ -41,17 +41,15 @@ void motormode(float mode)
 //	if (Img_RampFlag != 1)
         if(1==g_mode)
 	{
-		g_fleft =g_AngleControlOut ;
-		g_fright = g_AngleControlOut ;
+		g_fleft =g_AngleControlOut;
+		g_fright = g_AngleControlOut;
+//                  g_fleft =g_AngleControlOut - g_fDirectionControlOut - g_fSpeedControlOut;
+//		g_fright =g_AngleControlOut +g_fDirectionControlOut - g_fSpeedControlOut;
 	}
-//	if (Img_RampFlag == 1)
-//	{
-//		;//避障函数执行
-//	}
         if(2==g_mode)
         {
-                g_fleft =g_AngleControlOut - g_fDirectionControlOut ;
-		g_fright =g_AngleControlOut +g_fDirectionControlOut;
+                g_fleft =g_AngleControlOut-g_fDirectionControlOut;
+		g_fright=g_AngleControlOut+g_fDirectionControlOut;
         }
         if(3==g_mode)
         {

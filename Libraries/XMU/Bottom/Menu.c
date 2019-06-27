@@ -517,27 +517,27 @@ void Key_Function(void)
 				LineNumAdd();           //行数下移
 			break;
 				case 9: 
-                                  {
+                                  
 			FlagChange(&g_drive_flag);//开电机
-                        FlagChange(&TurnTailFlag);
-			if (g_drive_flag)
-			{
-				g_StateMaster = 0;
-				g_StartMaster = 0;
-				g_MasterOutFlag = 0;
-				CircleFlag = 0;
-				CircleState = 0;
-				Img_BrokenFlag = 0;
-				Img_BlockFlag = 0;
-				//				speed_type = 1;
+//                        FlagChange(&TurnTailFlag);
+//			if (g_drive_flag)
+//			{
+//				g_StateMaster = 0;
+//				g_StartMaster = 0;
+//				g_MasterOutFlag = 0;
+//				CircleFlag = 0;
+//				CircleState = 0;
+//				Img_BrokenFlag = 0;
+//				Img_BlockFlag = 0;
+//				//				speed_type = 1;
                            
-				if (1 == g_camera_open)
-					g_handle_open = 1;
-				g_ad_flag = 1;
-				Img_RampFlag = 0;
-			}
+//				if (1 == g_camera_open)
+//					g_handle_open = 1;
+//				g_ad_flag = 1;
+//				Img_RampFlag = 0;
+//			}
 			// g_ramp_enable = 1;
-		}
+		
 //			g_drive_flag = !g_drive_flag;
 //			TurnTailFlag=!TurnTailFlag;
 			// SD_Gather_Gray_Picture120x188();    

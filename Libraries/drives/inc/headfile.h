@@ -89,5 +89,6 @@
 #include "Basic.h"
 #include "Direction.h"
 #include "Speed.h"
+#include "DelayDist.h"
 #include "TurnTail.h"
 #endif

@@ -81,15 +81,19 @@ void PIT0_IRQHandler(void)
 	   
 	//    StartSpeed();
 //	DistCI();
-//        IndCI();
+        IndCI();
 	get_ind_error();
-          TurnTail();
+          
 	AngleControl();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
+//        if(g_mode!=6)
+//        {
 	SpeedControlOutput();
-	power();
+//	}
+//        TurnTail();
+        power();
 	PIT_FlAG_CLR(pit0);
 }
 //-------------------------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ void TurnTail()
             acc_speed += curSpeed;
             if (flipgyro <= 180)
             {
-              gpio_init(D0,GPO,0);
+              
                 //  rightExpect=(1-(AngleError(_ANGLE,lastangle+90))/90)*lastangle;
                 //  leftExpect=lastangle;
                 // leftExpect=40;
@@ -74,13 +74,14 @@ void TurnTail()
             }
             else if (count >100&&count<=200)
             {
-                  g_drive_flag = 0;
+              g_mode=6;
+                 g_fDirectionControlOut=0;
             }
-            else if(count>200)
+            else if(count>1000)
             {
-                g_mode = 6;
+
                 g_angle_set = initangleset;
-                TurnTailFlag=3;
+                TurnTail=3;
                 g_drive_flag=1;
                 flipgyro=0;
             }
@@ -90,20 +91,22 @@ void TurnTail()
          case 3:
          {
              flipgyro += sensor.Gyro_deg.z * 0.002;
-           if(ind_mid!=4000)
+//           if(ind_mid!=4000)
+//           {
+//             gpio_init(D0,GPO,0);
+                g_fDirectionControlOut =-2000;
+//           }
+          if(ind_mid==4000)
+//                   &&((ind_left_column-ind_right_column)<50||(ind_right_column-ind_left_column)<50))
            {
-                g_fDirectionControlOut_new =-2300;
-           }
-           else if(ind_mid==4000&&((ind_left_column-ind_right_column)<50||(ind_right_column-ind_left_column)<50))
-           {
-               g_fDirectionControlOut_new=0;
+               g_fDirectionControlOut=0;
                g_drive_flag=0;
                TurnTailFlag=0;
                TurnTail=0;
            }  
-           else if(flipgyro<-180)
+           else if(flipgyro<-80)
            {
-               g_fDirectionControlOut_new=0;
+               g_fDirectionControlOut=0;
                g_drive_flag=0;
                g_mode=1;
                TurnTailFlag=0;
