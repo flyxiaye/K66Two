@@ -121,7 +121,7 @@ void system_Init(void)
      DriveInit();  
      encoder_Init();
      lcd_init();
-     camera_init();
+    camera_init();
      adc_init(ADC1_SE8);
      adc_init(ADC1_SE9);
      adc_init(ADC0_SE12);
