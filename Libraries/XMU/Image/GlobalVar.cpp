@@ -83,6 +83,7 @@ int protect_flag=0;
 unsigned char CircleDir[10];		//环岛计数
 unsigned char Ind_CircleOpen = 0;	//电磁判断环岛开关
 //==========================图像变量============================//
+//#include "GlobalVar.h"
 const int MidOffset[] = {
 	 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 11, 12, 13, 14, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 52, 53, 54, 55, 56, 57, 58, 59, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93,
 };
@@ -91,6 +92,8 @@ int ML[IMG_ROW], LL[IMG_ROW], RL[IMG_ROW];   //保存边缘线信息数组
 int ML_Count;									//中线有效行
 SpecialPoint LeftPnt, RightPnt;					//保存左右特殊点信息
 int DiffThreshold = 25;							//边缘检测阈值
+int DarkThreshold = 85;                         //暗阈值（路障）
+int BrightThreshold = 15;                      //亮阈值（坡道）
 int LightThreshold = 80;						//去高光噪声阈值
 int LightThreshold2 = 150;						//去高光噪声阈值2
 int FindLineType = 0;							//是否加入高光滤波标志
@@ -112,11 +115,13 @@ int Img_BrokenFlag = 0;			//断路标志
 int Img_BlockFlag = 0;			//路障标志
 int Img_StopLineFlag = 0;		//停车线标志
 int Img_RampFlag = 0;			//坡道标志
+
 int BrokenLastAve = 0;
 int StopLineDist = 0;
 
 unsigned char Img_CircleOpen = 1;
-unsigned char Img_BrokenOpen = 1;
+unsigned char Img_StraightBrokenOpen = 1;
+unsigned char Img_CurveBrokenOpen = 1;
 unsigned char Img_StopOpen = 1;
 unsigned char Img_BlockOpen = 1;
 unsigned char Img_RampOpen = 1;
@@ -150,7 +155,7 @@ int ControlMid = 90;						//图像控制中值
 
 //==========================菜单标志==============================//
 
-
+int	g_car_lanuch = 0;			//车辆启动标志
 int g_drive_flag = 0;           //电机开关标志
 int g_ad_flag = 1;              //电感采集标志
 int g_steer_open = 1;           //舵机开关标志
@@ -167,7 +172,6 @@ int g_ind_ctrl_flag = 0;
 int g_broken_enable = 0;
 int BugFlag = 0;
 
-//int ErrorFlag = 0;
 int speed_type = 1;
 //int RoadType = 0;
 //int MaxSpeedFlag = 0;     //高速标志
@@ -283,17 +287,14 @@ int dialSwitchFlg4=0;
 int dialSwitchcal=0;
 
 /*=====================================双车状态======================================*/
-unsigned char g_StartMaster = 0;                //主车发车准备
-unsigned char g_StartSlave = 1;                 //从车发车准备
-unsigned char g_GetMeetingMaster = 0;            //主车到达会车区标志
-unsigned char g_GetMeetingSlave = 0;             //从车到达会车区标志
-unsigned char g_MeetingCtrlFlag = 0;             //会车状态车辆控制标志
-unsigned char g_MeetingCtrlEndFlag = 0;             //会车状态车辆控制结束标志
-unsigned char g_EndMeetingMaster = 0;           //主车结束会车标志
 unsigned char g_MasterOutFlag = 0;              //主车出界
 unsigned char g_SlaveOutFlag = 0;               //从车出界
-unsigned char g_StateMaster = 0;
-unsigned char g_StateSlave = 0;
+unsigned char g_StateMaster = 0;		//主车状态
+unsigned char g_StateSlave = 0;			//从车状态
+unsigned char g_MeetingMode = 2;
+unsigned char g_MeetingDir = 2;			//转向方向 2为右转 1为左转
+unsigned char g_GetMeetingFlag = 0;	//进入会车标志 通过其他动作改变
+unsigned char g_GetMeetingState = 0;	//已经会车 0未会车 1已经会车 识别会车区后变为1
 
 /*====================================会车区惯导变量=====================================*/
 int sum_distance_1 = 3400;
@@ -305,17 +306,11 @@ int const_error_1 = -20;
 int const_error_2 = 40;
 int max_duty = 1300;
 /*====================================路障=====================================*/
-int g_RB_Lduty = 0,g_RB_Rduty = 0;
-float k1 = 30,k2 = 54,k3 = 63;//调整系数
 int sum = 0;
 int sum_dist = 4500;
-int inf_RB_flag = 0;
-int var = 0;
-float g_inf = 0;
-int s1 = 15;
+int g_inf = 0;
 int st = -40;
-int stop_inf = 90;
-unsigned char ObstacleEndFlag = 0;
+int stop_inf = 900;
 
 /**************电磁环岛*************/
 float Circlelanderror=0;

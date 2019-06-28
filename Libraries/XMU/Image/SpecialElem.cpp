@@ -57,7 +57,8 @@ int ImgJudgeCircle(int type)
 void ImgJudgeStopLine(void)
 {
 #if STOPLINE
-	if (Img_StopOpen && LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
+	if (Img_StopOpen && !Img_SpecialElemFlag
+		&& LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
 		&& LeftPnt.ErrRow <= UP_EAGE + 15 && RightPnt.ErrRow <= UP_EAGE + 15
 		&& !Img_StopLineFlag && DistStopLine(UP_EAGE + 15))
 	{
@@ -98,7 +99,8 @@ void ImgJudgeCurveBroken(void)
 {
 #if CURVE_BROKEN	
 	int UpRow = MAX(LeftPnt.ErrRow, RightPnt.ErrRow);
-	if (LeftPnt.ErrRow - RightPnt.ErrRow <= 3 && RightPnt.ErrRow - LeftPnt.ErrRow <= 3 && UpRow > 35
+	if (!Img_SpecialElemFlag && Img_CurveBrokenOpen
+		&& LeftPnt.ErrRow - RightPnt.ErrRow <= 3 && RightPnt.ErrRow - LeftPnt.ErrRow <= 3 && UpRow > 35
 		&& ImgJudgeSpecialLine(LeftPnt.ErrRow, LeftPnt.ErrCol, RightPnt.ErrRow, RightPnt.ErrCol, 1))
 	{
 		int RoadWidth[IMG_ROW] = { 0 };                 //路宽
@@ -141,50 +143,64 @@ void ImgJudgeCurveBroken(void)
 				LeftPnt.Type = 1;
 			}
 		}
-		else Img_BrokenFlag = 0;
 	}
-	else Img_BrokenFlag = 0;
 #endif
-
 }
 
 //================================================================//
-//  @brief  :		识别路障
+//  @brief  :		识别直道断路
 //  @param  :		void 
 //  @return :		void
 //  @note   :		void
 //================================================================//
-void ImgJudgeBlock(void)
+void ImgJudgeStraightBroken(void)
 {
-#if BLOCK_BROKEN
-	if ((Img_BlockOpen || Img_BrokenOpen) && !Img_SpecialElemFlag)		//断路路障判断
+#if STRAIGHT_BROKEN
+	if (Img_StraightBrokenOpen && !Img_SpecialElemFlag)
 	{
-		int flag = ImgJudgeSpecialElem(LeftIntLine, RightIntLine);
-		if (1 == Img_BlockOpen && 1 == flag)
-		{
-			Img_BlockFlag = 1;
-			Img_SpecialElemFlag = 1;
-		}
-		else if (2 == Img_BlockOpen && flag)			//红外识别路障
-		{
-			Img_BrokenFlag = 1;
-			Img_SpecialElemFlag = 1;
-#if INF
-			if (g_inf > stop_inf)
-			{
-				Img_BlockFlag = 1;
-				Img_BrokenFlag = 0;
-			}
-#endif 
-		}
-		else if (Img_BrokenOpen && 2 == flag)
+		if (ImgJudgeSpecialLine(LeftIntLine, LL[LeftIntLine], RightIntLine, RL[RightIntLine], 0))
 		{
 			Img_BrokenFlag = 1;
 			Img_SpecialElemFlag = 1;
 		}
-		else;
 	}
 #endif
+}
+
+
+//================================================================//
+//  @brief  :		识别坡道/路障/直道断路
+//  @param  :		void 
+//  @return :		void
+//  @note   :		void
+//================================================================//
+void ImgJudgeObstacle(void)
+{
+#if INF
+	if (g_inf > stop_inf)
+	{
+		if (LeftPnt.ErrRow - RightPnt.ErrRow <= 2 && RightPnt.ErrRow - LeftPnt.ErrRow <= 2)
+		{
+			int Front = MIN(LeftPnt.ErrRow, RightPnt.ErrRow);
+			int FrontGray = RegionAveGray(Front - 2, LeftPnt.ErrCol, RightPnt.ErrCol);
+			int DownGray = RegionAveGray(DOWN_EAGE - 2, LL[DOWN_EAGE - 2], RL[DOWN_EAGE - 2]);
+			if (Img_BlockOpen && !Img_SpecialElemFlag
+				&& DownGray - FrontGray > DarkThreshold)
+			{
+				Img_BlockFlag = 1;//路障
+				Img_SpecialElemFlag = 1;
+			}
+			else if (Img_RampOpen && !Img_SpecialElemFlag
+				&& UP_EAGE + 1 == Front && DownGray - FrontGray < BrightThreshold && FrontGray - DownGray < BrightThreshold)
+			{
+				Img_RampFlag = 1;//坡道
+				Img_SpecialElemFlag = 1;
+			}
+		}
+	}
+	else
+#endif 	
+		ImgJudgeStraightBroken();//直道断路
 }
 
 //===========================以上为可直接调用的元素识别函数======================//
@@ -206,19 +222,20 @@ void SpecialElemFill(void)
 	FindLineNormal(0);
 	if (1 == Img_BrokenFlag)
 	{
-		if (LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
-			&& LeftPnt.ErrRow < UP_EAGE + 15 && RightPnt.ErrRow < UP_EAGE + 15
-			&& DistStopLine(UP_EAGE + 15))
-		{
-			Img_StopLineFlag = 1;
-			Img_BrokenFlag = 0;
-		}
-		else if (1 == Img_BlockFlag && 1 == ImgJudgeSpecialElem(LeftIntLine, RightIntLine))
-		{
-			Img_BlockFlag = 1;			//路障
-			Img_BrokenFlag = 0;
-		}
-		else if (ImgJudgeOutBroken())
+		//if (LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
+		//	&& LeftPnt.ErrRow < UP_EAGE + 15 && RightPnt.ErrRow < UP_EAGE + 15
+		//	&& DistStopLine(UP_EAGE + 15))
+		//{
+		//	Img_StopLineFlag = 1;
+		//	Img_BrokenFlag = 0;
+		//}
+		//else if (1 == Img_BlockFlag && 1 == ImgJudgeSpecialElem(LeftIntLine, RightIntLine))
+		//{
+		//	Img_BlockFlag = 1;			//路障
+		//	Img_BrokenFlag = 0;
+		//}
+		//else 
+		if (ImgJudgeOutBroken())
 		{
 			Img_BrokenFlag = 2;			//断路
 		}
@@ -319,7 +336,7 @@ int ImgJudgeSpecialElem(int left_line, int right_line)
 //================================================================//
 int ImgJudgeSpecialLine(int left_row, int left_col, int right_row, int right_col, int type)
 {
-	const int StartLine = 33;
+	const int StartLine = 35;
 	if (!type &&
 		(left_row < StartLine && right_row < StartLine
 			|| left_row - right_row > 8 || right_row - left_row > 8

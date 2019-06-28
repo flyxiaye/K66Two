@@ -78,27 +78,27 @@ void PIT0_IRQHandler(void)
 	//      MeetingCarControl();
 	//    }
 	//    StopCar();
-	   
+
 	//    StartSpeed();
 //	DistCI();
-        DistBroken();
-        IndCI();
+	DistBroken();
+	IndCI();
 	get_ind_error();
-          if(!TurnTailFlag)
-          {
-	AngleControl();
-          }
+	if (!TurnTailFlag)
+	{
+		AngleControl();
+	}
 	Direction();
 	DirectionControlOutput();
-        ExpectSpeedGet();
+	ExpectSpeedGet();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
 //        if(g_mode!=6)
 //        {
 	SpeedControlOutput();
-//	}
-    
-        TurnTail();
-        power();
+	//	}
+
+	TurnTail();
+	power();
 	PIT_FlAG_CLR(pit0);
 }
 //-------------------------------------------------------------------------------------------------------------------

@@ -435,9 +435,14 @@ void Menu(void)
 	Key_Function();
 	if (!g_drive_flag)
 	{
-		Extra_Show();
-		Main_Show();
-		OLED_Write_Int(0, 0, g_mode);
+		if (g_explore_page)
+			ExploreTime();
+		else
+		{
+			Extra_Show();
+			Main_Show();
+			OLED_Write_Int(0, 0, g_mode);
+		}
 	}
 }
 
@@ -454,26 +459,23 @@ void Key_Function(void)
 		switch (g_Key)
 		{
 		case 1:           //启动
-                  {
+		{
 			FlagChange(&g_drive_flag);//开电机
 			if (g_drive_flag)
 			{
 				g_StateMaster = 0;
-				g_StartMaster = 0;
 				g_MasterOutFlag = 0;
 				CircleFlag = 0;
 				CircleState = 0;
 				Img_BrokenFlag = 0;
 				Img_BlockFlag = 0;
-				//				speed_type = 1;
 				if (1 == g_camera_open)
 					g_handle_open = 1;
 				g_ad_flag = 1;
 				Img_RampFlag = 0;
 			}
-			// g_ramp_enable = 1;
-                  }
-				break;
+		}
+		break;
 		case 2:
 			if (g_pageNum == 1)
 				g_steer_open = !g_steer_open;   //开舵机
@@ -502,7 +504,7 @@ void Key_Function(void)
 			break;
 		case 6:  PageNumAdd();       break;//向下翻页
 		case 7:
-			if (9 == g_pageNum)
+			if (12 == g_pageNum)
 				g_ad_flag = !g_ad_flag;
 			else changemode();
 			//				SD_Gather_Camera_Picture_120x188();        break; //采图
@@ -516,46 +518,46 @@ void Key_Function(void)
 			else
 				LineNumAdd();           //行数下移
 			break;
-				case 9: 
-                                  
-//			FlagChange(&g_drive_flag);//开电机
-//                        		if (g_drive_flag)
-//			{
-//				g_StateMaster = 0;
-//				g_StartMaster = 0;
-//				g_MasterOutFlag = 0;
-//				CircleFlag = 0;
-//				CircleState = 0;
-//				Img_BrokenFlag = 0;
-//				Img_BlockFlag = 0;
-//				//				speed_type = 1;
-//				if (1 == g_camera_open)
-//					g_handle_open = 1;
-//				g_ad_flag = 1;
-//				Img_RampFlag = 0;
-//			}
-//                        FlagChange(&TurnTailFlag);
-//			if (g_drive_flag)
-//			{
-//				g_StateMaster = 0;
-//				g_StartMaster = 0;
-//				g_MasterOutFlag = 0;
-//				CircleFlag = 0;
-//				CircleState = 0;
-//				Img_BrokenFlag = 0;
-//				Img_BlockFlag = 0;
-//				//				speed_type = 1;
-                           
-//				if (1 == g_camera_open)
-//					g_handle_open = 1;
-//				g_ad_flag = 1;
-//				Img_RampFlag = 0;
-//			}
-			// g_ramp_enable = 1;
-		
-//			g_drive_flag = !g_drive_flag;
-//			TurnTailFlag=!TurnTailFlag;
-			 SD_Gather_Gray_Picture120x188();    
+		case 9:
+
+			//			FlagChange(&g_drive_flag);//开电机
+			//                        		if (g_drive_flag)
+			//			{
+			//				g_StateMaster = 0;
+			//				g_StartMaster = 0;
+			//				g_MasterOutFlag = 0;
+			//				CircleFlag = 0;
+			//				CircleState = 0;
+			//				Img_BrokenFlag = 0;
+			//				Img_BlockFlag = 0;
+			//				//				speed_type = 1;
+			//				if (1 == g_camera_open)
+			//					g_handle_open = 1;
+			//				g_ad_flag = 1;
+			//				Img_RampFlag = 0;
+			//			}
+			//                        FlagChange(&TurnTailFlag);
+			//			if (g_drive_flag)
+			//			{
+			//				g_StateMaster = 0;
+			//				g_StartMaster = 0;
+			//				g_MasterOutFlag = 0;
+			//				CircleFlag = 0;
+			//				CircleState = 0;
+			//				Img_BrokenFlag = 0;
+			//				Img_BlockFlag = 0;
+			//				//				speed_type = 1;
+
+			//				if (1 == g_camera_open)
+			//					g_handle_open = 1;
+			//				g_ad_flag = 1;
+			//				Img_RampFlag = 0;
+			//			}
+						// g_ramp_enable = 1;
+
+			//			g_drive_flag = !g_drive_flag;
+			//			TurnTailFlag=!TurnTailFlag;
+			SD_Gather_Gray_Picture120x188();
 			break; //采图
 		default:                     break;
 		}
@@ -867,19 +869,7 @@ void Main_Show(void)
 	Insert_Float("DR", &g_RateD);
 	// Insert_Float("flygyro",)
 
-	//         Insert_Page("Obstacle");//避障
-	//         Insert_Float("g_inf",&g_inf);
-	//         Insert_Int("stop_inf",&stop_inf);
-	//         Insert_Int("s1",&s1);
-	//         Insert_Int("st",&st);
-	//         Insert_Int("sum_dist",&sum_dist);
 
-	//         Insert_Page("ImgFlag");//标志位
-	//	 Insert_Char("ImgCircle", &Img_CircleOpen);
-	//	 Insert_Char("ImgBroken", &Img_BrokenOpen);
-	//	 Insert_Char("ImgBlock", &Img_BlockOpen);
-	//	 Insert_Char("ImgRamp", &Img_RampOpen);
-	//	 Insert_Char("ImgStop", &Img_StopOpen);
 
 
 	Insert_Page("PID_D/C");//方向
@@ -891,7 +881,7 @@ void Main_Show(void)
 	Insert_Float("D", &g_dire_D);
 	Insert_Int("MAX", &max_duty);
 	Insert_Int("ProOUT", &ProSpect);
-Insert_Float("xxx", &acc_Xpeed);
+	Insert_Float("xxx", &acc_Xpeed);
 
 	Insert_Page("PID_D/AD");//方向
 	Insert_Float("error", &g_errorD);
@@ -911,6 +901,28 @@ Insert_Float("xxx", &acc_Xpeed);
 	Insert_Int("MaxI", &Speed_MAX);
 	Insert_Float("g_fI", &g_fI);
 
+	Insert_Page("Obstacle");
+	Insert_Int("g_inf", &g_inf);
+	Insert_Int("stop_inf", &stop_inf);
+	Insert_Int("angle", &st);
+	Insert_Int("sum_dist", &sum_dist);
+	//	Insert_Int("delay_dist", &delay_dist);
+
+	Insert_Page("ImgFlag");
+	Insert_Char("ImgCircle", &Img_CircleOpen);
+	Insert_Char("ImgStraiBroken", &Img_StraightBrokenOpen);
+	Insert_Char("ImgCurveBroken", &Img_CurveBrokenOpen);
+	Insert_Char("ImgBlock", &Img_BlockOpen);
+	Insert_Char("ImgRamp", &Img_RampOpen);
+	Insert_Char("ImgStop", &Img_StopOpen);
+
+	Insert_Page("MeetFlag");
+	Insert_Char("Mode", &g_MeetingMode);
+	Insert_Char("Dir", &g_MeetingDir);
+	Insert_Char("MasterS", &g_StateMaster);
+	Insert_Char("SlaveS", &g_StateSlave);
+	Insert_Char("MasterO", &g_MasterOutFlag);
+	Insert_Char("SlaveO", &g_SlaveOutFlag);
 
 	Insert_Page("PWM"); //电机
 	Insert_Float("left", &g_nLeftMotorPulseSigma);

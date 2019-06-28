@@ -34,7 +34,7 @@ void MainFill(void)
 		FindLineNormal(1);
 
 		ImgJudgeStopLine();		//识别停车
-		ImgJudgeRamp();			//识别坡道
+		ImgJudgeObstacle();     //识别坡道路障直道断路					
 		ImgJudgeCurveBroken();	//弯道断路
 #if CIRCLE == 2
 		CircleFlag = ImgJudgeCircle(0);
@@ -73,7 +73,6 @@ void MainFill(void)
 				FindLineNormal(0);
 
 			}
-		ImgJudgeBlock();		//识别路障
 	}
 	if (1 == g_RoadType)
 	{

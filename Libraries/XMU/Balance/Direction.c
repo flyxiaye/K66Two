@@ -65,7 +65,7 @@ void DirectionControlOutput(void)//平滑输出
 	{
 		g_nDirectionControlPeriod = 0;
 	}
-	if (Img_BlockFlag || g_GetMeetingMaster || Img_BrokenFlag == 3) //限幅
+	if (Img_BlockFlag || g_GetMeetingFlag || Img_BrokenFlag == 3) //限幅
 	{
 		g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
 		g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
@@ -130,7 +130,7 @@ void Camera_DirectionControl()
 	if (count >= 5)
 	{
 		count = 0;
-		if (Img_BlockFlag || g_GetMeetingMaster)                //路障控制
+		if (Img_BlockFlag || g_GetMeetingFlag)                //路障控制
 		{
 			;
 		}

@@ -1,5 +1,6 @@
 #include "GlobalVar.h"
 #include "BasicFun.h"
+#include "canny.h"
 
 
 
@@ -369,6 +370,29 @@ float LeastSquare(int* array, int row1, int row2)
 		return ((row1 - row2 + 1) * sum_xy - sum_x * sum_y) / c;
 }
 
+//================================================================//
+//  @brief  :		判断曲直
+//  @param  :		type : 1判断LL，2判断RL
+//  @return :		return : 1为曲线，0为直线
+//  @note   :		void
+//================================================================//
+int JudgeCurveEage(int up_row, int down_row, int type)
+{
+	if (type == 1)
+	{
+		if ((LL[up_row] + LL[down_row]) / 2 - LL[(up_row + down_row) / 2] < 10
+			&& LL[(up_row + down_row) / 2] - (LL[up_row] + LL[down_row]) / 2 < 10)
+			return 0;
+		else
+			return 1;
+	}
+	else if (type == 2)
+		if ((RL[up_row] + RL[down_row]) / 2 - RL[(up_row + down_row) / 2] < 10
+			&& RL[(up_row + down_row) / 2] - (RL[up_row] + RL[down_row]) / 2 < 10)
+			return 0;
+		else
+			return 1;
+}
 
 
 //================================================================//
@@ -387,6 +411,23 @@ int AveGray(void)
 	}
 	return sum / 188 / 51;
 
+}
+
+//================================================================//
+//  @brief  :		计算区间内灰度平均值
+//  @param  :		数组首地址Array n个数
+//  @return :		最值
+//  @note   :		void
+//================================================================//
+int RegionAveGray(int row, int left_col, int right_col)
+{
+	long int sum = 0;
+	int width = right_col - left_col;
+	for (int j = left_col; j < right_col; j++)
+	{
+		sum += image[row][j];
+	}
+	return sum / width;
 }
 
 //================================================================//
@@ -477,28 +518,4 @@ int IsBigWave(int* line, int n)
 		line--;
 	}
 	return 0;
-}
-
-//================================================================//
-//  @brief  :		判断曲直
-//  @param  :		type : 1判断LL，2判断RL
-//  @return :		return : 1为曲线，0为直线
-//  @note   :		void
-//================================================================//
-int JudgeCurveEage(int up_row, int down_row, int type)
-{
-	if (type == 1)
-	{
-		if ((LL[up_row] + LL[down_row]) / 2 - LL[(up_row + down_row) / 2] < 10
-			&& LL[(up_row + down_row) / 2] - (LL[up_row] + LL[down_row]) / 2 < 10)
-			return 0;
-		else
-			return 1;
-	}
-	else if (type == 2)
-		if ((RL[up_row] + RL[down_row]) / 2 - RL[(up_row + down_row) / 2] < 10
-			&& RL[(up_row + down_row) / 2] - (RL[up_row] + RL[down_row]) / 2 < 10)
-			return 0;
-		else
-			return 1;
 }
