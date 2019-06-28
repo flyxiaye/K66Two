@@ -31,6 +31,7 @@ extern float g_AngleOut;
 extern float g_RateP ;
 extern float g_RateD;
 extern float g_angle_P; 
+extern float g_angle_Psingle; 
 extern float g_angle_D; 
 //µ¥¼¶
 extern float g_single_angle_P;

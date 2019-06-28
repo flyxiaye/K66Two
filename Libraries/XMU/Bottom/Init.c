@@ -122,6 +122,7 @@ void system_Init(void)
      encoder_Init();
      lcd_init();
     camera_init();
+    gpio_init(C8,GPI,0);
      adc_init(ADC1_SE8);
      adc_init(ADC1_SE9);
      adc_init(ADC0_SE12);

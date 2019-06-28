@@ -61,8 +61,8 @@ void SpeedControl()
 		count = 0;
                 
 		g_fSpeedControlOut_before = g_fSpeedControlOut_new;
-                		g_errorS = spdExp - curSpeed;
-//		g_errorS = g_fSpeed_set - curSpeed;
+
+		g_errorS = g_fSpeed_set - curSpeed;
               
 //                if(curSpeed < 0.2)
                 g_fI += g_errorS * g_Speed_I;

@@ -84,17 +84,17 @@ void PIT0_IRQHandler(void)
 	DistBroken();
 	IndCI();
 	get_ind_error();
-	if (!TurnTailFlag)
-	{
+              Ramp();
 		AngleControl();
-	}
+	
 	Direction();
 	DirectionControlOutput();
 	ExpectSpeedGet();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
+        SpeedControlOutput();
 //        if(g_mode!=6)
 //        {
-	SpeedControlOutput();
+	
 	//	}
 
 	TurnTail();

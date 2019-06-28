@@ -22,7 +22,12 @@ void AngleControl()//串级
             g_AngleOut = (imu_data.pit-g_angle_set) * g_angle_P;//串级角度控制
             g_AngleControlOut = (g_AngleOut - (sensor.Gyro_deg.y)) * g_RateP - (sensor.Gyro_deg.y - g_gyro_y_last) * g_RateD;
             g_gyro_y_last = sensor.Gyro_deg.y;
-            g_AngleControlOut = MAX(g_AngleControlOut, -8000);
-		g_AngleControlOut = MIN(g_AngleControlOut, 8000);
+            
+//                  if(7==g_mode)
+//                  {
+//                    g_AngleControlOut=(imu_data.pit-g_angle_set  )*g_angle_Psingle - sensor.Gyro_deg.y* g_angle_D;
+//                  }
+                  g_AngleControlOut = MAX(g_AngleControlOut, -9000);
+		g_AngleControlOut = MIN(g_AngleControlOut, 9000);
 //}
 }

@@ -867,6 +867,8 @@ void Main_Show(void)
 	Insert_Float("PA", &g_angle_P);
 	Insert_Float("PR", &g_RateP);
 	Insert_Float("DR", &g_RateD);
+        Insert_Float("SP", &g_angle_Psingle);
+         Insert_Float("SD", &g_angle_D);
 	// Insert_Float("flygyro",)
 
 

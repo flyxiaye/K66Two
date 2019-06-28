@@ -71,7 +71,11 @@ void motormode(float mode)
           g_fleft =g_AngleControlOut - g_fDirectionControlOut;
           g_fright =g_AngleControlOut + g_fDirectionControlOut;
         }
-
+                if(7 == g_mode)
+        {
+          g_fleft =g_AngleControlOut- g_fDirectionControlOut+ 5000 ;
+          g_fright =g_AngleControlOut+g_fDirectionControlOut+ 5000;
+        }
 }
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      占空比输出及限幅

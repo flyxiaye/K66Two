@@ -30,7 +30,8 @@ float g_AngleOut = 0.0f;
 float g_RateP = 39.09;
 float g_RateD = 61.69;
 float g_angle_P=19.3; 
-float g_angle_D=30; 
+float g_angle_Psingle=850; 
+float g_angle_D=100; 
 //µ¥¼¶
 float g_single_angle_P = 1;
 float g_single_angle_D = 0;
