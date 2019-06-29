@@ -81,12 +81,12 @@ void PIT0_IRQHandler(void)
 
 	//    StartSpeed();
 //	DistCI();
-	DistBroken();
 	IndCI();
 	get_ind_error();
-              Ramp();
+              Ramp2();
 		AngleControl();
-	
+	inf();
+	roadblock3();
 	Direction();
 	DirectionControlOutput();
 	ExpectSpeedGet();

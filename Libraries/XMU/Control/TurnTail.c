@@ -35,7 +35,7 @@ void TurnTail()
             acc_Speed+=curSpeed;
             
             AD_DirectionControl();
-            if(acc_Speed>300)
+            if(acc_Speed>BrokenTurnTailDistance)
             {
               gpio_init(D2,GPO,0);
               acc_Xpeed=acc_Speed;
@@ -87,7 +87,7 @@ void TurnTail()
                 g_angle_set=BalanceAngle;
                 AngleControl();
                 flipgyro += sensor.Gyro_deg.z * 0.002;
-                g_fDirectionControlOut = 2600;
+                g_fDirectionControlOut = BrokenTurnTailPWM;
                 lastangle = _ANGLE;
             }
             else if (flipgyro > 90)
@@ -239,9 +239,8 @@ void TurnNoTail()
             }
             else if(count>1000)
             {
-                TurnTail=0;
-              TurnTailFlag=0;
-              TurnTailFlag=0;
+                TurnNoTail=0;
+              TurnNoTailFlag=0;
               Img_BrokenFlag=0;
               g_StateMaster=WaitingStop;
             }

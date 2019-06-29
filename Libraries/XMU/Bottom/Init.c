@@ -128,6 +128,7 @@ void system_Init(void)
      adc_init(ADC0_SE12);
      adc_init(ADC0_SE13);
      adc_init(ADC1_SE10);
+     adc_init(ADC1_SE17);
      
 //     adc_init(ADC1_SE12);               //∫ÏÕ‚≥ı ºªØ
 //     //sd_init();

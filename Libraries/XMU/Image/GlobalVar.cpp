@@ -93,7 +93,7 @@ int ML[IMG_ROW], LL[IMG_ROW], RL[IMG_ROW];   //保存边缘线信息数组
 int ML_Count;									//中线有效行
 SpecialPoint LeftPnt, RightPnt;					//保存左右特殊点信息
 int DiffThreshold = 25;							//边缘检测阈值
-int DarkThreshold = 85;                         //暗阈值（路障）
+int DarkThreshold = 55;                         //暗阈值（路障）
 int BrightThreshold = 15;                      //亮阈值（坡道）
 int LightThreshold = 80;						//去高光噪声阈值
 int LightThreshold2 = 150;						//去高光噪声阈值2
@@ -323,3 +323,7 @@ int circlelandnumber=0;
 int circlelandsymbol=0;
 
 uint8 phototube=0;
+/*************====================坡道路障相关可控制变量=======================*************/
+int BrokenTurnTailPWM=2600;
+int BrokenTurnTailDistance=300;
+int Rampangle=12;

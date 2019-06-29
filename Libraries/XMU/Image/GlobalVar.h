@@ -113,8 +113,8 @@ extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 
 #define CIRCLE 2			//环岛开关
 #define BROKEN 0			//断路开关
-#define CURVE_BROKEN 1		//弯道断路
-#define STRAIGHT_BROKEN 1	//直道断路
+#define CURVE_BROKEN 0		//弯道断路
+#define STRAIGHT_BROKEN 0	//直道断路
 #define RAMP 0				//坡道开关
 #define BLOCK_BROKEN 0		//路障断路开关
 #define STOPLINE 0			//停车开关
@@ -123,7 +123,7 @@ extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 
 typedef struct
 {
-	int Row;
+	int Row; 
 	int Col;
 }Point;
 
@@ -514,5 +514,8 @@ extern int circlelandnumber;
 extern int circlelandsymbol;
 
 //uint8 phototube;
-
+/*************====================坡道路障相关可控制变量=======================*************/
+extern int BrokenTurnTailPWM;
+extern int BrokenTurnTailDistance;
+extern int Rampangle;
 #endif

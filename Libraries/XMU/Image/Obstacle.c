@@ -69,22 +69,22 @@ void roadblock3(void)
 		{
 			yaw_init = _ANGLE;
 			get_flag = 1;
-			yaw_obj = yaw_init - st;
+			yaw_obj = yaw_init + st;
 			speed_type = 3;
 		}
 		sum += curSpeed;
 		switch (state)
 		{
 		case 0:
-			Error_1 = AngleError(_ANGLE, yaw_obj);
+			g_errorD = -AngleError(_ANGLE, yaw_obj);
 			if (sum > sum_dist)
 			{
 				state = 1;
-				yaw_obj = yaw_init + st;
+				yaw_obj = yaw_init - st;
 			}
 			break;
 		case 1:
-			Error_1 = AngleError(_ANGLE, yaw_obj);
+			g_errorD = -AngleError(_ANGLE, yaw_obj);
 			if (sum > (sum_dist << 1)
 				&& ind_left_line > 100 && ind_right_line > 100)
 			{

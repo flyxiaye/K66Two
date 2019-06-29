@@ -99,7 +99,10 @@ void AD_DirectionControl()
 		//    }
 		//    if(!CircleIsland_into_flag)//Ô²»·
 		//    {
+			if(!Img_BlockFlag)
+			{
 		g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
+			}
 		//    }
 		//    else if(CircleIsland_into_flag)
 		//    {
