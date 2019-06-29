@@ -113,8 +113,8 @@ extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 
 #define CIRCLE 2			//环岛开关
 #define BROKEN 0			//断路开关
-#define CURVE_BROKEN 0		//弯道断路
-#define STRAIGHT_BROKEN 0	//直道断路
+#define CURVE_BROKEN 1		//弯道断路
+#define STRAIGHT_BROKEN 1	//直道断路
 #define RAMP 0				//坡道开关
 #define BLOCK_BROKEN 0		//路障断路开关
 #define STOPLINE 0			//停车开关
@@ -186,7 +186,7 @@ void VarInit(void);
 extern int pro;
 
 //==========================摄像头参数=================================//
-#define ONE_METER 5800
+#define ONE_METER 1000
 extern int exp_time;						//曝光时间
 extern int HighThreshold;						//canny高阈值
 extern int LowThreshold;						//canny低阈值

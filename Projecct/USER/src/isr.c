@@ -89,7 +89,6 @@ void PIT0_IRQHandler(void)
 	roadblock3();
 	Direction();
 	DirectionControlOutput();
-	ExpectSpeedGet();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
         SpeedControlOutput();
 //        if(g_mode!=6)
@@ -97,7 +96,8 @@ void PIT0_IRQHandler(void)
 	
 	//	}
 
-	TurnTail();
+//	TurnTail();
+        MeetingTwo2();
 	power();
 	PIT_FlAG_CLR(pit0);
 }

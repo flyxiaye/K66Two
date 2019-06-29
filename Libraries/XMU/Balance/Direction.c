@@ -34,7 +34,7 @@ void Direction()
 	//  {
 	//
 //  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
-    if(!dialSwitchFlg2||Img_BrokenFlag&&!TurnTailFlag)
+    if(!dialSwitchFlg2&&!TurnTailFlag)
   {
 	AD_DirectionControl();
   }
@@ -133,14 +133,16 @@ void Camera_DirectionControl()
 	if (count >= 5)
 	{
 		count = 0;
-		if (Img_BlockFlag || g_GetMeetingFlag)                //路障控制
-		{
-			;
-		}
-		else
-		{
+//		if (Img_BlockFlag || g_GetMeetingFlag)                //路障控制
+//		{
+//			;
+//		}
+//		else
+//		{	
+          if(!Img_BlockFlag)
+			{
 			g_errorD = 94 - ML[ProSpect];
-
+                          
 			if (ErrorFlag)
 			{
 				g_ErrorImageNumber++;

@@ -116,7 +116,7 @@ void system_Init(void)
 #endif 
 //        sensor.gyr_calibrate = 1;
 
-//     communication_Init();
+     communication_Init();
 //     OLED_Init();
      DriveInit();  
      encoder_Init();
