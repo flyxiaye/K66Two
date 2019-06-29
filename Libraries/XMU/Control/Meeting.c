@@ -331,23 +331,23 @@ void MeetingTwo1(void)
 		else acc_speed = 0;
 		break;
 	case StateOne:		//会车区动作以及状态  
-	if(!TurnTailFlag) 
-	{
-	TurnTailFlag=1;
-	}
-	TurnTail();			//进入后一波操作掉头
+		if (!TurnTailFlag)
+		{
+			TurnTailFlag = 1;
+		}
+		TurnTail();			//进入后一波操作掉头
 		break;
 	case StateTwo:
-	//等待接收信号
-	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
+		//等待接收信号
+		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
 		{
 			//GOGOGO!!!
-			if(!TurnTailGoFlag)
+			if (!TurnTailGoFlag)
 			{
-			TurnTailGoFlag=1;
+				TurnTailGoFlag = 1;
 			}
 			TurnTail();
-	break;
+			break;
 	case WaitingStop:		//等待识别停车线
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
@@ -387,8 +387,8 @@ void MeetingTwo1(void)
 		break;
 	default:
 		break;
+		}
 	}
-}
 }
 //================================================================//
 //  @brief  :		二轮车会车函数(继续跑路)
@@ -439,23 +439,23 @@ void MeetingTwo2(void)
 		else acc_speed = 0;
 		break;
 	case StateOne:		//会车区动作以及状态  
-	if(!TurnNoTailFlag) 
-	{
-	TurnNoTailFlag=1;
-	}
-	TurnNoTail();			//进入后一波操作掉头
+		if (!TurnNoTailFlag)
+		{
+			TurnNoTailFlag = 1;
+		}
+		TurnNoTail();			//进入后一波操作掉头
 		break;
 	case StateTwo:
-	//等待接收信号
-	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
+		//等待接收信号
+		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
 		{
 			//GOGOGO!!!
-			if(!TurnNoTailGoFlag)
+			if (!TurnNoTailGoFlag)
 			{
-			TurnNoTailGoFlag=1;
+				TurnNoTailGoFlag = 1;
 			}
 			TurnNoTail();
-	break;
+			break;
 	case WaitingStop:		//等待识别停车线
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
@@ -495,8 +495,8 @@ void MeetingTwo2(void)
 		break;
 	default:
 		break;
+		}
 	}
-}
 }
 //enum MeetingFlag {
 //	WaitingStop = 15,
