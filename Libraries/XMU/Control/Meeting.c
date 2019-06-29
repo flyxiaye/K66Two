@@ -288,7 +288,7 @@ void MeetingToImage(void)
 //  @return :		void
 //  @note   :		void	
 //================================================================//
-void MeetingTwo(void)
+void MeetingTwo1(void)
 {
 	static int acc_speed = 0;
 	static int sum_speed = 0.5 * ONE_METER;
@@ -347,6 +347,114 @@ void MeetingTwo(void)
 			TurnTailGoFlag=1;
 			}
 			TurnTail();
+	break;
+	case WaitingStop:		//等待识别停车线
+		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
+		{
+			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
+				g_StateMaster = StateGo;
+			else
+			{
+				g_StateMaster = StateStop; //停留等待
+				speed_type = 0;
+			}
+		}
+		else if (Img_StopLineFlag && g_SlaveOutFlag)
+			g_StateMaster = StateGo;
+		break;
+	case StateGo:
+		acc_speed += curSpeed;
+		if (acc_speed > sum_speed * 1.5)
+		{
+			acc_speed = 0;
+			g_StateMaster = CarFinish;
+		}
+		break;
+	case StateStop:
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
+		{
+			speed_type = 1;
+			acc_speed += curSpeed;
+			if (acc_speed > sum_speed * 1.5)
+			{
+				g_StateMaster = CarFinish;
+				acc_speed = 0;
+			}
+		}
+		break;
+	case CarFinish:
+		speed_type = 0;
+		break;
+	default:
+		break;
+	}
+}
+}
+//================================================================//
+//  @brief  :		二轮车会车函数(继续跑路)
+//  @param  :		void
+//  @return :		void
+//  @note   :		void	
+//================================================================//
+void MeetingTwo2(void)
+{
+	static int acc_speed = 0;
+	static int sum_speed = 0.5 * ONE_METER;
+	static float yaw_init = 0;
+	static float yaw_init_1 = 0;
+	static float yaw_init_2 = 0;
+	static int get_flag = 0;
+	static int count = 0;
+	switch (g_StateMaster)
+	{
+	case Ready:
+		if (g_car_lanuch) g_StateMaster = WaitingBegin;
+		break;
+	case WaitingBegin:
+		if (g_StateSlave > Ready)
+		{
+			g_StateMaster = CarGo;
+			g_drive_flag = 1;
+		}
+		break;
+	case CarGo:
+		if (g_GetMeetingFlag) 			 //进入会车区 
+		{
+			acc_speed += curSpeed;
+			if (acc_speed > StartDistance)
+			{
+				g_StateMaster = StateOne;
+				Img_BlockFlag = 0;
+				g_handle_open = 0;
+				acc_speed = 0;
+				//改变状态 调整下一状态标志
+				g_StateMaster = 1;
+				speed_type = 3; //会车速度
+				spdExp3 = MEETING_SPEED;
+				yaw_init = _ANGLE;
+				yaw_init_1 = yaw_init + 90;
+				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+			}
+		}
+		else acc_speed = 0;
+		break;
+	case StateOne:		//会车区动作以及状态  
+	if(!TurnNoTailFlag) 
+	{
+	TurnNoTailFlag=1;
+	}
+	TurnNoTail();			//进入后一波操作掉头
+		break;
+	case StateTwo:
+	//等待接收信号
+	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
+		{
+			//GOGOGO!!!
+			if(!TurnNoTailGoFlag)
+			{
+			TurnNoTailGoFlag=1;
+			}
+			TurnNoTail();
 	break;
 	case WaitingStop:		//等待识别停车线
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
