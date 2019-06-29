@@ -463,7 +463,7 @@ void Key_Function(void)
 			FlagChange(&g_drive_flag);//开电机
 			if (g_drive_flag)
 			{
-				g_StateMaster = 0;
+//				g_StateMaster = 2;
 				g_MasterOutFlag = 0;;
 				CircleFlag = 0;
 				CircleState = 0;
@@ -558,7 +558,22 @@ void Key_Function(void)
 			//			g_drive_flag = !g_drive_flag;
 			//			TurnTailFlag=!TurnTailFlag;
 //			SD_Gather_Gray_Picture120x188();
-g_StateMaster=2;
+
+//			FlagChange(&g_drive_flag);//开电机
+//			if (g_drive_flag)
+//			{
+				g_StateMaster = 0;
+                                g_car_lanuch=1;
+				g_MasterOutFlag = 0;;
+				CircleFlag = 0;
+				CircleState = 0;
+				Img_BrokenFlag = 0;
+				Img_BlockFlag = 0;
+				if (1 == g_camera_open)
+					g_handle_open = 1;
+				g_ad_flag = 1;
+				Img_RampFlag = 0;
+//			}
 			break; //采图
 		default:                     break;
 		}
@@ -806,7 +821,7 @@ void Main_Show(void)
 			OLED_Write_Int(4, 8, Img_BrokenFlag);            //断路标志
 			OLED_Write_Int(6, 8, Img_BlockFlag);			//路障标志
 			OLED_Write_Int(2, 96, g_StateMaster);         //会车状态
-			OLED_Write_Int(4, 96, g_StateSlave);            //左右环岛标志
+			OLED_Write_Int(4, 96, g_StateSlave);            \
 			OLED_Write_Int(6, 96, CircleState);           //环岛状态标志
 
 			break;

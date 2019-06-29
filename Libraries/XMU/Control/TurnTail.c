@@ -37,7 +37,7 @@ void TurnTail()
             AD_DirectionControl();
             if(acc_Speed>0)
             {
-              gpio_init(D2,GPO,0);
+              
               acc_Xpeed=acc_Speed;
               initmode = g_mode;
                 initcameraopen = g_camera_open;
@@ -130,11 +130,12 @@ void TurnTail()
             {
                   g_drive_flag=0;
             }
-            else if (count >400&&count<1000)
+            else if (count >400&&count<700)
             {
               g_angle_set=initangleset;
               g_mode=3;
               g_drive_flag=1;
+  g_fDirectionControlOut=0;
               AngleControl();
               AD_DirectionControl();
               DirectionControlOutput();
@@ -145,22 +146,27 @@ void TurnTail()
                 Img_RampFlag = 0;
             
             }
-            else if(count>=1000)
+            else if(count>=700)
             {
               gpio_init(A7, GPO, 1);
           TurnTailGoFlag=0;
-                TurnTail=10086;
+                TurnTail=5;
               TurnTailFlag=0;
               Img_BrokenFlag=0;
               Img_BlockFlag = 0;
                 Img_RampFlag = 0;
-              g_StateMaster=WaitingStop;
 		CircleFlag = 0;
 		CircleState = 0;
+                  count=0;
             }
             break;
         }
-            default:gpio_init(A7, GPO, 0);
+            case 5:
+    {
+          gpio_init(A7, GPO, 0);
+    g_StateMaster=WaitingStop;
+}
+            default:
           break;
         }
     }
@@ -169,11 +175,18 @@ void TurnNoTail()
 {
    static float lastangle,acc_Speed = 0, lastspeed, first, initangleset,number=0, initmode;
     static int TurnNoTail = 0, count = 0, initcameraopen, initindopen;
-   if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong 
-    {           TurnTailFlag=1; 
-                number=1;
+//   if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong 
+//    {           TurnTailFlag=1; 
+//                number=1;
+//           initangleset = g_angle_set;
+//        }
+            if(!number)
+        {
+          number=1;
            initangleset = g_angle_set;
         }
+            if (TurnNoTailFlag)
+    {
         switch (TurnNoTail)
         {
         case 0:   //冲锋陷阵  防止没过完断路
@@ -244,11 +257,15 @@ void TurnNoTail()
               SpeedControlOutput();
             
             }
-            else if(count>1000)
+             if(count>1000)
             {
-                TurnNoTail=0;
+              TurnNoTailGoFlag=1;
+              gpio_init(A7, GPO, 1);
+                TurnNoTail=5;
               TurnNoTailFlag=0;
               Img_BrokenFlag=0;
+                Img_BlockFlag = 0;
+                Img_RampFlag = 0;
               g_StateMaster=WaitingStop;
             }
             break;
@@ -256,4 +273,5 @@ void TurnNoTail()
         default:
           break;
         }
+    }
 }
