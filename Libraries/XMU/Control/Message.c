@@ -21,6 +21,6 @@ void ReceiveData(void)
 		if (rData & (1 << 5)) g_SlaveOutFlag = 1;
 		else g_SlaveOutFlag = 0;
 		g_StateSlave = MAX(g_StateSlave, (rData & 0x1F));
-		g_StateSlave = 0;
+		
 	}
 }

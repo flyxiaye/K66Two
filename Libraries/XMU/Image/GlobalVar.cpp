@@ -305,7 +305,7 @@ int obj_angle_1 = 30;
 int obj_angle_2 = -180;
 int const_error_1 = -20;
 int const_error_2 = 40;
-int max_duty = 1300;
+int max_duty = 8000;
 /*====================================路障=====================================*/
 int sum = 0;
 int sum_dist = 4500;
@@ -324,6 +324,6 @@ int circlelandsymbol=0;
 
 uint8 phototube=0;
 /*************====================坡道路障相关可控制变量=======================*************/
-int BrokenTurnTailPWM=2600;
+int BrokenTurnTailPWM=2800;
 int BrokenTurnTailDistance=300;
 int Rampangle=12;

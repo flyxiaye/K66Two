@@ -464,7 +464,7 @@ void Key_Function(void)
 			if (g_drive_flag)
 			{
 				g_StateMaster = 0;
-				g_MasterOutFlag = 0;
+				g_MasterOutFlag = 0;;
 				CircleFlag = 0;
 				CircleState = 0;
 				Img_BrokenFlag = 0;
@@ -557,7 +557,8 @@ void Key_Function(void)
 
 			//			g_drive_flag = !g_drive_flag;
 			//			TurnTailFlag=!TurnTailFlag;
-			SD_Gather_Gray_Picture120x188();
+//			SD_Gather_Gray_Picture120x188();
+g_StateMaster=2;
 			break; //≤…Õº
 		default:                     break;
 		}

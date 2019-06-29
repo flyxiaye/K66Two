@@ -13,17 +13,17 @@ void TurnTail()
 //  flipgyro+= sensor.Gyro_deg.z * 0.002;
     static float lastangle,acc_Speed = 0, lastspeed, first, initangleset,number=0, initmode;
     static int TurnTail = 0, count = 0, initcameraopen, initindopen;
-    if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong 
-    {           TurnTailFlag=1; 
-                number=1;
-           initangleset = g_angle_set;
-        }
-      
-//        if(!number)
-//        {
-//          number=1;
+//    if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong 
+//    {           TurnTailFlag=1; 
+//                number=1;
 //           initangleset = g_angle_set;
 //        }
+      
+        if(!number)
+        {
+          number=1;
+           initangleset = g_angle_set;
+        }
       
     if (TurnTailFlag)
     {
@@ -35,7 +35,7 @@ void TurnTail()
             acc_Speed+=curSpeed;
             
             AD_DirectionControl();
-            if(acc_Speed>BrokenTurnTailDistance)
+            if(acc_Speed>0)
             {
               gpio_init(D2,GPO,0);
               acc_Xpeed=acc_Speed;
@@ -130,7 +130,7 @@ void TurnTail()
             {
                   g_drive_flag=0;
             }
-            else if (count >400&&count<=1000)
+            else if (count >400&&count<1000)
             {
               g_angle_set=initangleset;
               g_mode=3;
@@ -138,22 +138,29 @@ void TurnTail()
               AngleControl();
               AD_DirectionControl();
               DirectionControlOutput();
-            	ExpectSpeedGet();
 	            SpeedControl();             
               SpeedControlOutput();
+              Img_BrokenFlag=0;
+              Img_BlockFlag = 0;
+                Img_RampFlag = 0;
             
             }
-            else if(count>1000)
+            else if(count>=1000)
             {
-                TurnTail=0;
-              TurnTailFlag=0;
+              gpio_init(A7, GPO, 1);
+          TurnTailGoFlag=0;
+                TurnTail=10086;
               TurnTailFlag=0;
               Img_BrokenFlag=0;
+              Img_BlockFlag = 0;
+                Img_RampFlag = 0;
               g_StateMaster=WaitingStop;
+		CircleFlag = 0;
+		CircleState = 0;
             }
             break;
         }
-            default:
+            default:gpio_init(A7, GPO, 0);
           break;
         }
     }
