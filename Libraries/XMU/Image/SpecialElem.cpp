@@ -4,13 +4,13 @@
 #include "FillSpecialLine.h"
 #include "MainProcess.h"
 #include "CircleIsland.h"
-#include "FirstLineProcess.h"
 #include "canny.h"
-#include "SpecialElem.h"
+#include "FirstLineProcess.h"
 #define MAXNUM 30
+#include "SpecialElem.h"
+#include "headfile.h"
 #define _type int
 #include "queue.h"
-
 
 //===========================以下为可直接调用的元素识别函数======================//
 

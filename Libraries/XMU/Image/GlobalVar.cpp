@@ -66,6 +66,7 @@ float gRateKd = 10.1;            //串级d
 float g_dire_P=9;
 float g_dire_D=9.2;
 float g_errorD=0;//差值
+float g_errorCircleland=0;
 float g_fDirectionControlOut;
 float g_nDirectionControlPeriod=0;//输出平滑
 float g_DirectionPeriod=5;//分的段数
@@ -324,6 +325,6 @@ int circlelandsymbol=0;
 
 uint8 phototube=0;
 /*************====================坡道路障相关可控制变量=======================*************/
-int BrokenTurnTailPWM=2800;
+int BrokenTurnTailPWM=2900;
 int BrokenTurnTailDistance=300;
 int Rampangle=12;

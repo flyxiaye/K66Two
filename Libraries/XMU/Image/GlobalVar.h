@@ -70,6 +70,7 @@ extern int g_need ;//摄像头取得行数
 extern float g_dire_P;
 extern float g_dire_D;
 extern float g_errorD;//差值
+extern float g_errorCircleland;
 extern float g_fDirectionControlOut;
 extern float g_nDirectionControlPeriod;//输出平滑
 extern float g_DirectionPeriod;//分的段数
@@ -186,7 +187,7 @@ void VarInit(void);
 extern int pro;
 
 //==========================摄像头参数=================================//
-#define ONE_METER 1000
+#define ONE_METER 0
 extern int exp_time;						//曝光时间
 extern int HighThreshold;						//canny高阈值
 extern int LowThreshold;						//canny低阈值

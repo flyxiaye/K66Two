@@ -23,7 +23,7 @@ static int lala=0;
 	{
 		dialSwitchFlg1 = gpio_get(DIALSWITCH_PIN1);
 		dialSwitchFlg2 = gpio_get(DIALSWITCH_PIN2);
-                	dialSwitchFlg3 = gpio_get(DIALSWITCH_PIN3);
+                dialSwitchFlg3 = gpio_get(DIALSWITCH_PIN3);
 		dialSwitchFlg4 = gpio_get(DIALSWITCH_PIN4);
 		//    ftm_pwm_duty(ftm0,RIGHT_GO,0);
 		//    ftm_pwm_duty(ftm0,RIGHT_BACK,8000);
@@ -45,7 +45,6 @@ static int lala=0;
 		if (1 == dialSwitchFlg1 && g_drive_flag == 0)
 		{
 			displayimage032(image[0]);
-			ShowEage();
 		}
 		else
 		{

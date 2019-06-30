@@ -941,6 +941,8 @@ void Main_Show(void)
 	Insert_Char("SlaveS", &g_StateSlave);
 	Insert_Char("MasterO", &g_MasterOutFlag);
 	Insert_Char("SlaveO", &g_SlaveOutFlag);
+        Insert_Int("TurnTailPWM", &BrokenTurnTailPWM);
+        
 
 	Insert_Page("PWM"); //µç»ú
 	Insert_Float("left", &g_nLeftMotorPulseSigma);

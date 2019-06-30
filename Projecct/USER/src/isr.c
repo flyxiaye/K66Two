@@ -87,6 +87,7 @@ void PIT0_IRQHandler(void)
 		AngleControl();
 	inf();
 	roadblock3();
+        circleland2();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
@@ -97,7 +98,7 @@ void PIT0_IRQHandler(void)
 	//	}
 
 //	TurnTail();
-        MeetingTwo2();
+        MeetingTwo1();
 	power();
 	PIT_FlAG_CLR(pit0);
 }

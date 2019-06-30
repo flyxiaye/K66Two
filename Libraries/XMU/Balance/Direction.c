@@ -34,7 +34,7 @@ void Direction()
 	//  {
 	//
 //  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
-    if(!dialSwitchFlg2&&!TurnTailFlag)
+    if((!dialSwitchFlg2||Img_BrokenFlag)&&!TurnTailFlag)
   {
 	AD_DirectionControl();
   }
@@ -99,9 +99,9 @@ void AD_DirectionControl()
 		//    }
 		//    if(!CircleIsland_into_flag)//Ô²»·
 		//    {
-			if(!Img_BlockFlag)
+			if(!Img_BlockFlag&&circlelandflag!=2)
 			{
-		g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
+		g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100-g_errorCircleland;
 			}
 		//    }
 		//    else if(CircleIsland_into_flag)
@@ -111,7 +111,7 @@ void AD_DirectionControl()
 		//    if(!TurnTailFlag)
 		//    {
 		g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD + (g_errorD - g_error_before) * g_dire_D_AD;
-		g_fDirectionControlOut_new = (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd_AD;
+		g_fDirectionControlOut_new = (curSpeed/g_fSpeed_set+0.8)*(g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd_AD;
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
 		//    }
@@ -150,7 +150,7 @@ void Camera_DirectionControl()
 			}
 		}
 		g_fDirectionAngleControlOut = g_errorD * g_dire_P + (g_errorD - g_error_before) * g_dire_D;
-		g_fDirectionControlOut_new = (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd;
+		g_fDirectionControlOut_new = (curSpeed/g_fSpeed_set+0.8)*((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
 	}
