@@ -70,6 +70,7 @@ extern int g_need ;//摄像头取得行数
 extern float g_dire_P;
 extern float g_dire_D;
 extern float g_errorD;//差值
+extern float g_errorCircleland;
 extern float g_fDirectionControlOut;
 extern float g_nDirectionControlPeriod;//输出平滑
 extern float g_DirectionPeriod;//分的段数

@@ -1,5 +1,6 @@
 #include "headfile.h"
 #include "math.h"
+#include "SpecialElem.h"
 #include <GlobalVar.h>
 /***************环岛识别***************/
 void circleland()
@@ -249,32 +250,33 @@ void circleland()
 
 void circleland2() //摄像头识别  电磁冲锋
 {
-  static int Lflag = 0, Rflag = 0, entercircleland = 0, Iscirclelandflag,bigflag=0;smallflag=0;
+  static int Lflag = 0, Rflag = 0, entercircleland = 0, Iscirclelandflag,bigflag=0,smallflag=0;
   static int acc_speed = 0;
-  if (CL == ImgJudgeCircle())
+  if (CL == ImgJudgeCircle(0))
   {
     Lflag = 1;
     Rflag = 0;
     circlelandflag = 1;
   }
-  else if (CR == ImgJudgeCircle())
+  else if (CR == ImgJudgeCircle(0))
   {
     Lflag = 0;
     Rflag = 1;
     circlelandflag = 1;
   }
-  else if (CN == ImgJudeCircle)
+  else if (CN == ImgJudgeCircle(0))
   {
     Lflag = 0;
     Rflag = 0;
     circlelandflag = 0;
   }
-  if ((Lflag || Rflag) && mid_norm > 1.3 && !Iscirclelandflag && circlelandflag)
+  if (!dialSwitchFlg2 && (Lflag || Rflag) && mid_norm > 1.3 && !Iscirclelandflag && circlelandflag)
   {
+    gpio_init(A7,GPO,1);
     Iscirclelandflag = 1;
     circlelandflag = 2;
   }
-  else if ((Lflag || Rflag) && mid_norm < 1.3 && !Iscirclelandflag && circlelandflag)
+  else if (!dialSwitchFlg2 && (Lflag || Rflag) && mid_norm < 1.3 && !Iscirclelandflag && circlelandflag)
   {
     acc_speed += curSpeed;
     if (acc_speed > 4000)
@@ -292,10 +294,11 @@ void circleland2() //摄像头识别  电磁冲锋
     g_errorD = (left_line_norm + left_column_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
     if (acc_speed > 3000)
     {
+      gpio_init(A7,GPO,0);
       circlelandflag = 3;
     }
   }
-  else if (!dialSwitchFlg2 && 2 = circlelandflag && Iscirclelandflag && Rflag && right_column_norm > 0.1 && right_line_norm > left_line_norm)
+  else if (!dialSwitchFlg2 && 2 == circlelandflag && Iscirclelandflag && Rflag && right_column_norm > 0.1 && right_line_norm > left_line_norm)
   {
     acc_speed += curSpeed;
     g_errorD = (left_line_norm - right_column_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
@@ -303,9 +306,56 @@ void circleland2() //摄像头识别  电磁冲锋
   if (acc_speed>3000)
   {
       circlelandflag = 3;
+      acc_speed=0;
   }
   if(3==circlelandflag)
   {
-    
+    acc_speed+=curSpeed;
+    if((!bigflag&&!smallflag)&&acc_speed>30000&&(mid_norm>1.3))
+    {
+      acc_speed=0;
+      bigflag=1;
+      smallflag=0;
+    }
+    else if((!bigflag&&!smallflag)&&acc_speed<30000&&mid_norm>1.3)
+    {
+      acc_speed=0;
+      smallflag=1;
+      bigflag=0;
+    }
+    if(!dialSwitchFlg2&&bigflag)
+    {
+      g_errorCircleland = 0.8 * (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
+      if(acc_speed>4000)
+      {
+        circlelandflag=4;
+        bigflag=0;
+        acc_speed=0;
+      }
+    }
+    else if(!dialSwitchFlg2&&smallflag)
+    {
+      g_errorCircleland = 0.8 * (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100;
+      if(acc_speed>2500)
+      {
+        circlelandflag=4;
+        smallflag=0;
+        acc_speed=0;
+      }
+    }
+  }
+  if(4==circlelandflag)
+  {
+    acc_speed+=curSpeed;
+    if (acc_speed > 4000 && CN == ImgJudgeCircle(0))
+    {
+      circlelandflag=0;
+      acc_speed=0;
+    }
+    else if(acc_speed>7000)
+    {
+      circlelandflag=0;
+      acc_speed=0;
+    }
   }
 }

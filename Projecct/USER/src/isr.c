@@ -87,6 +87,7 @@ void PIT0_IRQHandler(void)
 		AngleControl();
 	inf();
 	roadblock3();
+        circleland2();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊı
