@@ -18,11 +18,11 @@ void TurnTail()
 //                number=1;
 //           initangleset = g_angle_set;
 //        }
-      
-        if(!number)
-        {
-          number=1;
-           initangleset = g_angle_set;
+
+    if (!number)
+    {
+      number = 1;
+      initangleset = g_angle_set;
         }
       
     if (TurnTailFlag)
