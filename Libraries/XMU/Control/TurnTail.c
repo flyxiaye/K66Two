@@ -8,6 +8,10 @@ int StayDistance = 3000, TurntailDistance = 9000;
 int TurnTailFlag = 0,TurnTailGoFlag=0;
 int TurnNoTailFlag=0,TurnNoTailGoFlag=0;
 float flipgyro = 0,acc_Xpeed = 0;
+//==================================================
+//void：会车掉头函数
+//
+//==================================================
 void TurnTail()
 {
 //  flipgyro+= sensor.Gyro_deg.z * 0.002;
@@ -27,9 +31,9 @@ void TurnTail()
       
     if (TurnTailFlag)
     {
-      
+      gpio_init(A7, GPO, 1);
         switch (TurnTail)
-        {
+        { 
         case 0:   //冲锋陷阵  防止没过完断路
           {
             acc_Speed+=curSpeed;
@@ -136,7 +140,7 @@ void TurnTail()
               g_angle_set=initangleset;
               g_mode=3;
               g_drive_flag=1;
-  g_fDirectionControlOut=0;
+              g_fDirectionControlOut=0;
               AngleControl();
               AD_DirectionControl();
               DirectionControlOutput();
@@ -150,7 +154,7 @@ void TurnTail()
             }
             else if(count>=2000)
             {
-              gpio_init(A7, GPO, 1);
+              
           TurnTailGoFlag=0;
                 TurnTail=5;
               TurnTailFlag=0;
@@ -160,23 +164,24 @@ void TurnTail()
 		CircleFlag = 0;
 		CircleState = 0;
                     gpio_init(A7, GPO, 0);
-    g_StateMaster=WaitingStop;
+              g_StateMaster=WaitingStop;
                   count=0;
+ 
             }
             break;
         }
-            case 5:
-    {
-      
-}
             default:
           break;
         }
     }
 }
+//============================================================
+//void： 会车不掉头函数
+//
+//============================================================
 void TurnNoTail()
 {
-   static float lastangle,acc_Speed = 0, lastspeed, first, initangleset,number=0, initmode;
+   static float lastangle,acc_Speed = 0,out_Speed=0; lastspeed, first, initangleset,number=0, initmode;
     static int TurnNoTail = 0, count = 0, initcameraopen, initindopen;
 //   if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong 
 //    {           TurnTailFlag=1; 
@@ -188,8 +193,10 @@ void TurnNoTail()
           number=1;
            initangleset = g_angle_set;
         }
-            if (TurnNoTailFlag)
+    if (TurnNoTailFlag)
     {
+        gpio_init(A7, GPO, 1);
+
         switch (TurnNoTail)
         {
         case 0:   //冲锋陷阵  防止没过完断路
@@ -217,63 +224,89 @@ void TurnNoTail()
           }
         case 1:   //拍地板
           {
-            count++;
-            if(count<50)
+            if(g_StateSlave > CarGo || g_SlaveOutFlag)//从车已到达，跳模式用电磁过断路
             {
-            g_mode=1;
-            g_angle_set=GroundAngle;
-            AngleControl();
-            }
-            else if(count>=50&&count<1000)
-            {
-              g_drive_flag=0;
-            }
-            else if(count>=2000)
-            {
-              TurnNoTail=2;
-              g_angle_set=BalanceAngle;
-              count=0;
-              flipgyro=0;
+              TurnNoTail=3;
               g_StateMaster=StateTwo;
+            }
+            else
+            {
+              count++;
+              if(count<50)
+              {
+                g_mode=1;
+                g_angle_set=GroundAngle;
+                AngleControl();
+              }
+              else if(count>=50&&count<1000)
+              {
+                g_drive_flag=0;
+              }
+              else if(count>=2000)
+              {
+                TurnNoTail=2;
+                g_angle_set=BalanceAngle;
+                count=0;
+                g_StateMaster=StateTwo;
+              }
             }
             break;
           }
-           case 2:
+         case 2:
         {
-          if(TurnNoTailGoFlag||count<300)
+          if(TurnNoTailGoFlag||count<5000)
           {
             count++;
           }
-            if (count <= 300)
+            if (count <= 5000)
             {
                   g_drive_flag=0;
             }
-            else if (count >400&&count<=1000)
+            else if (count >5000&&count<=7000)
             {
               g_angle_set=initangleset;
               g_mode=3;
               g_drive_flag=1;
+            
+            }
+             if(count>7000)
+            {
+                TurnNoTail=3;
+             count = 0;
+            }
+            break;
+        }
+        case 3:
+          {
+            acc_Speed+=curSpeed;
               AngleControl();
               AD_DirectionControl();
               DirectionControlOutput();
-            	ExpectSpeedGet();
-	            SpeedControl();             
+	      SpeedControl();             
               SpeedControlOutput();
-            
-            }
-             if(count>1000)
+            else if(!Img_BrokenFlag)
             {
-              TurnNoTailGoFlag=1;
-              gpio_init(A7, GPO, 1);
-                TurnNoTail=5;
+              out_Speed+=curSpeed;
+              if(out_Speed>1000)
+              {
+              TurnNoTail=0;
               TurnNoTailFlag=0;
               Img_BrokenFlag=0;
                 Img_BlockFlag = 0;
                 Img_RampFlag = 0;
-              
+              gpio_init(A7, GPO, 0);
+              }
+              }
+            else if(acc_speed>10086)
+            {
+              TurnNoTail=0;
+              TurnNoTailFlag=0;
+              Img_BrokenFlag=0;
+                Img_BlockFlag = 0;
+                Img_RampFlag = 0;
+              gpio_init(A7, GPO, 0);
             }
-            break;
-        }
+          }
         default:
           break;
         }

@@ -73,8 +73,8 @@ void motormode(float mode)
         }
                 if(7 == g_mode)
         {
-          g_fleft =g_AngleControlOut- g_fDirectionControlOut+ 5000 ;
-          g_fright =g_AngleControlOut+g_fDirectionControlOut+ 5000;
+          g_fleft =g_AngleControlOut- g_fDirectionControlOut;
+          g_fright =g_AngleControlOut+g_fDirectionControlOut;
         }
 }
 //-------------------------------------------------------------------------------------------------------------------
