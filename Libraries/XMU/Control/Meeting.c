@@ -317,7 +317,7 @@ void MeetingTwo1(void)
 			{
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
-				g_handle_open = 0;
+//				g_handle_open = 0;
 				acc_speed = 0;
 				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
@@ -345,7 +345,7 @@ void MeetingTwo1(void)
 			//GOGOGO!!!
 
 			TurnTailGoFlag=1;
-			
+			g_handle_open=1;
         }
 			TurnTail();
         
@@ -455,7 +455,7 @@ void MeetingTwo2(void)
 			if(!TurnNoTailGoFlag)
 			{
 			TurnNoTailGoFlag=1;
-
+                          
 			}
         }
 			TurnNoTail();

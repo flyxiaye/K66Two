@@ -97,7 +97,7 @@ void PIT0_IRQHandler(void)
 	//	}
 
 //	TurnTail();
-        MeetingTwo2();
+        MeetingTwo1();
 	power();
 	PIT_FlAG_CLR(pit0);
 }

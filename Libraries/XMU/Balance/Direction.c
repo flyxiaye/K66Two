@@ -34,7 +34,7 @@ void Direction()
 	//  {
 	//
 //  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
-    if(!dialSwitchFlg2&&!TurnTailFlag)
+    if((!dialSwitchFlg2||Img_BrokenFlag)&&!TurnTailFlag)
   {
 	AD_DirectionControl();
   }

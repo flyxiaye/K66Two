@@ -324,6 +324,6 @@ int circlelandsymbol=0;
 
 uint8 phototube=0;
 /*************====================坡道路障相关可控制变量=======================*************/
-int BrokenTurnTailPWM=2800;
+int BrokenTurnTailPWM=2900;
 int BrokenTurnTailDistance=300;
 int Rampangle=12;

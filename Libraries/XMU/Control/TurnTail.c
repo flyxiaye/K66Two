@@ -35,7 +35,7 @@ void TurnTail()
             acc_Speed+=curSpeed;
             
             AD_DirectionControl();
-            if(acc_Speed>0)
+            if(acc_Speed>1000)
             {
               
               acc_Xpeed=acc_Speed;
@@ -56,13 +56,13 @@ void TurnTail()
         case 1:   //拍地板
           {
             count++;
-            if(count<50)
+            if(count<100)
             {
             g_mode=1;
             g_angle_set=GroundAngle;
             AngleControl();
             }
-            else if(count>=50&&count<1000)
+            else if(count>=100&&count<1000)
             {
               g_drive_flag=0;
             }
@@ -81,7 +81,7 @@ void TurnTail()
         case 2:  //起身甩头
         {
             acc_Speed += curSpeed;
-            if (flipgyro <= 90)
+            if (flipgyro <= 100)
             {
                 g_mode=2;
                 g_angle_set=BalanceAngle;
@@ -90,7 +90,7 @@ void TurnTail()
                 g_fDirectionControlOut = BrokenTurnTailPWM;
                 lastangle = _ANGLE;
             }
-            else if (flipgyro > 90)
+            else if (flipgyro > 100)
             {
                 acc_Speed = 0;
                 g_mode=1;
@@ -117,6 +117,7 @@ void TurnTail()
               TurnTail=4;
               count=0;
               g_StateMaster=StateTwo;
+              TurnTailGoFlag=1;
             }
             break;
           }
@@ -130,7 +131,7 @@ void TurnTail()
             {
                   g_drive_flag=0;
             }
-            else if (count >400&&count<700)
+            else if (count >400&&count<2000)
             {
               g_angle_set=initangleset;
               g_mode=3;
@@ -144,9 +145,10 @@ void TurnTail()
               Img_BrokenFlag=0;
               Img_BlockFlag = 0;
                 Img_RampFlag = 0;
+                g_handle_open=1;
             
             }
-            else if(count>=700)
+            else if(count>=2000)
             {
               gpio_init(A7, GPO, 1);
           TurnTailGoFlag=0;
@@ -157,14 +159,15 @@ void TurnTail()
                 Img_RampFlag = 0;
 		CircleFlag = 0;
 		CircleState = 0;
+                    gpio_init(A7, GPO, 0);
+    g_StateMaster=WaitingStop;
                   count=0;
             }
             break;
         }
             case 5:
     {
-          gpio_init(A7, GPO, 0);
-    g_StateMaster=WaitingStop;
+      
 }
             default:
           break;
@@ -231,6 +234,7 @@ void TurnNoTail()
               g_angle_set=BalanceAngle;
               count=0;
               flipgyro=0;
+              g_StateMaster=StateTwo;
             }
             break;
           }
@@ -266,7 +270,7 @@ void TurnNoTail()
               Img_BrokenFlag=0;
                 Img_BlockFlag = 0;
                 Img_RampFlag = 0;
-              g_StateMaster=WaitingStop;
+              
             }
             break;
         }
