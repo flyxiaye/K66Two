@@ -66,6 +66,7 @@ float gRateKd = 10.1;            //串级d
 float g_dire_P=9;
 float g_dire_D=9.2;
 float g_errorD=0;//差值
+float g_errorCircleland=0;
 float g_fDirectionControlOut;
 float g_nDirectionControlPeriod=0;//输出平滑
 float g_DirectionPeriod=5;//分的段数
@@ -107,6 +108,7 @@ int SpeedRow = 0;			//控速边界行数
 
 int CircleFlag = 0;
 int CircleState = 0;
+unsigned char Dist_ClearSevenFlag = 0;		//延距清环岛7标志位
 
 int LeftIntLine = 0;		//记录左内跳行数
 int RightIntLine = 0;		//记录右内跳行数

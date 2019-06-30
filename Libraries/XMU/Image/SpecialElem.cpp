@@ -223,19 +223,6 @@ void SpecialElemFill(void)
 	FindLineNormal(0);
 	if (1 == Img_BrokenFlag)
 	{
-		//if (LeftIntLine < UP_EAGE + 15 && RightIntLine < UP_EAGE + 15
-		//	&& LeftPnt.ErrRow < UP_EAGE + 15 && RightPnt.ErrRow < UP_EAGE + 15
-		//	&& DistStopLine(UP_EAGE + 15))
-		//{
-		//	Img_StopLineFlag = 1;
-		//	Img_BrokenFlag = 0;
-		//}
-		//else if (1 == Img_BlockFlag && 1 == ImgJudgeSpecialElem(LeftIntLine, RightIntLine))
-		//{
-		//	Img_BlockFlag = 1;			//Â·ÕÏ
-		//	Img_BrokenFlag = 0;
-		//}
-		//else 
 		if (ImgJudgeOutBroken())
 		{
 			Img_BrokenFlag = 2;			//¶ÏÂ·
@@ -490,22 +477,36 @@ int IsRamp(void)
 //================================================================//
 int ImgJudgeOutBroken(void)
 {
-	static SeqQueue qLight;
-	static unsigned char init_flag = 0;
-	if (!init_flag)
+	if (2 == Img_BrokenFlag)
 	{
-		init_flag = 1;
-		initQueue(&qLight);
+		if (LightThreshold > 50
+			&& RL[DOWN_EAGE] - LL[DOWN_EAGE] > 94
+			&& RL[DOWN_EAGE - 1] - LL[DOWN_EAGE - 1] > 94
+			&& RL[DOWN_EAGE - 2] - LL[DOWN_EAGE - 2] > 94
+			&& RL[DOWN_EAGE] >= RL[DOWN_EAGE - 1] && RL[DOWN_EAGE - 1] >= RL[DOWN_EAGE - 2]
+			&& LL[DOWN_EAGE] <= LL[DOWN_EAGE - 1] && LL[DOWN_EAGE - 1] <= LL[DOWN_EAGE - 2])
+			return 1;
+		else return 0;
 	}
-	qUpdateQueue(&qLight, LightThreshold);
-	int max = qGetMax(&qLight);
-	int min = qGetMin(&qLight);
-	if (max - min > 35)
+	else
 	{
-		initQueue(&qLight);
-		return 1;
+		static SeqQueue qLight;
+		static unsigned char init_flag = 0;
+		if (!init_flag)
+		{
+			init_flag = 1;
+			initQueue(&qLight);
+		}
+		qUpdateQueue(&qLight, LightThreshold);
+		int max = qGetMax(&qLight);
+		int min = qGetMin(&qLight);
+		if (max - min > 35)
+		{
+			initQueue(&qLight);
+			return 1;
+		}
+		else return 0;
 	}
-	else return 0;
 	//static int Num_i = 0;
 	//static int BrokenAve[10] = { 0 };
 	//if (2 == Img_BrokenFlag)

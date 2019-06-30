@@ -74,33 +74,14 @@ void TurnTail()
             {
               g_drive_flag=1;
 
-              TurnTail=2;
-              g_angle_set=BalanceAngle;
-              count=0;
-              flipgyro=0;
-            }
-            break;
-          }
+	if (!number)
+	{
+		number = 1;
+		initangleset = g_angle_set;
+	}
 
-        case 2:  //起身甩头
-        {
-            acc_Speed += curSpeed;
-            if (flipgyro <= 100)
-            {
-                g_mode=2;
-                g_angle_set=BalanceAngle;
-                AngleControl();
-                flipgyro += sensor.Gyro_deg.z * 0.002;
-                g_fDirectionControlOut = BrokenTurnTailPWM;
-                lastangle = _ANGLE;
-            }
-            else if (flipgyro > 100)
-            {
-                acc_Speed = 0;
-                g_mode=1;
-                TurnTail = 3;
-                g_fDirectionControlOut = 0;
-                lastangle = _ANGLE;
+	if (TurnTailFlag)
+	{
 
                 count=0;
                 flipgyro = 0;

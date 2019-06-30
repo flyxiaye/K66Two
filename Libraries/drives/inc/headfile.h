@@ -91,4 +91,6 @@
 #include "Speed.h"
 #include "DelayDist.h"
 #include "TurnTail.h"
+#include "Circleland.h"
+#include "SpecialElem.h"
 #endif
