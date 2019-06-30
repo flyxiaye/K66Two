@@ -17,9 +17,11 @@ void MeetingToImage(void)
 {
 	if (!g_single_open)			//非单车模式
 	{
-		if (0 == g_GetMeetingState && 2 == Img_BrokenFlag && CarGo == g_StateMaster)		//未开始会车
+		if (0 == g_GetMeetingState && !g_GetMeetingFlag			//未开始会车
+			&& 2 == Img_BrokenFlag && CarGo == g_StateMaster)
 			g_GetMeetingFlag = 1;
-		else if (g_GetMeetingState && Img_BrokenFlag)			//已经完成会车，不再识别断路
+		else if (g_GetMeetingState && !g_GetMeetingFlag			//已经完成会车，不再识别断路
+			&& Img_BrokenFlag)
 			Img_BrokenFlag = 0;
 
 		if (g_GetMeetingState && 1 == Img_StopLineFlag && WaitingStop <= g_StateMaster)		//已经完成会车，开始识别停车线
@@ -317,7 +319,7 @@ void MeetingTwo1(void)
 			{
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
-//				g_handle_open = 0;
+				//				g_handle_open = 0;
 				acc_speed = 0;
 				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
@@ -331,27 +333,27 @@ void MeetingTwo1(void)
 		else acc_speed = 0;
 		break;
 	case StateOne:		//会车区动作以及状态  
-	if(!TurnTailFlag) 
-	{
-          gpio_init(D2,GPO,0);
-	TurnTailFlag=1;
-	}
-	TurnTail();			//进入后一波操作掉头
+		if (!TurnTailFlag)
+		{
+			gpio_init(D2, GPO, 0);
+			TurnTailFlag = 1;
+		}
+		TurnTail();			//进入后一波操作掉头
 		break;
 	case StateTwo:
-	//等待接收信号
-	if ((g_StateSlave > CarGo || g_SlaveOutFlag)&&!TurnTailGoFlag)		//隔壁车已过断路
+		//等待接收信号
+		if ((g_StateSlave > CarGo || g_SlaveOutFlag) && !TurnTailGoFlag)		//隔壁车已过断路
 		{
 			//GOGOGO!!!
 
-			TurnTailGoFlag=1;
-			g_handle_open=1;
-        }
-			TurnTail();
-        
-	break;
+			TurnTailGoFlag = 1;
+			g_handle_open = 1;
+		}
+		TurnTail();
+
+		break;
 	case WaitingStop:		//等待识别停车线
-                TurnTailFlag=0;
+		TurnTailFlag = 0;
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
 			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
@@ -426,6 +428,7 @@ void MeetingTwo2(void)
 			acc_speed += curSpeed;
 			if (acc_speed > StartDistance)
 			{
+				g_GetMeetingState = 1;
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
 				g_handle_open = 0;
@@ -441,28 +444,28 @@ void MeetingTwo2(void)
 		else acc_speed = 0;
 		break;
 	case StateOne:		//会车区动作以及状态  
-	if(!TurnNoTailFlag) 
-	{
-	TurnNoTailFlag=1;
-	}
-	TurnNoTail();			//进入后一波操作掉头
+		if (!TurnNoTailFlag)
+		{
+			TurnNoTailFlag = 1;
+		}
+		TurnNoTail();			//进入后一波操作掉头
 		break;
 	case StateTwo:
-	//等待接收信号
-	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
-        {
+		//等待接收信号
+		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
+		{
 			//GOGOGO!!!
-			if(!TurnNoTailGoFlag)
+			if (!TurnNoTailGoFlag)
 			{
-			TurnNoTailGoFlag=1;
-                          
+				TurnNoTailGoFlag = 1;
+
 			}
-        }
-			TurnNoTail();
-	break;
+		}
+		TurnNoTail();
+		break;
 	case WaitingStop:		//等待识别停车线
-          gpio_init(A7, GPO, 0);
-          TurnNoTailFlag=0;
+		gpio_init(A7, GPO, 0);
+		TurnNoTailFlag = 0;
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
 			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下

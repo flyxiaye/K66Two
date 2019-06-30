@@ -113,18 +113,15 @@ extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 #define CIRCLEUP_TH 15		//进入环岛差距行
 
 #define CIRCLE 2			//环岛开关
-#define BROKEN 0			//断路开关
 #define CURVE_BROKEN 1		//弯道断路
 #define STRAIGHT_BROKEN 1	//直道断路
-#define RAMP 0				//坡道开关
-#define BLOCK_BROKEN 0		//路障断路开关
-#define STOPLINE 0			//停车开关
+#define STOPLINE 1			//停车开关
 #define CI_IND 0			//出环岛标志
 #define INF 1				//红外识别
 
 typedef struct
 {
-	int Row; 
+	int Row;
 	int Col;
 }Point;
 
@@ -162,6 +159,7 @@ extern int SpeedRow;			//控速边界行数
 
 extern int CircleFlag;
 extern int CircleState;
+extern unsigned char Dist_ClearSevenFlag;
 
 extern int LeftIntLine;		//记录左内跳行数
 extern int RightIntLine;		//记录右内跳行数

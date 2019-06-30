@@ -108,6 +108,7 @@ int SpeedRow = 0;			//控速边界行数
 
 int CircleFlag = 0;
 int CircleState = 0;
+unsigned char Dist_ClearSevenFlag = 0;		//延距清环岛7标志位
 
 int LeftIntLine = 0;		//记录左内跳行数
 int RightIntLine = 0;		//记录右内跳行数

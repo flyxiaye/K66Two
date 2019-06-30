@@ -40,12 +40,21 @@ void FillFourCross(void)
 				if (LL[i] - LL[i + 1] > FINDLINE_TH || LL[i + 1] - LL[i] > FINDLINE_TH)
 					ErrorFlag = 5;
 			}
-			//向下连线
-			FillLineDown(LL, PointOld.Row, PointOld.Row - 5);
-			LeftPnt.ErrRow = PointOld.Row - 3;
-			LeftPnt.ErrCol = LL[LeftPnt.ErrRow];
-			LeftPnt.Type = 0;
-			break;
+			//向下连线			
+			float k = LeastSquare(LL, PointOld.Row, PointOld.Row - 5);
+			if (k > 0)
+			{
+				ErrorFlag = 5;
+				break;
+			}
+			else
+			{
+				FillLineDown(LL, PointOld.Row, PointOld.Row - 5);
+				LeftPnt.ErrRow = PointOld.Row - 3;
+				LeftPnt.ErrCol = LL[LeftPnt.ErrRow];
+				LeftPnt.Type = 0;
+				break;
+			}
 		}
 		else if (DOWN_EAGE <= PointNew.Row)
 		{
@@ -83,11 +92,20 @@ void FillFourCross(void)
 					ErrorFlag = 5;
 			}
 			//向下连线
-			FillLineDown(RL, PointOld.Row, PointOld.Row - 5);
-			RightPnt.ErrRow = PointOld.Row - 3;
-			RightPnt.ErrCol = RL[RightPnt.ErrRow];
-			RightPnt.Type = 0;
-			break;
+			float k = LeastSquare(RL, PointOld.Row, PointOld.Row - 5);
+			if (k < 0)
+			{
+				ErrorFlag = 5;
+				break;
+			}
+			else
+			{
+				FillLineDown(RL, PointOld.Row, PointOld.Row - 5);
+				RightPnt.ErrRow = PointOld.Row - 3;
+				RightPnt.ErrCol = RL[RightPnt.ErrRow];
+				RightPnt.Type = 0;
+				break;
+			}
 		}
 		else if (DOWN_EAGE <= PointNew.Row)
 		{
@@ -195,7 +213,7 @@ void FillBevelCross(void)
 		}
 		else			//丢边斜十字
 		{
-			if (UP_EAGE == PointOld.Row || LeftPnt.ErrRow + 20 > PointNew.Row)		//左边无补线
+			if (UP_EAGE == PointOld.Row)		//左边无补线
 				;
 			else
 			{
@@ -218,13 +236,21 @@ void FillBevelCross(void)
 								for (int i = PointOld.Row - 1; i > PointOld.Row - 5; --i)
 								{
 									RL[i] = GetRL(i, RL[i + 1]);
-
 								}
-								FillLineDown(RL, PointOld.Row, PointOld.Row - 4);
-								RightPnt.Type = 0;
-								RightPnt.ErrRow = PointOld.Row - 4;;
-								RightPnt.ErrCol = RL[RightPnt.ErrRow];
-								break;
+								float k = LeastSquare(RL, PointOld.Row, PointOld.Row - 4);
+								if (RL[PointOld.Row - 1] < MIDDLE + 20 || k < 0)
+								{
+									ErrorFlag = 5;
+									break;
+								}
+								else
+								{
+									FillLineDown(RL, PointOld.Row, PointOld.Row - 4);
+									RightPnt.Type = 0;
+									RightPnt.ErrRow = PointOld.Row - 4;;
+									RightPnt.ErrCol = RL[RightPnt.ErrRow];
+									break;
+								}
 							}
 						}
 						else if (DOWN_EAGE <= PointNew.Row)
@@ -327,7 +353,7 @@ void FillBevelCross(void)
 		}
 		else			//左边丢边十字
 		{
-			if (UP_EAGE == PointOld.Row || RightPnt.ErrRow + 20 > PointNew.Row)		//右边无补线 
+			if (UP_EAGE == PointOld.Row)		//右边无补线 
 				;
 			else
 			{
@@ -351,11 +377,20 @@ void FillBevelCross(void)
 								{
 									LL[i] = GetLL(i, LL[i + 1]);
 								}
-								FillLineDown(LL, PointOld.Row, PointOld.Row - 4);
-								LeftPnt.Type = 0;
-								LeftPnt.ErrRow = PointOld.Row - 4;
-								LeftPnt.ErrCol = LL[LeftPnt.ErrRow];
-								break;
+								float k = LeastSquare(LL, PointOld.Row, PointOld.Row - 4);
+								if (LL[PointOld.Row - 1] > MIDDLE - 20 || k > 0)
+								{
+									ErrorFlag = 5;
+									break;
+								}
+								else
+								{
+									FillLineDown(LL, PointOld.Row, PointOld.Row - 4);
+									LeftPnt.Type = 0;
+									LeftPnt.ErrRow = PointOld.Row - 4;
+									LeftPnt.ErrCol = LL[LeftPnt.ErrRow];
+									break;
+								}
 							}
 						}
 						else if (DOWN_EAGE <= PointNew.Row)

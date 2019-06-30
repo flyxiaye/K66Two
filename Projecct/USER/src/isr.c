@@ -83,22 +83,22 @@ void PIT0_IRQHandler(void)
 //	DistCI();
 	IndCI();
 	get_ind_error();
-              Ramp2();
-		AngleControl();
+	Ramp2();
+	AngleControl();
 	inf();
 	roadblock3();
-        circleland2();
+	circleland2();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
-        SpeedControlOutput();
-//        if(g_mode!=6)
-//        {
-	
-	//	}
+	SpeedControlOutput();
+	//        if(g_mode!=6)
+	//        {
 
-//	TurnTail();
-        MeetingTwo1();
+		//	}
+
+	//	TurnTail();
+	MeetingTwo1();
 	power();
 	PIT_FlAG_CLR(pit0);
 }
