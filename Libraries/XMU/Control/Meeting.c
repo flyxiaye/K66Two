@@ -523,110 +523,110 @@ void MeetingTwo2(void)
 //  @return :		void
 //  @note   :		void	
 //================================================================//
-void MeetingTwo1(void)
-{
-	static int acc_speed = 0;
-	static int sum_speed = 0.5 * ONE_METER;
-	static float yaw_init = 0;
-	static float yaw_init_1 = 0;
-	static float yaw_init_2 = 0;
-	static int get_flag = 0;
-	static int count = 0;
-	switch (g_StateMaster)
-	{
-	case Ready:
-		if (g_car_lanuch) g_StateMaster = WaitingBegin;
-		break;
-	case WaitingBegin:
-		if (g_StateSlave > Ready)
-		{
-			g_StateMaster = CarGo;
-			g_drive_flag = 1;
-		}
-		break;
-	case CarGo:
-		if (g_GetMeetingFlag) 			 //����ᳵ�� 
-		{
-			acc_speed += curSpeed;
-			if (acc_speed > StartDistance)
-			{
-				g_StateMaster = StateOne;
-				Img_BlockFlag = 0;
-				//				g_handle_open = 0;
-				acc_speed = 0;
-				//�ı�״̬ ������һ״̬��־
-//				g_StateMaster = 1;
-				speed_type = 3; //�ᳵ�ٶ�
-				spdExp3 = MEETING_SPEED;
-				yaw_init = _ANGLE;
-				yaw_init_1 = yaw_init + 90;
-				if (yaw_init_1 > 180) yaw_init_1 -= 360;
-			}
-		}
-		else acc_speed = 0;
-		break;
-	case StateOne:		//�ᳵ�������Լ�״̬  
-		if (!TurnTailFlag)
-		{
-			gpio_init(D2, GPO, 0);
-			TurnTailFlag = 1;
-		}
-		TurnTail();			//�����һ��������ͷ
-		break;
-	case StateTwo:
-		//�ȴ������ź�
-		if ((g_StateSlave > CarGo || g_SlaveOutFlag) && !TurnTailGoFlag)		//���ڳ��ѹ���·
-		{
-			//GOGOGO!!!
-
-			TurnTailGoFlag = 1;
-			g_handle_open = 1;
-		}
-		TurnTail();
-
-		break;
-	case WaitingStop:		//�ȴ�ʶ��ͣ����
-		TurnTailFlag = 0;
-		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
-		{
-			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
-				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //ͣ���ȴ�
-				speed_type = 0;
-			}
-		}
-		else if (Img_StopLineFlag && g_SlaveOutFlag)
-			g_StateMaster = StateGo;
-		break;
-	case StateGo:
-		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 1.5)
-		{
-			acc_speed = 0;
-			g_StateMaster = CarFinish;
-		}
-		break;
-	case StateStop:
-		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
-		{
-			speed_type = 1;
-			acc_speed += curSpeed;
-			if (acc_speed > sum_speed * 1.5)
-			{
-				g_StateMaster = CarFinish;
-				acc_speed = 0;
-			}
-		}
-		break;
-	case CarFinish:
-		speed_type = 0;
-		break;
-	default:
-		break;
-	}
-}
+//void MeetingTwo1(void)
+//{
+//	static int acc_speed = 0;
+//	static int sum_speed = 0.5 * ONE_METER;
+//	static float yaw_init = 0;
+//	static float yaw_init_1 = 0;
+//	static float yaw_init_2 = 0;
+//	static int get_flag = 0;
+//	static int count = 0;
+//	switch (g_StateMaster)
+//	{
+//	case Ready:
+//		if (g_car_lanuch) g_StateMaster = WaitingBegin;
+//		break;
+//	case WaitingBegin:
+//		if (g_StateSlave > Ready)
+//		{
+//			g_StateMaster = CarGo;
+//			g_drive_flag = 1;
+//		}
+//		break;
+//	case CarGo:
+//		if (g_GetMeetingFlag) 			 //����ᳵ�� 
+//		{
+//			acc_speed += curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//				g_StateMaster = StateOne;
+//				Img_BlockFlag = 0;
+//				//				g_handle_open = 0;
+//				acc_speed = 0;
+//				//�ı�״̬ ������һ״̬��־
+////				g_StateMaster = 1;
+//				speed_type = 3; //�ᳵ�ٶ�
+//				spdExp3 = MEETING_SPEED;
+//				yaw_init = _ANGLE;
+//				yaw_init_1 = yaw_init + 90;
+//				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+//			}
+//		}
+//		else acc_speed = 0;
+//		break;
+//	case StateOne:		//�ᳵ�������Լ�״̬  
+//		if (!TurnTailFlag)
+//		{
+//			gpio_init(D2, GPO, 0);
+//			TurnTailFlag = 1;
+//		}
+//		TurnTail();			//�����һ��������ͷ
+//		break;
+//	case StateTwo:
+//		//�ȴ������ź�
+//		if ((g_StateSlave > CarGo || g_SlaveOutFlag) && !TurnTailGoFlag)		//���ڳ��ѹ���·
+//		{
+//			//GOGOGO!!!
+//
+//			TurnTailGoFlag = 1;
+//			g_handle_open = 1;
+//		}
+//		TurnTail();
+//
+//		break;
+//	case WaitingStop:		//�ȴ�ʶ��ͣ����
+//		TurnTailFlag = 0;
+//		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
+//		{
+//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //ͣ���ȴ�
+//				speed_type = 0;
+//			}
+//		}
+//		else if (Img_StopLineFlag && g_SlaveOutFlag)
+//			g_StateMaster = StateGo;
+//		break;
+//	case StateGo:
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed * 1.5)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//	case StateStop:
+//		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
+//		{
+//			speed_type = 1;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed * 1.5)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//		break;
+//	case CarFinish:
+//		speed_type = 0;
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
 //================================================================//
 //  @brief  :		���ֳ��ᳵ����(������·)
@@ -634,111 +634,111 @@ void MeetingTwo1(void)
 //  @return :		void
 //  @note   :		void	
 //================================================================//
-void MeetingTwo2(void)
-{
-	static int acc_speed = 0;
-	static int sum_speed = 0.5 * ONE_METER;
-	static float yaw_init = 0;
-	static float yaw_init_1 = 0;
-	static float yaw_init_2 = 0;
-	static int get_flag = 0;
-	static int count = 0;
-	switch (g_StateMaster)
-	{
-	case Ready:
-		if (g_car_lanuch) g_StateMaster = WaitingBegin;
-		break;
-	case WaitingBegin:
-		if (g_StateSlave > Ready)
-		{
-			g_StateMaster = CarGo;
-			g_drive_flag = 1;
-		}
-		break;
-	case CarGo:
-		if (g_GetMeetingFlag) 			 //����ᳵ�� 
-		{
-			acc_speed += curSpeed;
-			if (acc_speed > StartDistance)
-			{
-				g_GetMeetingState = 1;
-				g_StateMaster = StateOne;
-				Img_BlockFlag = 0;
-				g_handle_open = 0;
-				acc_speed = 0;
-				//�ı�״̬ ������һ״̬��־
-				speed_type = 3; //�ᳵ�ٶ�
-				spdExp3 = MEETING_SPEED;
-				yaw_init = _ANGLE;
-				yaw_init_1 = yaw_init + 90;
-				if (yaw_init_1 > 180) yaw_init_1 -= 360;
-			}
-		}
-		else acc_speed = 0;
-		break;
-	case StateOne:		//�ᳵ�������Լ�״̬  
-		if (!TurnNoTailFlag)
-		{
-			TurnNoTailFlag = 1;
-		}
-		TurnNoTail();			//�����һ��������ͷ
-		break;
-	case StateTwo:
-		//�ȴ������ź�
-		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//���ڳ��ѹ���·
-		{
-			//GOGOGO!!!
-			if (!TurnNoTailGoFlag)
-			{
-				TurnNoTailGoFlag = 1;
-
-			}
-		}
-		TurnNoTail();
-		break;
-	case WaitingStop:		//�ȴ�ʶ��ͣ����
-		gpio_init(A7, GPO, 0);
-		TurnNoTailFlag = 0;
-		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
-		{
-			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
-				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //ͣ���ȴ�
-				speed_type = 0;
-			}
-		}
-		else if (Img_StopLineFlag && g_SlaveOutFlag)
-			g_StateMaster = StateGo;
-		break;
-	case StateGo:
-		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 1.5)
-		{
-			acc_speed = 0;
-			g_StateMaster = CarFinish;
-		}
-		break;
-	case StateStop:
-		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
-		{
-			speed_type = 1;
-			acc_speed += curSpeed;
-			if (acc_speed > sum_speed * 1.5)
-			{
-				g_StateMaster = CarFinish;
-				acc_speed = 0;
-			}
-		}
-		break;
-	case CarFinish:
-		speed_type = 0;
-		break;
-	default:
-		break;
-	}
-}
+//void MeetingTwo2(void)
+//{
+//	static int acc_speed = 0;
+//	static int sum_speed = 0.5 * ONE_METER;
+//	static float yaw_init = 0;
+//	static float yaw_init_1 = 0;
+//	static float yaw_init_2 = 0;
+//	static int get_flag = 0;
+//	static int count = 0;
+//	switch (g_StateMaster)
+//	{
+//	case Ready:
+//		if (g_car_lanuch) g_StateMaster = WaitingBegin;
+//		break;
+//	case WaitingBegin:
+//		if (g_StateSlave > Ready)
+//		{
+//			g_StateMaster = CarGo;
+//			g_drive_flag = 1;
+//		}
+//		break;
+//	case CarGo:
+//		if (g_GetMeetingFlag) 			 //����ᳵ�� 
+//		{
+//			acc_speed += curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//				g_GetMeetingState = 1;
+//				g_StateMaster = StateOne;
+//				Img_BlockFlag = 0;
+//				g_handle_open = 0;
+//				acc_speed = 0;
+//				//�ı�״̬ ������һ״̬��־
+//				speed_type = 3; //�ᳵ�ٶ�
+//				spdExp3 = MEETING_SPEED;
+//				yaw_init = _ANGLE;
+//				yaw_init_1 = yaw_init + 90;
+//				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+//			}
+//		}
+//		else acc_speed = 0;
+//		break;
+//	case StateOne:		//�ᳵ�������Լ�״̬  
+//		if (!TurnNoTailFlag)
+//		{
+//			TurnNoTailFlag = 1;
+//		}
+//		TurnNoTail();			//�����һ��������ͷ
+//		break;
+//	case StateTwo:
+//		//�ȴ������ź�
+//		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//���ڳ��ѹ���·
+//		{
+//			//GOGOGO!!!
+//			if (!TurnNoTailGoFlag)
+//			{
+//				TurnNoTailGoFlag = 1;
+//
+//			}
+//		}
+//		TurnNoTail();
+//		break;
+//	case WaitingStop:		//�ȴ�ʶ��ͣ����
+//		gpio_init(A7, GPO, 0);
+//		TurnNoTailFlag = 0;
+//		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
+//		{
+//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //ͣ���ȴ�
+//				speed_type = 0;
+//			}
+//		}
+//		else if (Img_StopLineFlag && g_SlaveOutFlag)
+//			g_StateMaster = StateGo;
+//		break;
+//	case StateGo:
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed * 1.5)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//	case StateStop:
+//		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
+//		{
+//			speed_type = 1;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed * 1.5)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//		break;
+//	case CarFinish:
+//		speed_type = 0;
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
 //enum MeetingFlag {
 //	WaitingStop = 15,

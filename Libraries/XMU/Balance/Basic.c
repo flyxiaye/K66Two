@@ -71,11 +71,38 @@ void motormode(float mode)
           g_fleft =g_AngleControlOut - g_fDirectionControlOut;
           g_fright =g_AngleControlOut + g_fDirectionControlOut;
         }
-                if(7 == g_mode)
+                if(7 == g_mode)   //坡道英雄
         {
           g_fleft =g_AngleControlOut- g_fDirectionControlOut;
           g_fright =g_AngleControlOut+g_fDirectionControlOut;
         }
+		                if(8 == g_mode)    //开机我为王
+        {
+          g_fleft =g_AngleControlOut- g_fDirectionControlOut;
+          g_fright =g_AngleControlOut+g_fDirectionControlOut;
+        }
+}
+void BootRacer()
+{	
+	static int acc_speed=0;
+	static int initangleset=0;
+	if(BootRacerFlag)
+	{
+		if(acc_speed<BootRacer)
+		{
+		g_mode=8;
+		g_angle_set=BootRacerAngle;
+		}
+		else 
+		{
+			g_mode=3;
+			g_angle_set=initangleset;
+		}
+	}
+	else
+	{
+		initangleset=g_angle_set;
+	}
 }
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      占空比输出及限幅

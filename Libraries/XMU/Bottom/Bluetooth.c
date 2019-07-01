@@ -20,8 +20,9 @@ void SendUserData()
 	SendInt(ind_right_line);
         SendInt(ind_left_column);
 	SendInt(ind_right_column);
-//		SendFloat(ind_left+ind_right);*/
-		
+		SendFloat(curSpeed);
+                SendInt(lCurSpeed);
+		SendInt(rCurSpeed);
 //	SendInt(Img_BrokenFlag);
 //	SendInt(Img_BlockFlag);
 //	SendFloat(leftExpect);

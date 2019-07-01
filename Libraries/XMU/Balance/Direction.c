@@ -149,8 +149,8 @@ void Camera_DirectionControl()
 				g_errorD = g_error_before;
 			}
 		}
-		g_fDirectionAngleControlOut = g_errorD * g_dire_P + (g_errorD - g_error_before) * g_dire_D;
-		g_fDirectionControlOut_new = (curSpeed/g_fSpeed_set+0.8)*((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
+		g_fDirectionAngleControlOut = g_errorD * g_dire_P *(curSpeed/g_fSpeed_set*0.8+0.2)+ (g_errorD - g_error_before) * g_dire_D;
+		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
 	}

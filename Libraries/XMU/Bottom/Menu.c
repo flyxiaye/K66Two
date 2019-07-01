@@ -945,8 +945,8 @@ void Main_Show(void)
         
 
 	Insert_Page("PWM"); //µç»ú
-	Insert_Float("left", &g_nLeftMotorPulseSigma);
-	Insert_Float("right", &g_nRightMotorPulseSigma);
+	Insert_Int("left", &lCurSpeed);
+	Insert_Int("right", &rCurSpeed);
 	Insert_Float("out_L", &g_fleft);
 	Insert_Float("out_R", &g_fright);
 	Insert_Float("duty_L", &g_duty_left);

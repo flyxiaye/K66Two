@@ -56,9 +56,9 @@ static int lala=0;
                   g_StateMaster=2;
                 }
 		//Bluebooth_Push_Data();
-//                UserData();
+                UserData();
 //    SendAngle();
-    SendData();
+//    SendData();
                 		if (Img_BrokenFlag)
 			gpio_init(D0, GPO, 0);
 		else gpio_init(D0, GPO, 1);
