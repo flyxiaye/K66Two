@@ -3,7 +3,31 @@
 #include "GlobalVar.h"	
 
 
-
+//================================================================//
+//  @brief  :		延距清环岛7状态标志位
+//  @param  :		void
+//  @return :		void
+//  @note   :		放在中断
+//================================================================//
+void Dist_ClearIslandSeven(void)
+{
+	static int sum_dist = ONE_METER;
+	static int acc_dist = 0;
+	if (7 == CircleState)
+	{
+		acc_dist += curSpeed;
+		if (acc_dist > sum_dist)
+		{
+			Dist_ClearSevenFlag = 1;
+		}
+		else Dist_ClearSevenFlag = 0;
+	}
+	else
+	{
+		Dist_ClearSevenFlag = 0;
+		acc_dist = 0;
+	}
+}
 
 //================================================================//
 //  @note   :		放在中断

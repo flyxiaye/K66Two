@@ -99,6 +99,7 @@ void PIT0_IRQHandler(void)
 
 	//	TurnTail();
 	MeetingTwo1();
+	Dist_ClearIslandSeven();		//Çå»·µº7×´Ì¬
 	power();
 	PIT_FlAG_CLR(pit0);
 }
