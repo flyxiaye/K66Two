@@ -2,38 +2,290 @@
 #include "Meeting.h"
 #include "Obstacle.h"
 
-#define GroundAngle 9.73
 #define MEETING_SPEED 10
 #define _ANGLE imu_data.yaw
 
 int StartDistance = 0.5 * ONE_METER;
 
 //================================================================//
-//  @brief  :		��ͼ������ᳵ��������
+//  @brief  :		补图变量与会车变量调整
 //  @param  :		void
 //  @return :		void
-//  @note   :		���ڲ�ͼ����	
+//  @note   :		放在补图后面	
 //================================================================//
 void MeetingToImage(void)
 {
-	if (!g_single_open)			//�ǵ���ģʽ
+	if (!g_single_open)			//非单车模式
 	{
-		if (0 == g_GetMeetingState && !g_GetMeetingFlag			//δ��ʼ�ᳵ
+		if (0 == g_GetMeetingState && !g_GetMeetingFlag			//未开始会车
 			&& 2 == Img_BrokenFlag && CarGo == g_StateMaster)
 			g_GetMeetingFlag = 1;
-		else if (g_GetMeetingState && !g_GetMeetingFlag			//�Ѿ���ɻᳵ������ʶ���·
+		else if (g_GetMeetingState && !g_GetMeetingFlag			//已经完成会车，不再识别断路
 			&& Img_BrokenFlag)
 			Img_BrokenFlag = 0;
 
-		if (g_GetMeetingState && 1 == Img_StopLineFlag && WaitingStop <= g_StateMaster)		//�Ѿ���ɻᳵ����ʼʶ��ͣ����
+		if (g_GetMeetingState && 1 == Img_StopLineFlag && WaitingStop <= g_StateMaster)		//已经完成会车，开始识别停车线
 			;
 		else Img_StopLineFlag = 0;
 	}
 }
 
+//================================================================//
+//  @brief  :		四轮车会车函数
+//  @param  :		void
+//  @return :		void
+//  @note   :		放在中断	
+//================================================================//
+//void MeetingFour(void)
+//{
+//	static int acc_speed = 0;
+//	static int sum_speed = 0.5 * ONE_METER;
+//	static float yaw_init = 0;
+//	static float yaw_init_1 = 0;
+//	static float yaw_init_2 = 0;
+//	static int get_flag = 0;
+//	static int count = 0;
+//	switch (g_StateMaster)
+//	{
+//	case Ready:
+//		if (g_car_lanuch) g_StateMaster = WaitingBegin;
+//		break;
+//	case WaitingBegin:
+//		if (g_StateSlave > Ready)
+//		{
+//			g_StateMaster = CarGo;
+//			g_drive_flag = 1;
+//		}
+//		break;
+//	case CarGo:				//等待进入会车区
+//		if (g_GetMeetingFlag) 			 //进入会车区 
+//		{
+//			acc_speed += curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//				Img_BlockFlag = 0;
+//				g_handle_open = 0;
+//				acc_speed = 0;
+//				//改变状态 调整下一状态标志
+//				g_StateMaster = StateOne;
+//				speed_type = 2; //会车速度
+//				spdExp2 = spdBas2;
+//				g_drive_flag = 0;									//debug
+//				yaw_init = _ANGLE;
+//				if (2 == g_MeetingDir)		//右转
+//				{
+//					yaw_init_1 = yaw_init + 90;
+//					if (yaw_init_1 > 180) yaw_init_1 -= 360;
+//				}
+//				else
+//				{
+//					yaw_init_1 = yaw_init - 90;
+//					if (yaw_init_1 < -180) yaw_init_1 += 360;
+//				}
+//			}
+//		}
+//		else acc_speed = 0;
+//		break;
+//	case StateOne:		//会车区动作以及状态
+//		if (2 == g_MeetingDir)
+//		{
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
+//			if (_ANGLE > 0 && yaw_init_1 >= 0)
+//			{
+//				if (_ANGLE > yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateTwo;
+//					spdExp2 = 0;
+//					acc_speed += curSpeed;
+//				}
+//			}
+//			else if (_ANGLE <= 0 && yaw_init_1 < 0)
+//			{
+//				if (_ANGLE > yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateTwo;
+//					spdExp2 = 0;
+//					acc_speed += curSpeed;
+//				}
+//			}
+//		}
+//		else
+//		{
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer + 120);
+//			if (_ANGLE >= 0 && yaw_init_1 > 0)
+//			{
+//				if (_ANGLE < yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateTwo;
+//					spdExp2 = 0;
+//					acc_speed += curSpeed;
+//				}
+//			}
+//			else if (_ANGLE < 0 && yaw_init_1 <= 0)
+//			{
+//				if (_ANGLE < yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateTwo;
+//					spdExp2 = 0;
+//					acc_speed += curSpeed;
+//				}
+//			}
+//		}
+//		break;
+//	case StateTwo:
+//		//等待接收信号
+//		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//从车已过断路
+//		{
+//			//改变状态 调整下一状态标志
+//			g_StateMaster = StateThree;
+//			speed_type = 2;
+//			spdExp2 = 0 - spdBas2;
+//			yaw_init = _ANGLE;
+//			if (2 == g_MeetingDir)
+//			{
+//				yaw_init_1 = yaw_init - 90;
+//				if (yaw_init_1 < -180)yaw_init_1 += 360;
+//			}
+//			else
+//			{
+//				yaw_init_1 = yaw_init + 90;
+//				if (yaw_init_1 > 180)yaw_init_1 -= 360;
+//			}
+//		}
+//		break;
+//	case StateThree:
+//		//倒车
+//		acc_speed += curSpeed;
+//		if (acc_speed > 0)
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//		else if (2 == g_MeetingDir)
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
+//		else ftm_pwm_duty(ftm3, ftm_ch5, InitSteer + 120);
+//		if (2 == g_MeetingDir)
+//		{
+//			if (_ANGLE >= 0 && yaw_init_1 > 0)
+//			{
+//				if (_ANGLE < yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateFour;
+//					spdExp2 = spdBas2;
+//				}
+//			}
+//			else if (_ANGLE < 0 && yaw_init_1 <= 0)
+//			{
+//				if (_ANGLE < yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateFour;
+//					spdExp2 = spdBas2;
+//				}
+//			}
+//		}
+//		else
+//		{
+//			if (_ANGLE > 0 && yaw_init_1 >= 0)
+//			{
+//				if (_ANGLE > yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateFour;
+//					spdExp2 = spdBas2;
+//				}
+//			}
+//			else if (_ANGLE <= 0 && yaw_init_1 < 0)
+//			{
+//				if (_ANGLE > yaw_init_1)
+//				{
+//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//					//改变状态 调整下一状态标志
+//					g_StateMaster = StateFour;
+//					spdExp2 = spdBas2;
+//				}
+//			}
+//		}
+//		break;
+//	case StateFour:
+//		//改变状态 调整下一状态标志
+//		g_StateMaster = StateFive;
+//		Img_BrokenFlag = 2;
+//		g_handle_open = 1;
+//
+//		//舵机输出
+//		g_camera_ctrl_flag = 0;
+//		g_ind_ctrl_flag = 1;
+//		GetSteerOut();//计算舵机输出
+//		SteerControl();//舵机控制
+//		break;
+//	case StateFive:
+//		//舵机输出
+//		g_camera_ctrl_flag = 0;
+//		g_ind_ctrl_flag = 1;
+//		GetSteerOut();//计算舵机输出
+//		SteerControl();//舵机控制
+//		if (!Img_BrokenFlag)			//出断路 进入下一状态
+//		{
+//			g_GetMeetingFlag = 0;
+//			acc_speed = 0;
+//			g_StateMaster = WaitingStop;
+//			speed_type = 1;
+//		}
+//		break;
+//	case WaitingStop:		//等待识别停车线
+//		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
+//		{
+//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //停留等待
+//				speed_type = 0;
+//			}
+//		}
+//		else if (Img_StopLineFlag && g_SlaveOutFlag)
+//			g_StateMaster = StateGo;
+//		break;
+//	case StateGo:
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed * 1.5)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//	case StateStop:
+//		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
+//		{
+//			speed_type = 1;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed * 1.5)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//		break;
+//	case CarFinish:
+//		speed_type = 0;
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
 //================================================================//
-//  @brief  :		���ֳ��ᳵ����(��ͷ)
+//  @brief  :		二轮车会车函数(掉头)
 //  @param  :		void
 //  @return :		void
 //  @note   :		void	
@@ -42,7 +294,9 @@ void MeetingTwo1(void)
 {
 	static int acc_speed = 0;
 	static int sum_speed = 0.5 * ONE_METER;
-	static float angle_init = 0;
+	static float yaw_init = 0;
+	static float yaw_init_1 = 0;
+	static float yaw_init_2 = 0;
 	static int get_flag = 0;
 	static int count = 0;
 	switch (g_StateMaster)
@@ -58,50 +312,59 @@ void MeetingTwo1(void)
 		}
 		break;
 	case CarGo:
-		if (g_GetMeetingFlag) 			 //����ᳵ�� 
+		if (g_GetMeetingFlag) 			 //进入会车区 
 		{
 			acc_speed += curSpeed;
 			if (acc_speed > StartDistance)
 			{
+				g_GetMeetingState=1;
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
 //				g_handle_open = 0;
 				acc_speed = 0;
-				//�ı�״̬ ������һ״̬��־
+				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
+				speed_type = 3; //会车速度
+				spdExp3 = MEETING_SPEED;
+				yaw_init = _ANGLE;
+				yaw_init_1 = yaw_init + 90;
+				if (yaw_init_1 > 180) yaw_init_1 -= 360;
 			}
 		}
 		else acc_speed = 0;
 		break;
-	case StateOne:		//�ᳵ�������Լ�״̬  
-                if(!TurnTailFlag) 
-                {
-                    gpio_init(D2,GPO,0);
-                    TurnTailFlag=1;
-                 }
-                  TurnTail();			//�����һ��������ͷ
+	case StateOne:		//会车区动作以及状态  
+	if(!TurnTailFlag) 
+	{
+          gpio_init(D2,GPO,0);
+	TurnTailFlag=1;
+	}
+	TurnTail();			//进入后一波操作掉头
 		break;
 	case StateTwo:
-	//�ȴ������ź�
-                if ((g_StateSlave > CarGo || g_SlaveOutFlag)&&!TurnTailGoFlag)		//���ڳ��ѹ���·
-                {
+	//等待接收信号
+	if ((g_StateSlave > CarGo || g_SlaveOutFlag)&&!TurnTailGoFlag)		//隔壁车已过断路
+		{
 			//GOGOGO!!!
 
 			TurnTailGoFlag=1;
 			g_handle_open=1;
-                }
-		TurnTail();
-                break;
-	case WaitingStop:		//�ȴ�ʶ��ͣ����
+        }
+			TurnTail();
+        
+	break;
+	case WaitingStop:		//等待识别停车线
                 TurnTailFlag=0;
-		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
+				 gpio_init(A7, GPO, 0);
+		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
-			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
-//			else                            //ƽ�⳵��ͣ��
-//			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
-//			}
+			else
+			{
+				g_StateMaster = StateStop; //停留等待
+				speed_type = 0;
+			}
 		}
 		else if (Img_StopLineFlag && g_SlaveOutFlag)
 			g_StateMaster = StateGo;
@@ -115,8 +378,9 @@ void MeetingTwo1(void)
 		}
 		break;
 	case StateStop:
-		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
 		{
+			speed_type = 1;
 			acc_speed += curSpeed;
 			if (acc_speed > sum_speed * 1.5)
 			{
@@ -125,35 +389,16 @@ void MeetingTwo1(void)
 			}
 		}
 		break;
-	case CarFinish://�ĵ�
-                {
-                    if(count < 5)
-                    {
-                      angle_init = g_angle_set;
-                    }
-                    else if(count>= 5 && count < 50)
-                    {
-                      g_angle_set = GroundAngle;
-                      g_mode = 5;
-                      
-                    }
-                    else if(count >= 50)
-                    {
-                      g_drive_flag = 0;
-                      g_angle_set = angle_init;
-                      count = 0;
-                    }
-                    count++;
-                 }
+	case CarFinish:
+		speed_type = 0;
 		break;
 	default:
-                
 		break;
 	}
 }
 
 //================================================================//
-//  @brief  :		���ֳ��ᳵ����(������·)
+//  @brief  :		二轮车会车函数(继续跑路)
 //  @param  :		void
 //  @return :		void
 //  @note   :		void	
@@ -180,17 +425,17 @@ void MeetingTwo2(void)
 		}
 		break;
 	case CarGo:
-		if (g_GetMeetingFlag) 			 //����ᳵ�� 
+		if (g_GetMeetingFlag) 			 //进入会车区 
 		{
 			acc_speed += curSpeed;
 			if (acc_speed > StartDistance)
 			{
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
-				g_handle_open = 0;
+				// g_handle_open = 0;
 				acc_speed = 0;
-				//�ı�״̬ ������һ״̬��־
-				speed_type = 3; //�ᳵ�ٶ�
+				//改变状态 调整下一状态标志
+				speed_type = 3; //会车速度
 				spdExp3 = MEETING_SPEED;
 				yaw_init = _ANGLE;
 				yaw_init_1 = yaw_init + 90;
@@ -199,16 +444,16 @@ void MeetingTwo2(void)
 		}
 		else acc_speed = 0;
 		break;
-	case StateOne:		//�ᳵ�������Լ�״̬  
+	case StateOne:		//会车区动作以及状态  
 	if(!TurnNoTailFlag) 
 	{
 	TurnNoTailFlag=1;
 	}
-	TurnNoTail();			//�����һ��������ͷ
+	TurnNoTail();			//进入后一波操作掉头
 		break;
 	case StateTwo:
-	//�ȴ������ź�
-	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//���ڳ��ѹ���·
+	//等待接收信号
+	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
         {
 			//GOGOGO!!!
 			if(!TurnNoTailGoFlag)
@@ -219,16 +464,16 @@ void MeetingTwo2(void)
         }
 			TurnNoTail();
 	break;
-	case WaitingStop:		//�ȴ�ʶ��ͣ����
+	case WaitingStop:		//等待识别停车线
           gpio_init(A7, GPO, 0);
           TurnNoTailFlag=0;
-		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
+		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
-			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
 			else
 			{
-				g_StateMaster = StateStop; //ͣ���ȴ�
+				g_StateMaster = StateStop; //停留等待
 				speed_type = 0;
 			}
 		}
@@ -244,7 +489,7 @@ void MeetingTwo2(void)
 		}
 		break;
 	case StateStop:
-		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
 		{
 			speed_type = 1;
 			acc_speed += curSpeed;
@@ -263,483 +508,6 @@ void MeetingTwo2(void)
 	}
 }
 
-//================================================================//
-//  @brief  :		���ֳ��ᳵ����
-//  @param  :		void
-//  @return :		void
-//  @note   :		�����ж�	
-//================================================================//
-//void MeetingFour(void)
-//{
-//	static int acc_speed = 0;
-//	static int sum_speed = 0.5 * ONE_METER;
-//	static float yaw_init = 0;
-//	static float yaw_init_1 = 0;
-//	static float yaw_init_2 = 0;
-//	static int get_flag = 0;
-//	static int count = 0;
-//	switch (g_StateMaster)
-//	{
-//	case Ready:
-//		if (g_car_lanuch) g_StateMaster = WaitingBegin;
-//		break;
-//	case WaitingBegin:
-//		if (g_StateSlave > Ready)
-//		{
-//			g_StateMaster = CarGo;
-//			g_drive_flag = 1;
-//		}
-//		break;
-//	case CarGo:				//�ȴ�����ᳵ��
-//		if (g_GetMeetingFlag) 			 //����ᳵ�� 
-//		{
-//			acc_speed += curSpeed;
-//			if (acc_speed > StartDistance)
-//			{
-//				Img_BlockFlag = 0;
-//				g_handle_open = 0;
-//				acc_speed = 0;
-//				//�ı�״̬ ������һ״̬��־
-//				g_StateMaster = StateOne;
-//				speed_type = 2; //�ᳵ�ٶ�
-//				spdExp2 = spdBas2;
-//				g_drive_flag = 0;									//debug
-//				yaw_init = _ANGLE;
-//				if (2 == g_MeetingDir)		//��ת
-//				{
-//					yaw_init_1 = yaw_init + 90;
-//					if (yaw_init_1 > 180) yaw_init_1 -= 360;
-//				}
-//				else
-//				{
-//					yaw_init_1 = yaw_init - 90;
-//					if (yaw_init_1 < -180) yaw_init_1 += 360;
-//				}
-//			}
-//		}
-//		else acc_speed = 0;
-//		break;
-//	case StateOne:		//�ᳵ�������Լ�״̬
-//		if (2 == g_MeetingDir)
-//		{
-//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
-//			if (_ANGLE > 0 && yaw_init_1 >= 0)
-//			{
-//				if (_ANGLE > yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateTwo;
-//					spdExp2 = 0;
-//					acc_speed += curSpeed;
-//				}
-//			}
-//			else if (_ANGLE <= 0 && yaw_init_1 < 0)
-//			{
-//				if (_ANGLE > yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateTwo;
-//					spdExp2 = 0;
-//					acc_speed += curSpeed;
-//				}
-//			}
-//		}
-//		else
-//		{
-//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer + 120);
-//			if (_ANGLE >= 0 && yaw_init_1 > 0)
-//			{
-//				if (_ANGLE < yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateTwo;
-//					spdExp2 = 0;
-//					acc_speed += curSpeed;
-//				}
-//			}
-//			else if (_ANGLE < 0 && yaw_init_1 <= 0)
-//			{
-//				if (_ANGLE < yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateTwo;
-//					spdExp2 = 0;
-//					acc_speed += curSpeed;
-//				}
-//			}
-//		}
-//		break;
-//	case StateTwo:
-//		//�ȴ������ź�
-//		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//�ӳ��ѹ���·
-//		{
-//			//�ı�״̬ ������һ״̬��־
-//			g_StateMaster = StateThree;
-//			speed_type = 2;
-//			spdExp2 = 0 - spdBas2;
-//			yaw_init = _ANGLE;
-//			if (2 == g_MeetingDir)
-//			{
-//				yaw_init_1 = yaw_init - 90;
-//				if (yaw_init_1 < -180)yaw_init_1 += 360;
-//			}
-//			else
-//			{
-//				yaw_init_1 = yaw_init + 90;
-//				if (yaw_init_1 > 180)yaw_init_1 -= 360;
-//			}
-//		}
-//		break;
-//	case StateThree:
-//		//����
-//		acc_speed += curSpeed;
-//		if (acc_speed > 0)
-//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//		else if (2 == g_MeetingDir)
-//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
-//		else ftm_pwm_duty(ftm3, ftm_ch5, InitSteer + 120);
-//		if (2 == g_MeetingDir)
-//		{
-//			if (_ANGLE >= 0 && yaw_init_1 > 0)
-//			{
-//				if (_ANGLE < yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateFour;
-//					spdExp2 = spdBas2;
-//				}
-//			}
-//			else if (_ANGLE < 0 && yaw_init_1 <= 0)
-//			{
-//				if (_ANGLE < yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateFour;
-//					spdExp2 = spdBas2;
-//				}
-//			}
-//		}
-//		else
-//		{
-//			if (_ANGLE > 0 && yaw_init_1 >= 0)
-//			{
-//				if (_ANGLE > yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateFour;
-//					spdExp2 = spdBas2;
-//				}
-//			}
-//			else if (_ANGLE <= 0 && yaw_init_1 < 0)
-//			{
-//				if (_ANGLE > yaw_init_1)
-//				{
-//					ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//					//�ı�״̬ ������һ״̬��־
-//					g_StateMaster = StateFour;
-//					spdExp2 = spdBas2;
-//				}
-//			}
-//		}
-//		break;
-//	case StateFour:
-//		//�ı�״̬ ������һ״̬��־
-//		g_StateMaster = StateFive;
-//		Img_BrokenFlag = 2;
-//		g_handle_open = 1;
-//
-//		//������
-//		g_camera_ctrl_flag = 0;
-//		g_ind_ctrl_flag = 1;
-//		GetSteerOut();//���������
-//		SteerControl();//�������
-//		break;
-//	case StateFive:
-//		//������
-//		g_camera_ctrl_flag = 0;
-//		g_ind_ctrl_flag = 1;
-//		GetSteerOut();//���������
-//		SteerControl();//�������
-//		if (!Img_BrokenFlag)			//����· ������һ״̬
-//		{
-//			g_GetMeetingFlag = 0;
-//			acc_speed = 0;
-//			g_StateMaster = WaitingStop;
-//			speed_type = 1;
-//		}
-//		break;
-//	case WaitingStop:		//�ȴ�ʶ��ͣ����
-//		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
-//		{
-//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
-//				g_StateMaster = StateGo;
-//			else
-//			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
-//				speed_type = 0;
-//			}
-//		}
-//		else if (Img_StopLineFlag && g_SlaveOutFlag)
-//			g_StateMaster = StateGo;
-//		break;
-//	case StateGo:
-//		acc_speed += curSpeed;
-//		if (acc_speed > sum_speed * 1.5)
-//		{
-//			acc_speed = 0;
-//			g_StateMaster = CarFinish;
-//		}
-//		break;
-//	case StateStop:
-//		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
-//		{
-//			speed_type = 1;
-//			acc_speed += curSpeed;
-//			if (acc_speed > sum_speed * 1.5)
-//			{
-//				g_StateMaster = CarFinish;
-//				acc_speed = 0;
-//			}
-//		}
-//		break;
-//	case CarFinish:
-//		speed_type = 0;
-//		break;
-//	default:
-//		break;
-//	}
-//}
-
-//================================================================//
-//  @brief  :		���ֳ��ᳵ����(��ͷ)
-//  @param  :		void
-//  @return :		void
-//  @note   :		void	
-//================================================================//
-//void MeetingTwo1(void)
-//{
-//	static int acc_speed = 0;
-//	static int sum_speed = 0.5 * ONE_METER;
-//	static float yaw_init = 0;
-//	static float yaw_init_1 = 0;
-//	static float yaw_init_2 = 0;
-//	static int get_flag = 0;
-//	static int count = 0;
-//	switch (g_StateMaster)
-//	{
-//	case Ready:
-//		if (g_car_lanuch) g_StateMaster = WaitingBegin;
-//		break;
-//	case WaitingBegin:
-//		if (g_StateSlave > Ready)
-//		{
-//			g_StateMaster = CarGo;
-//			g_drive_flag = 1;
-//		}
-//		break;
-//	case CarGo:
-//		if (g_GetMeetingFlag) 			 //����ᳵ�� 
-//		{
-//			acc_speed += curSpeed;
-//			if (acc_speed > StartDistance)
-//			{
-//				g_StateMaster = StateOne;
-//				Img_BlockFlag = 0;
-//				//				g_handle_open = 0;
-//				acc_speed = 0;
-//				//�ı�״̬ ������һ״̬��־
-////				g_StateMaster = 1;
-//				speed_type = 3; //�ᳵ�ٶ�
-//				spdExp3 = MEETING_SPEED;
-//				yaw_init = _ANGLE;
-//				yaw_init_1 = yaw_init + 90;
-//				if (yaw_init_1 > 180) yaw_init_1 -= 360;
-//			}
-//		}
-//		else acc_speed = 0;
-//		break;
-//	case StateOne:		//�ᳵ�������Լ�״̬  
-//		if (!TurnTailFlag)
-//		{
-//			gpio_init(D2, GPO, 0);
-//			TurnTailFlag = 1;
-//		}
-//		TurnTail();			//�����һ��������ͷ
-//		break;
-//	case StateTwo:
-//		//�ȴ������ź�
-//		if ((g_StateSlave > CarGo || g_SlaveOutFlag) && !TurnTailGoFlag)		//���ڳ��ѹ���·
-//		{
-//			//GOGOGO!!!
-//
-//			TurnTailGoFlag = 1;
-//			g_handle_open = 1;
-//		}
-//		TurnTail();
-//
-//		break;
-//	case WaitingStop:		//�ȴ�ʶ��ͣ����
-//		TurnTailFlag = 0;
-//		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
-//		{
-//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
-//				g_StateMaster = StateGo;
-//			else
-//			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
-//				speed_type = 0;
-//			}
-//		}
-//		else if (Img_StopLineFlag && g_SlaveOutFlag)
-//			g_StateMaster = StateGo;
-//		break;
-//	case StateGo:
-//		acc_speed += curSpeed;
-//		if (acc_speed > sum_speed * 1.5)
-//		{
-//			acc_speed = 0;
-//			g_StateMaster = CarFinish;
-//		}
-//		break;
-//	case StateStop:
-//		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
-//		{
-//			speed_type = 1;
-//			acc_speed += curSpeed;
-//			if (acc_speed > sum_speed * 1.5)
-//			{
-//				g_StateMaster = CarFinish;
-//				acc_speed = 0;
-//			}
-//		}
-//		break;
-//	case CarFinish:
-//		speed_type = 0;
-//		break;
-//	default:
-//		break;
-//	}
-//}
-
-//================================================================//
-//  @brief  :		���ֳ��ᳵ����(������·)
-//  @param  :		void
-//  @return :		void
-//  @note   :		void	
-//================================================================//
-//void MeetingTwo2(void)
-//{
-//	static int acc_speed = 0;
-//	static int sum_speed = 0.5 * ONE_METER;
-//	static float yaw_init = 0;
-//	static float yaw_init_1 = 0;
-//	static float yaw_init_2 = 0;
-//	static int get_flag = 0;
-//	static int count = 0;
-//	switch (g_StateMaster)
-//	{
-//	case Ready:
-//		if (g_car_lanuch) g_StateMaster = WaitingBegin;
-//		break;
-//	case WaitingBegin:
-//		if (g_StateSlave > Ready)
-//		{
-//			g_StateMaster = CarGo;
-//			g_drive_flag = 1;
-//		}
-//		break;
-//	case CarGo:
-//		if (g_GetMeetingFlag) 			 //����ᳵ�� 
-//		{
-//			acc_speed += curSpeed;
-//			if (acc_speed > StartDistance)
-//			{
-//				g_GetMeetingState = 1;
-//				g_StateMaster = StateOne;
-//				Img_BlockFlag = 0;
-//				g_handle_open = 0;
-//				acc_speed = 0;
-//				//�ı�״̬ ������һ״̬��־
-//				speed_type = 3; //�ᳵ�ٶ�
-//				spdExp3 = MEETING_SPEED;
-//				yaw_init = _ANGLE;
-//				yaw_init_1 = yaw_init + 90;
-//				if (yaw_init_1 > 180) yaw_init_1 -= 360;
-//			}
-//		}
-//		else acc_speed = 0;
-//		break;
-//	case StateOne:		//�ᳵ�������Լ�״̬  
-//		if (!TurnNoTailFlag)
-//		{
-//			TurnNoTailFlag = 1;
-//		}
-//		TurnNoTail();			//�����һ��������ͷ
-//		break;
-//	case StateTwo:
-//		//�ȴ������ź�
-//		if (g_StateSlave > CarGo || g_SlaveOutFlag)		//���ڳ��ѹ���·
-//		{
-//			//GOGOGO!!!
-//			if (!TurnNoTailGoFlag)
-//			{
-//				TurnNoTailGoFlag = 1;
-//
-//			}
-//		}
-//		TurnNoTail();
-//		break;
-//	case WaitingStop:		//�ȴ�ʶ��ͣ����
-//		gpio_init(A7, GPO, 0);
-//		TurnNoTailFlag = 0;
-//		if (Img_StopLineFlag && !g_SlaveOutFlag)		//ʶ��ͣ���� �жϴӳ�״̬
-//		{
-//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
-//				g_StateMaster = StateGo;
-//			else
-//			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
-//				speed_type = 0;
-//			}
-//		}
-//		else if (Img_StopLineFlag && g_SlaveOutFlag)
-//			g_StateMaster = StateGo;
-//		break;
-//	case StateGo:
-//		acc_speed += curSpeed;
-//		if (acc_speed > sum_speed * 1.5)
-//		{
-//			acc_speed = 0;
-//			g_StateMaster = CarFinish;
-//		}
-//		break;
-//	case StateStop:
-//		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//�ӳ����� ���ߴӳ�����
-//		{
-//			speed_type = 1;
-//			acc_speed += curSpeed;
-//			if (acc_speed > sum_speed * 1.5)
-//			{
-//				g_StateMaster = CarFinish;
-//				acc_speed = 0;
-//			}
-//		}
-//		break;
-//	case CarFinish:
-//		speed_type = 0;
-//		break;
-//	default:
-//		break;
-//	}
-//}
-
 //enum MeetingFlag {
 //	WaitingStop = 15,
 //	IsStopLine,
@@ -747,11 +515,11 @@ void MeetingTwo2(void)
 //	StateStop,
 //	CarFinish
 //};
-//int StartDistance = 500; //ʶ���·���Ӿ����
-//int StartSum = 0;               //���������
+//int StartDistance = 500; //识别断路后延距距离
+//int StartSum = 0;               //距离积累量
 //
 ////================================================================//
-////  @brief  :		���ֳ��ᳵ����
+////  @brief  :		四轮车会车函数
 ////  @param  :		void
 ////  @return :		void
 ////  @note   :		void	
@@ -765,11 +533,11 @@ void MeetingTwo2(void)
 //	static float yaw_init_2 = 0;
 //	static int get_flag = 0;
 //	static int count = 0;
-//#if 1 == MEETING_MODE	//��ͷ
+//#if 1 == MEETING_MODE	//掉头
 //	switch (g_StartMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //�����·�� 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 //		{
 //			acc_speed += curSpeed;
 //			if (acc_speed > StartDistance)
@@ -779,9 +547,9 @@ void MeetingTwo2(void)
 //				Img_BrokenFlag = 0;
 //				BlockFlag = 0;
 //				acc_speed = 0;
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
-//				speed_type = 3; //�ᳵ�ٶ�
+//				speed_type = 3; //会车速度
 //				spdExp3 = MEETING_SPEED;
 //				yaw_init = _ANGLE;
 //				yaw_init_1 = yaw_init + 90;
@@ -797,7 +565,7 @@ void MeetingTwo2(void)
 //			if (_ANGLE > yaw_init_1)
 //			{
 //				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 3;
 //				spdExp3 = 0;
 //				acc_speed += curSpeed;
@@ -808,19 +576,19 @@ void MeetingTwo2(void)
 //			if (_ANGLE > yaw_init_1)
 //			{
 //				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 3;
 //				spdExp3 = 0;
 //				acc_speed += curSpeed;
 //			}
 //		}
 //		break;
-//	case 3:	//��ʱһ��ʱ�� �ȴ�����ͣ��
+//	case 3:	//延时一段时间 等待车辆停稳
 //		count++;
 //		if (count > 100)
 //		{
 //			count = 0;
-//			//�ı�״̬ ������һ״̬��־
+//			//改变状态 调整下一状态标志
 //			g_StateMaster = 4;
 //			spdExp = -MEETING_SPEED;
 //			acc_speed += curSpeed;
@@ -837,15 +605,15 @@ void MeetingTwo2(void)
 //			|| _ANGLE <= 0 && yaw_init_2 < 0 && _ANGLE > yaw_init_2)
 //		{
 //			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//			//�ı�״̬ ������һ״̬��־
+//			//改变状态 调整下一状态标志
 //			g_StateMaster = 5;
 //			spdExp3 = 0;
 //		}
 //		break;
-//	case 5:		//�ȴ���һ����
-//		if (g_StateMaster > 0)	//�ӳ�����
+//	case 5:		//等待另一辆车
+//		if (g_StateMaster > 0)	//从车到达
 //		{
-//			//�ı�״̬ ������һ״̬��־
+//			//改变状态 调整下一状态标志
 //			g_StateMaster = 6;
 //			spdExp3 = MEETING_SPEED;
 //			g_handle_open = 1;
@@ -854,20 +622,20 @@ void MeetingTwo2(void)
 //		}
 //		break;
 //	case 6:
-//		if (!Img_BrokenFlag)			//����· ������һ״̬
+//		if (!Img_BrokenFlag)			//出断路 进入下一状态
 //		{
 //			g_StateMaster = WaitingStop;
 //			speed_type = 1;
 //		}
 //		break;
-//	case WaitingStop:		//�ȴ�ʶ��ͣ����
-//		if (Img_StopLineFlag)		//ʶ��ͣ���� �жϴӳ�״̬
+//	case WaitingStop:		//等待识别停车线
+//		if (Img_StopLineFlag)		//识别停车线 判断从车状态
 //		{
-//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 //				g_StateMaster = StateGo;
 //			else
 //			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
+//				g_StateMaster = StateStop; //停留等待
 //				speed_type = 1;
 //				spdExp1 = 0;
 //			}
@@ -882,7 +650,7 @@ void MeetingTwo2(void)
 //		}
 //		break;
 //	case StateStop:
-//		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//�ӳ�����
+//		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//从车到达
 //		{
 //			spdExp1 = 15;
 //			acc_speed += curSpeed;
@@ -901,11 +669,11 @@ void MeetingTwo2(void)
 //		break;
 //	}
 //
-//#elif 2 == MEETING_MODE		//����ͷ
+//#elif 2 == MEETING_MODE		//不掉头
 //	switch (g_StateMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //�����·�� 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 //		{
 //			acc_speed += curSpeed;
 //			if (acc_speed > StartDistance)
@@ -913,9 +681,9 @@ void MeetingTwo2(void)
 //				g_GetMeetingMaster = 1;
 //				BlockFlag = 0;
 //				acc_speed = 0;
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
-//				speed_type = 3; //�ᳵ�ٶ�
+//				speed_type = 3; //会车速度
 //				spdExp3 = MEETING_SPEED;
 //				yaw_init = _ANGLE;
 //				yaw_init_1 = yaw_init + 90;
@@ -931,7 +699,7 @@ void MeetingTwo2(void)
 //			if (_ANGLE > yaw_init_1)
 //			{
 //				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 3;
 //				spdExp3 = 0;
 //				acc_speed += curSpeed;
@@ -942,7 +710,7 @@ void MeetingTwo2(void)
 //			if (_ANGLE > yaw_init_1)
 //			{
 //				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 3;
 //				spdExp3 = 0;
 //				acc_speed += curSpeed;
@@ -950,10 +718,10 @@ void MeetingTwo2(void)
 //		}
 //		break;
 //	case 3:
-//		//�ȴ������ź�
-//		if (g_StateSlave > 1)		//�ӳ��ѹ���·
+//		//等待接收信号
+//		if (g_StateSlave > 1)		//从车已过断路
 //		{
-//			//�ı�״̬ ������һ״̬��־
+//			//改变状态 调整下一状态标志
 //			g_StateMaster = 4;
 //			spdExp3 = 0 - MEETING_SPEED;
 //			yaw_init = _ANGLE;
@@ -962,14 +730,14 @@ void MeetingTwo2(void)
 //		}
 //		break;
 //	case 4:
-//		//����
+//		//倒车
 //		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
 //		if (_ANGLE >= 0 && yaw_init_1 > 0)
 //		{
 //			if (_ANGLE < yaw_init_1)
 //			{
 //				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 5;
 //				spdExp3 = MEETING_SPEED;
 //			}
@@ -979,45 +747,45 @@ void MeetingTwo2(void)
 //			if (_ANGLE < yaw_init_1)
 //			{
 //				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 5;
 //				spdExp3 = MEETING_SPEED;
 //			}
 //		}
 //		break;
 //	case 5:
-//		//�ı�״̬ ������һ״̬��־
+//		//改变状态 调整下一状态标志
 //		g_StateMaster = 6;
 //		Img_BrokenFlag = 2;
 //		g_handle_open = 1;
 //		g_GetMeetingMaster = 0;
 //		break;
 //	case 6:
-//		if (!Img_BrokenFlag)			//����· ������һ״̬
+//		if (!Img_BrokenFlag)			//出断路 进入下一状态
 //		{
 //			g_StateMaster = WaitingStop;
 //			speed_type = 1;
 //		}
 //		break;
-//	case WaitingStop://15		//�ȴ�ʶ��ͣ����
-//		if (Img_StopLineFlag)		//ʶ��ͣ���� �жϴӳ�״̬
+//	case WaitingStop://15		//等待识别停车线
+//		if (Img_StopLineFlag)		//识别停车线 判断从车状态
 //		{
-//			if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 //				g_StateMaster = StateGo;
 //			else
 //			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
+//				g_StateMaster = StateStop; //停留等待
 //				speed_type = 1;
 //				spdExp1 = 0;
 //			}
 //		}
 //		break;
 //		//case IsStopLine:
-//		//	if (g_StateSlave == StateStop) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//		//	if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 //		//		g_StateMaster = StateGo;
 //		//	else
 //		//	{
-//		//		g_StateMaster = StateStop; //ͣ���ȴ�
+//		//		g_StateMaster = StateStop; //停留等待
 //		//		speed_type = 1;
 //		//		spdExp1 = 0;R44RRRRRRRR5RRRR4R
 //		//	}
@@ -1031,7 +799,7 @@ void MeetingTwo2(void)
 //		}
 //		break;
 //	case StateStop://18
-//		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//�ӳ�����
+//		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//从车到达
 //		{
 //			spdExp1 = 15;
 //			acc_speed += curSpeed;
@@ -1053,7 +821,7 @@ void MeetingTwo2(void)
 //}
 //
 ////================================================================//
-////  @brief  :		���ֳ��ᳵ����
+////  @brief  :		二轮车会车函数
 ////  @param  :		void
 ////  @return :		void
 ////  @note   :		void	
@@ -1067,11 +835,11 @@ void MeetingTwo2(void)
 //	static float yaw_init_2 = 0;
 //	static int get_flag = 0;
 //	static int count = 0;
-//#if 1 == MEETING_MODE//��ͷ
+//#if 1 == MEETING_MODE//掉头
 //	switch (g_StateMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //�����·�� 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 //		{
 //			BlockFlag = 0;//clear block 
 //                        acc_speed+=curSpeed;
@@ -1079,46 +847,46 @@ void MeetingTwo2(void)
 //			{
 //				g_GetMeetingMaster = 1;
 //                                acc_speed = 0;
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
-//				g_drive_flag = 0;//ͣ��
+//				g_drive_flag = 0;//停车
 //				Img_BrokenFlag = 0;
 //
 //			}
 //		}
 //		break;
-//	case 1://�ȴ��ӳ������־
+//	case 1://等待从车到达标志
 //		if (g_StateSlave > 0)
 //		{
 //			g_StartMaster = 2;
 //		}
 //		break;
 //	case 2:
-//		//ת��
-//		//�˴�����ת�亯�� ��ֱ������ Ȼ������ת��
+//		//转弯
+//		//此处添加转弯函数 车直立起来 然后慢慢转弯
 //                MeetingCtrlFun_1();
-//		//������־λ�仯
+//		//结束标志位变化
 ////		g_StateMaster = 3;
 ////		Img_BrokenFlag = 2;
 //
 //		break;
 //	case 3:
-//		//����
+//		//启动
 //		if (0 == Img_BrokenFlag)
 //		{
-//			//����·�����ᳵ״̬���ͱ�־λ
-//			g_StateMaster = WaitingStop;		//�����ᳵ
+//			//出断路结束会车状态发送标志位
+//			g_StateMaster = WaitingStop;		//结束会车
 //			g_GetMeetingMaster = 0;
 //		}
 //		break;
-//	case WaitingStop:		//����· �ȴ�ʶ��ͣ����
-//		if (Img_StopLineFlag)	//ʶ��ͣ����
+//	case WaitingStop:		//出断路 等待识别停车线
+//		if (Img_StopLineFlag)	//识别到停车线
 //		{
-//			if (g_StateSlave == IsStopLine) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//			if (g_StateSlave == IsStopLine) //从车已到 继续跑一段距离停下
 //				g_StateMaster = StateGo;
 //			else
 //			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
+//				g_StateMaster = StateStop; //停留等待
 //				g_drive_flag = 0;
 //			}
 //		}
@@ -1132,7 +900,7 @@ void MeetingTwo2(void)
 //		}
 //		break;
 //	case StateStop:
-//		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//�ӳ�����
+//		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//从车到达
 //		{
 //			g_drive_flag = 1;
 //			acc_speed += curSpeed;
@@ -1149,11 +917,11 @@ void MeetingTwo2(void)
 //	default:
 //		break;
 //	}
-//#elif 2 == MEETING_MODE		//����ͷ
+//#elif 2 == MEETING_MODE		//不掉头
 //	switch (g_StateMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //�����·�� 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
 //		{
 //			BlockFlag = 0;//clear block 
 //                        acc_speed+=curSpeed;
@@ -1161,17 +929,17 @@ void MeetingTwo2(void)
 //			{
 //                          acc_speed = 0;
 //				g_GetMeetingMaster = 1;
-//				//�ı�״̬ ������һ״̬��־
+//				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
 //			}
 //		}
 //		break;
-//	case 1:		//����ܶ�·
+//	case 1:		//电磁跑断路
 ////                if(Img_BrokenFlag == 2)
 ////                {
 //////                  MeetingCtrlFun_2();
 ////                } 
-//                if(g_StateSlave < 3 && g_SlaveOutFlag != 1)//�ӳ�δ���ﲢ��δ���磬�����ȴ�
+//                if(g_StateSlave < 3 && g_SlaveOutFlag != 1)//从车未到达并且未出界，主车等待
 //                {
 ////                  g_drive_flag = 0;
 //                  Ground();
@@ -1191,8 +959,8 @@ void MeetingTwo2(void)
 //                }
 //		if (0 == Img_BrokenFlag)
 //		{
-//			//����·�����ᳵ״̬���ͱ�־λ
-//			g_StateMaster = WaitingStop;		//�����ᳵ
+//			//出断路结束会车状态发送标志位
+//			g_StateMaster = WaitingStop;		//结束会车
 //			g_GetMeetingMaster = 0;
 //                        CircleFlag = 0;
 //                        CircleState = 0;
@@ -1201,14 +969,14 @@ void MeetingTwo2(void)
 //                        acc_speed = 0;
 //		}
 //		break;
-//	case WaitingStop:		//����· �ȴ�ʶ��ͣ����
-//		if (Img_StopLineFlag)	//ʶ��ͣ����
+//	case WaitingStop:		//出断路 等待识别停车线
+//		if (Img_StopLineFlag)	//识别到停车线
 //		{
-//			if (g_StateSlave == IsStopLine || g_SlaveOutFlag) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//			if (g_StateSlave == IsStopLine || g_SlaveOutFlag) //从车已到 继续跑一段距离停下
 //				g_StateMaster = StateGo;
 //			else
 //			{
-//				g_StateMaster = StateStop; //ͣ���ȴ�
+//				g_StateMaster = StateStop; //停留等待
 //				
 //			}
 //		}
@@ -1216,10 +984,10 @@ void MeetingTwo2(void)
 ////                  Img_BrokenFlag = 0;
 //		break;
 //		//case IsStopLine:
-//		//	if (g_StateSlave == IsStopLine) //�ӳ��ѵ� ������һ�ξ���ͣ��
+//		//	if (g_StateSlave == IsStopLine) //从车已到 继续跑一段距离停下
 //		//		g_StateMaster = StateGo;
 //		//	else
-//		//		g_StateMaster = StateStop; //ͣ���ȴ�
+//		//		g_StateMaster = StateStop; //停留等待
 //		//	break;
 //	case StateGo:
 //		acc_speed += curSpeed;
@@ -1232,7 +1000,7 @@ void MeetingTwo2(void)
 //                
 //	case StateStop:
 //                Ground();
-//		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//�ӳ�����
+//		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//从车到达
 //		{
 //			g_drive_flag = 1;
 //			acc_speed += curSpeed;
@@ -1242,7 +1010,7 @@ void MeetingTwo2(void)
 //				acc_speed = 0;
 //			}
 //		}
-//                if(g_SlaveOutFlag == 1)//�ӳ����磬����������
+//                if(g_SlaveOutFlag == 1)//从车出界，主车继续动
 //                {
 //                  g_drive_flag = 1;
 //			acc_speed += curSpeed;
@@ -1264,20 +1032,20 @@ void MeetingTwo2(void)
 //}
 //
 ////================================================================//
-////  @brief  :		״̬ת��ƽ�����
-////  @param  :		dst Ŀ����� srcԴ��� dutyĿ�����ռ�ձ�
-////  @return :		�����
-////  @note   :		Դ�����Ŀ���������
+////  @brief  :		状态转化平滑输出
+////  @param  :		dst 目标输出 src源输出 duty目标输出占空比
+////  @return :		输出量
+////  @note   :		源输出向目标输出过渡
 ////================================================================//
 //float LinearOut(float dst, float src, float duty)
 //{
 //	return (dst * duty + src * (1 - duty));
 //}
 //================================================================//
-//  @brief  :		�ᳵ�����Ƴ������������֣�
-//  @param  :		dst Ŀ����� srcԴ��� dutyĿ�����ռ�ձ�
-//  @return :		�����
-//  @note   :		Դ�����Ŀ���������
+//  @brief  :		会车区控制车辆函数（两轮）
+//  @param  :		dst 目标输出 src源输出 duty目标输出占空比
+//  @return :		输出量
+//  @note   :		源输出向目标输出过渡
 //================================================================//
 //void MeetingCtrlFun_1(void) 
 //{
@@ -1356,12 +1124,12 @@ void MeetingTwo2(void)
 
 
 //================================================================//
-//  @brief  :		��лᳵ�㷨,����ͷ�����֣�
+//  @brief  :		电感会车算法,不掉头（两轮）
 //  @param  :		
 //  @return :		
 //  @note   :		void
 //================================================================//
-//void MeetingCtrlFun_2()//����
+//void MeetingCtrlFun_2()//现用
 //{
 //  static int count = 0;
 //
@@ -1369,7 +1137,7 @@ void MeetingTwo2(void)
 //  {
 //    count = 0;
 //
-////�ı䷽�򻷲�ֵ
+////改变方向环差值
 //    g_errorD = (ind_right / ave_right - ind_left / ave_left) / (ind_right / ave_right + ind_left / ave_left) /0.01;
 //    g_error_before = g_errorD;
 //
@@ -1385,34 +1153,34 @@ void MeetingTwo2(void)
 //  }
 //  else
 //    count++;
-//  //�÷��򻷺�����������ƽ�����
+//  //用方向环函数继续进行平滑输出
 //}
-////�ᳵ���������ƺ���
-////����pit�ж���
+////会车区车辆控制函数
+////放在pit中断里
 //void MeetingCarControl(void)
 //{
-//	//�ᳵ����״̬��δ����ᳵ���������뺯�����ƺ���
+//	//会车结束状态，未进入会车区，不进入函数控制函数
 //	if (g_MeetingCtrlEndFlag || !g_GetMeetingMaster) return;
 //
-//	//�ᳵ���ƺ���
+//	//会车控制函数
 //  //  MeetingCtrlFun();
 //	MeetingCtrlFun_1();
 //
-//	//���ƽ���������������־λ
+//	//控制结束，给出结束标志位
 //	//g_MeetingCtrlEndFlag = 1;
 //}
-////�ᳵ����ȫ�ֱ�������
-////����main��pit�жϺ���
+////会车结束全局变量控制
+////放在main或pit中断函数
 //void ChangeEndMeetingFlag(void)
 //{
 //#if 1 == MEETING_MODE
-//	if (g_MeetingCtrlEndFlag)              //������ɻᳵ��׼���뿪�ᳵ��
+//	if (g_MeetingCtrlEndFlag)              //主车完成会车，准备离开会车区
 //	{
-//		if (!g_GetMeetingSlave)         //�ӳ�δ�����·��
+//		if (!g_GetMeetingSlave)         //从车未到达断路区
 //		{
-//			speed_type = 4; //ͣ��
+//			speed_type = 4; //停车
 //		}
-//		else                                //�ӳ������·������������
+//		else                                //从车到达断路区，主车启动
 //		{
 //			g_GetMeetingMaster = 0;
 //			g_GetMeetingSlave = 0;
@@ -1431,7 +1199,7 @@ void MeetingTwo2(void)
 
 
 
-//void MeetingCtrlFun(void) // �ᳵ�����Ƴ�������1
+//void MeetingCtrlFun(void) // 会车区控制车辆函数1
 //{
 //	static int state = 0;
 //	static int acc_speed = 0;
@@ -1459,9 +1227,9 @@ void MeetingTwo2(void)
 //		ad_error_2 = ad_error_1;
 //		if (20 == ind_left && 20 == ind_right)
 //			SteerDuty = InitSteer;
-//		else if (20 == ind_left && 20 != ind_right)              //�Ҵ���
+//		else if (20 == ind_left && 20 != ind_right)              //右打死
 //			SteerDuty = InitSteer - 120;
-//		else if (20 == ind_right && 20 != ind_left)         //�����
+//		else if (20 == ind_right && 20 != ind_left)         //左打死
 //			SteerDuty = InitSteer + 120;
 //		else;
 //		SteerDuty = MAX(SteerDuty, InitSteer - 120);
@@ -1479,7 +1247,7 @@ void MeetingTwo2(void)
 //	}
 //}
 //
-//void MeetingCtrlFun_1(void) // �ᳵ�����Ƴ�������2
+//void MeetingCtrlFun_1(void) // 会车区控制车辆函数2
 //{
 //	static int state = 0;
 //	static int acc_speed = 0;
