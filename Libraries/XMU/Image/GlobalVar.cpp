@@ -308,6 +308,7 @@ int obj_angle_2 = -180;
 int const_error_1 = -20;
 int const_error_2 = 40;
 int max_duty = 8000;
+int OutMeetingDistance = 7000;
 /*====================================路障=====================================*/
 int sum = 0;
 int sum_dist = 4500;
@@ -329,3 +330,8 @@ uint8 phototube=0;
 int BrokenTurnTailPWM=2900;
 int BrokenTurnTailDistance=300;
 int Rampangle=12;
+
+/*************====================开机加速相关变量=======================*************/
+int BootRacerFlag=0;
+int BootRacerDistance=5000;
+int BootRacerAngle=-7;

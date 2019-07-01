@@ -4,112 +4,106 @@
 #include "PID.h"
 //------------电机管脚-------------------------------------------------
 
-
-
-
-
-
-
-
-
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      转换模式函数
-//  @param      		
-//  @param    		
-//  @param     		 	
-//  @return     			
+//  @param
+//  @param
+//  @param
+//  @return
 //  @since      v1.0
 //  Sample usage:               flash_read(20,0,uint32);//读取20号扇区偏移0数据类型为uint32
 //-------------------------------------------------------------------------------------------------------------------
 void changemode()
 {
 	g_mode++;
-	if (g_mode > 4) g_mode = 1;
+	if (g_mode > 4)
+		g_mode = 1;
 }
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      模式函数
-//  @param      mode  模式		
-//  @param    		
-//  @param     		 	
-//  @return     			
+//  @param      mode  模式
+//  @param
+//  @param
+//  @return
 //  @since      v1.0
 //  Sample usage:               flash_read(20,0,uint32);//读取20号扇区偏移0数据类型为uint32
 //-------------------------------------------------------------------------------------------------------------------
 void motormode(float mode)
 {
 
-//	if (Img_RampFlag != 1)
-        if(1==g_mode)
+	//	if (Img_RampFlag != 1)
+	if (1 == g_mode)
 	{
-		g_fleft =g_AngleControlOut;
+		g_fleft = g_AngleControlOut;
 		g_fright = g_AngleControlOut;
-//                  g_fleft =g_AngleControlOut - g_fDirectionControlOut - g_fSpeedControlOut;
-//		g_fright =g_AngleControlOut +g_fDirectionControlOut - g_fSpeedControlOut;
+		//                  g_fleft =g_AngleControlOut - g_fDirectionControlOut - g_fSpeedControlOut;
+		//		g_fright =g_AngleControlOut +g_fDirectionControlOut - g_fSpeedControlOut;
 	}
-        if(2==g_mode)
-        {
-                g_fleft =g_AngleControlOut-g_fDirectionControlOut;
-		g_fright=g_AngleControlOut+g_fDirectionControlOut;
-        }
-        if(3==g_mode)
-        {
-                g_fleft =g_AngleControlOut - g_fDirectionControlOut - g_fSpeedControlOut;
-		g_fright =g_AngleControlOut +g_fDirectionControlOut - g_fSpeedControlOut;
-        }
-	if (4 == mode)//手调
+	if (2 == g_mode)
+	{
+		g_fleft = g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = g_AngleControlOut + g_fDirectionControlOut;
+	}
+	if (3 == g_mode)
+	{
+		g_fleft = g_AngleControlOut - g_fDirectionControlOut - g_fSpeedControlOut;
+		g_fright = g_AngleControlOut + g_fDirectionControlOut - g_fSpeedControlOut;
+	}
+	if (4 == mode) //手调
 	{
 		g_fleft = g_duty_left;
 		g_fright = g_duty_right;
 	}
-        if (5 == mode)//拍地模式
+	if (5 == mode) //拍地模式
 	{
 		g_fleft = g_AngleControlOut;
 		g_fright = g_AngleControlOut;
 	}
-        if(6 == g_mode)
-        {
-          g_fleft =g_AngleControlOut - g_fDirectionControlOut;
-          g_fright =g_AngleControlOut + g_fDirectionControlOut;
-        }
-                if(7 == g_mode)   //坡道英雄
-        {
-          g_fleft =g_AngleControlOut- g_fDirectionControlOut;
-          g_fright =g_AngleControlOut+g_fDirectionControlOut;
-        }
-		                if(8 == g_mode)    //开机我为王
-        {
-          g_fleft =g_AngleControlOut- g_fDirectionControlOut;
-          g_fright =g_AngleControlOut+g_fDirectionControlOut;
-        }
+	if (6 == g_mode)
+	{
+		g_fleft = g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = g_AngleControlOut + g_fDirectionControlOut;
+	}
+	if (7 == g_mode) //坡道英雄
+	{
+		g_fleft = g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = g_AngleControlOut + g_fDirectionControlOut;
+	}
+	if (8 == g_mode) //开机我为王
+	{
+		g_fleft = 1.5 * g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = 1.5 * g_AngleControlOut + g_fDirectionControlOut;
+	}
 }
 void BootRacer()
-{	
-	static int acc_speed=0;
-	static int initangleset=0;
-	if(BootRacerFlag)
+{
+	static int acc_speed = 0;
+	static int initangleset = 0;
+	if (BootRacerFlag)
 	{
-		if(acc_speed<BootRacer)
+		if (acc_speed < BootRacerDistance)
 		{
-		g_mode=8;
-		g_angle_set=BootRacerAngle;
+			g_mode = 8;
+			g_angle_set = BootRacerAngle;
 		}
-		else 
+		else
 		{
-			g_mode=3;
-			g_angle_set=initangleset;
+			g_mode = 3;
+			g_angle_set = initangleset;
+                        BootRacerFlag=0;
 		}
 	}
 	else
 	{
-		initangleset=g_angle_set;
+		initangleset = g_angle_set;
 	}
 }
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      占空比输出及限幅
-//  @param      g_duty_PWMleft 	 输入左电机占空比	
-//  @param      g_duty_PWMright	 输入右电机占空比		
-//  @param     	 	
-//  @return     			
+//  @param      g_duty_PWMleft 	 输入左电机占空比
+//  @param      g_duty_PWMright	 输入右电机占空比
+//  @param
+//  @return
 //  @since      v1.0
 //  Sample usage:               flash_read(20,0,uint32);//读取20号扇区偏移0数据类型为uint32
 //-------------------------------------------------------------------------------------------------------------------
@@ -161,13 +155,12 @@ void DrivePWM(float g_duty_PWMleft, float g_duty_PWMright)
 	}
 }
 
-
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      开关电机标志函数
-//  @param      		
-//  @param      		
-//  @param     	 	
-//  @return     			
+//  @param
+//  @param
+//  @param
+//  @return
 //  @since      v1.0
 //  Sample usage:               flash_read(20,0,uint32);//读取20号扇区偏移0数据类型为uint32
 //-------------------------------------------------------------------------------------------------------------------
@@ -192,13 +185,12 @@ void on_off_flag()
 	else if (0 == g_drive_flag)
 	{
 		g_drive_flag = 1;
-
 	}
 }
 //================================================================//
 //  @brief  :	电磁停车
-//  @param  :		
-//  @return :		
+//  @param  :
+//  @return :
 //  @note   :		void
 //================================================================//
 void StopCar()
@@ -206,14 +198,13 @@ void StopCar()
 	if (ind_left_line < 100 && ind_right_line < 100 && ind_mid < 100)
 	{
 		g_drive_flag = 0;
-                g_MasterOutFlag = 1;
-              
+		g_MasterOutFlag = 1;
 	}
 }
 //================================================================//
 //  @brief  :	动态前瞻
-//  @param  :		
-//  @return :		
+//  @param  :
+//  @return :
 //  @note   :      void
 //================================================================//
 //void DynamicProspect()
@@ -236,13 +227,13 @@ void StopCar()
 //}
 //================================================================//
 //  @brief  :	拍地
-//  @param  :		
-//  @return :		
+//  @param  :
+//  @return :
 //  @note   :      void
 //================================================================//
 //void Ground()
 //{
-//  
+//
 //         static float angle_init = 0;
 //         static float flag = 0;
 //         static float time = 0;
@@ -252,7 +243,7 @@ void StopCar()
 //           {
 //             angle_init = g_angle_set;
 //           }
-//          
+//
 //           g_mode = 5;
 //           g_angle_set = 56;
 //           time++;
@@ -261,7 +252,7 @@ void StopCar()
 //         {
 //           flag = 0;
 //         }
-//        
+//
 //           if(time >= 50)
 //           {
 //             flag = 1;
@@ -271,50 +262,49 @@ void StopCar()
 //             g_angle_set = angle_init;
 //             angle_init = 0;
 //           }
-//         
+//
 //}
 //================================================================//
 //  @brief  :	开机加速
-//  @param  :		
-//  @return :		
+//  @param  :
+//  @return :
 //  @note   :      void
 //================================================================//
 void StartSpeed()
 {
-  static int flag = 0;
-  static float angle_init = 0;
-  static int distance = 0;
-  static int flag_2 = 0;
-  if(flag == 0)
-  {
-    angle_init = g_angle_set;
-      flag = 1;
-  }
-  if(g_drive_flag == 1 && ABS(distance) < 10000 && flag == 1)
-  {
-   
-    g_angle_set = angle_init ;
-    distance += curSpeed;
-    flag_2 = 1;
-  }
-  else if(!g_drive_flag)
-  {
-    distance = 0;
-  }
-  if((ABS(distance) >= 10000 || g_drive_flag == 0) && flag_2 == 1 && flag == 1)
-  {
-    flag = 0;
-    flag_2 = 0;
-    g_angle_set = angle_init;
-  }
-  
+	static int flag = 0;
+	static float angle_init = 0;
+	static int distance = 0;
+	static int flag_2 = 0;
+	if (flag == 0)
+	{
+		angle_init = g_angle_set;
+		flag = 1;
+	}
+	if (g_drive_flag == 1 && ABS(distance) < 10000 && flag == 1)
+	{
+
+		g_angle_set = angle_init;
+		distance += curSpeed;
+		flag_2 = 1;
+	}
+	else if (!g_drive_flag)
+	{
+		distance = 0;
+	}
+	if ((ABS(distance) >= 10000 || g_drive_flag == 0) && flag_2 == 1 && flag == 1)
+	{
+		flag = 0;
+		flag_2 = 0;
+		g_angle_set = angle_init;
+	}
 }
 ////-------------------------------------------------------------------------------------------------------------------
 ////  @brief      停车函数
-////  @param      	
-////  @param      	
-////  @param     	 	
-////  @return     
+////  @param
+////  @param
+////  @param
+////  @return
 ////---------------------------------------------------------------------------------------------------------------------
 //void StopCar(void)
 //{

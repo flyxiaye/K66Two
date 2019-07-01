@@ -382,6 +382,7 @@ extern int obj_angle_2;
 extern int const_error_1;
 extern int const_error_2;
 extern int max_duty;
+extern int OutMeetingDistance;
 /*====================================路障=====================================*/
 extern int sum;
 extern int sum_dist;
@@ -517,4 +518,11 @@ extern int circlelandsymbol;
 extern int BrokenTurnTailPWM;
 extern int BrokenTurnTailDistance;
 extern int Rampangle;
+/*************====================开机加速相关变量=======================*************/
+extern int BootRacerFlag;
+extern int BootRacerDistance;
+extern int BootRacerAngle;
+
+
+
 #endif

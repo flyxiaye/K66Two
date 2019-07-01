@@ -463,6 +463,7 @@ void Key_Function(void)
 			FlagChange(&g_drive_flag);//开电机
 			if (g_drive_flag)
 			{
+                          BootRacerFlag=1;
 //				g_StateMaster = 2;
 				g_MasterOutFlag = 0;;
 				CircleFlag = 0;
@@ -821,8 +822,14 @@ void Main_Show(void)
 			OLED_Write_Int(4, 8, Img_BrokenFlag);            //断路标志
 			OLED_Write_Int(6, 8, Img_BlockFlag);			//路障标志
 			OLED_Write_Int(2, 96, g_StateMaster);         //会车状态
-			OLED_Write_Int(4, 96, g_StateSlave);            \
+			OLED_Write_Int(4, 96, g_StateSlave);            
 			OLED_Write_Int(6, 96, CircleState);           //环岛状态标志
+			LCD_DispString(2, 40, "Ramp");
+			LCD_DispString(4, 40, "Broken");
+			LCD_DispString(6, 40, "Block");
+//			LCD_DispString(2, 102, "Master");
+//			LCD_DispString(4, 102, "Slave");
+//			LCD_DispString(6, 102, "Circle");
 
 			break;
 		case 2:
