@@ -156,13 +156,14 @@ void TurnTail()
         }
     }
 }
+}
 //============================================================
 //void： 会车不掉头函数
 //
 //============================================================
 void TurnNoTail()
 {
-   static float lastangle,acc_Speed = 0,out_Speed=0; lastspeed, first, initangleset,number=0, initmode;
+   static float lastangle,acc_Speed = 0,out_Speed=0, lastspeed, first, initangleset,number=0, initmode;
     static int TurnNoTail = 0, count = 0, initcameraopen, initindopen;
 //   if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong 
 //    {           TurnTailFlag=1; 
@@ -265,7 +266,7 @@ void TurnNoTail()
               DirectionControlOutput();
 	      SpeedControl();             
               SpeedControlOutput();
-            else if(!Img_BrokenFlag)
+            if(!Img_BrokenFlag)
             {
               out_Speed+=curSpeed;
               if(out_Speed>1000)
@@ -278,7 +279,7 @@ void TurnNoTail()
               gpio_init(A7, GPO, 0);
               }
               }
-            else if(acc_speed>10086)
+            else if(acc_Speed>10086)
             {
               TurnNoTail=0;
               TurnNoTailFlag=0;
