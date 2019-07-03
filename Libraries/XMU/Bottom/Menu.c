@@ -563,7 +563,7 @@ void Key_Function(void)
 //			FlagChange(&g_drive_flag);//¿ªµç»ú
 //			if (g_drive_flag)
 //			{
-				g_StateMaster = 0;
+				g_StateMaster = 2;
                                 g_car_lanuch=1;
 				g_MasterOutFlag = 0;;
 				CircleFlag = 0;

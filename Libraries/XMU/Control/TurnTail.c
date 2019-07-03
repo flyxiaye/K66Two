@@ -35,6 +35,7 @@ void TurnTail()
       acc_Speed += curSpeed;
       gpio_init(D2, GPO, 0);
       AD_DirectionControl();
+      DirectionControlOutput();
       if (acc_Speed > 1000)
       {
 
@@ -152,7 +153,7 @@ void TurnTail()
         Img_RampFlag = 0;
         g_handle_open = 1;
       }
-      else if (acc_Speed>=OutMeetingDistance)
+       if (acc_Speed>=OutMeetingDistance)
       { 
                g_GetMeetingFlag=0;
         TurnTailGoFlag = 0;
@@ -170,7 +171,7 @@ void TurnTail()
       else if(!Img_BrokenFlag)
       {
         Broken_Speed+=curSpeed;
-        if(Broken_Speed>1500)
+        if(Broken_Speed>1000)
         {
                  g_GetMeetingFlag=0;
         TurnTailGoFlag = 0;
@@ -232,6 +233,7 @@ void TurnNoTail()
       acc_Speed += curSpeed;
 
       AD_DirectionControl();
+      DirectionControlOutput();
       if (acc_Speed > 300)
       {
         gpio_init(D2, GPO, 0);
@@ -300,7 +302,7 @@ void TurnNoTail()
         SpeedControl();
         SpeedControlOutput();
         }
-        else if(acc_Speed>OutMeetingDistance)
+         if(acc_Speed>OutMeetingDistance)
         {
         TurnNoTailGoFlag = 1;
       g_GetMeetingFlag=0;
@@ -310,12 +312,12 @@ void TurnNoTail()
         Img_BlockFlag = 0;
         Img_RampFlag = 0;
         }
-         if(!Img_BrokenFlag)
+        else if(!Img_BrokenFlag)
         {
           Broken_Speed+=curSpeed;
           if(Broken_Speed>1500)
           {
-        TurnNoTailGoFlag = 1;
+        TurnNoTailGoFlag = 0;
       g_GetMeetingFlag=0;
         TurnNoTail = 5;
         TurnNoTailFlag = 0;
@@ -326,7 +328,7 @@ void TurnNoTail()
         }
         if(count>5000)
         {
-        TurnNoTailGoFlag = 1;
+        TurnNoTailGoFlag = 0;
       g_GetMeetingFlag=0;
         TurnNoTail = 5;
         TurnNoTailFlag = 0;

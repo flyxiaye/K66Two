@@ -257,9 +257,11 @@ void ChangeState(int Order)
 			}
 			break;
 		case 7:			//—”æ‡«Â±Í÷æ
-			if (CL == CircleFlag && !LeftLost && Dist_ClearSevenFlag
-				|| CR == CircleFlag && !RightLost && Dist_ClearSevenFlag)
-				ChangeFlag = 1;
+//			if (CL == CircleFlag && !LeftLost && Dist_ClearSevenFlag
+//				|| CR == CircleFlag && !RightLost && Dist_ClearSevenFlag)
+//				ChangeFlag = 1;
+                        if(Dist_ClearSevenFlag)
+                          ChangeFlag = 1;
 			break;
 		default:
 			break;

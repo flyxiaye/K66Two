@@ -11,7 +11,7 @@
 //================================================================//
 void Dist_ClearIslandSeven(void)
 {
-	static int sum_dist = ONE_METER;
+	static int sum_dist = 1.3 * ONE_METER;
 	static int acc_dist = 0;
 	if (7 == CircleState)
 	{

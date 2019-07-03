@@ -185,7 +185,7 @@ void VarInit(void);
 extern int pro;
 
 //==========================摄像头参数=================================//
-#define ONE_METER 5000
+#define ONE_METER 5800
 extern int exp_time;						//曝光时间
 extern int HighThreshold;						//canny高阈值
 extern int LowThreshold;						//canny低阈值

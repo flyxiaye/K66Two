@@ -29,16 +29,16 @@ void Direction()
 	//      Camera_DirectionControl();
 	//    }
 	//  }
-	//  //���뿪�����ϲ�������㷨
+	//  //���뿪�����ϲ��������?
 	//  else if(!dialSwitchFlg2&&balabaflag!=0)
 	//  {
 	//
 //  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
-    if((!dialSwitchFlg2||Img_BrokenFlag)&&!TurnTailFlag)
+    if((!dialSwitchFlg2||Img_BrokenFlag)&&!TurnTailFlag&&!TurnNoTailFlag)
   {
 	AD_DirectionControl();
   }
-  else if(dialSwitchFlg2&&!TurnTailFlag&&!Img_RampFlag)
+  else if(dialSwitchFlg2&&!TurnTailFlag&&!Img_RampFlag&&!TurnNoTailFlag)
   {
     Camera_DirectionControl();
   }
@@ -49,12 +49,12 @@ void Direction()
 }
 
 //================================================================//
-//  @brief  :		����ƽ�����
+//  @brief  :		����ƽ�����?
 //  @param  :		
 //  @return :		
 //  @note   :		void
 //================================================================//
-void DirectionControlOutput(void)//ƽ�����
+void DirectionControlOutput(void)//ƽ�����?
 {
 	if (g_nDirectionControlPeriod < 5)
 	{
@@ -79,7 +79,7 @@ void DirectionControlOutput(void)//ƽ�����
 }
 
 //================================================================//
-//  @brief  :		���ƫ���㷨
+//  @brief  :		����?���㷨
 //  @param  :		
 //  @return :		
 //  @note   :		void

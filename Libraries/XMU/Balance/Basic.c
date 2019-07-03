@@ -66,8 +66,8 @@ void motormode(float mode)
 	}
 	if (7 == g_mode) //坡道英雄
 	{
-		g_fleft = 2.3*g_AngleControlOut - g_fDirectionControlOut;
-		g_fright = 2.3*g_AngleControlOut + g_fDirectionControlOut;
+		g_fleft = 3*g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = 3*g_AngleControlOut + g_fDirectionControlOut;
 	}
 	if (8 == g_mode) //开机我为王
 	{
