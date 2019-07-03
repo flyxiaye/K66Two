@@ -26,22 +26,22 @@ int ImgJudgeCircle(int type)
 	{
 		if (Img_CircleOpen && !Img_SpecialElemFlag
 			&& LeftPnt.Type == 2 && LeftPnt.ErrRow > UP_EAGE + 20 && RightPnt.ErrRow < UP_EAGE + 10
-			&& LeftPnt.ErrCol < MIDDLE && RightPnt.ErrCol > MIDDLE && IsCircleIsland(CL))
+			&& LeftPnt.ErrCol < MIDDLE && RightPnt.ErrCol > MIDDLE - 7 && IsCircleIsland(CL))
 			return CL;
 		else if (Img_CircleOpen && !Img_SpecialElemFlag
 			&& RightPnt.Type == 2 && RightPnt.ErrRow > UP_EAGE + 20 && LeftPnt.ErrRow < UP_EAGE + 10
-			&& RightPnt.ErrCol > MIDDLE && LeftPnt.ErrCol < MIDDLE && IsCircleIsland(CR))
+			&& RightPnt.ErrCol > MIDDLE && LeftPnt.ErrCol < MIDDLE + 7 && IsCircleIsland(CR))
 			return CR;
 		else return CN;
 	}
 	else
 	{
 		if (Img_CircleOpen && !Img_SpecialElemFlag
-			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE
+			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7
 			&& RightPnt.ErrCol < RIGHT_EAGE - 30)
 			return CL;
 		else if (Img_CircleOpen && !Img_SpecialElemFlag
-			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE
+			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7
 			&& LeftPnt.ErrCol > LEFT_EAGE + 30)
 			return CR;
 		else return CN;
@@ -179,7 +179,8 @@ void ImgJudgeObstacle(void)
 #if INF
 	if (g_inf > stop_inf)
 	{
-		if (LeftPnt.ErrRow - RightPnt.ErrRow <= 2 && RightPnt.ErrRow - LeftPnt.ErrRow <= 2)
+		if (LeftPnt.ErrRow - RightPnt.ErrRow <= 2 && RightPnt.ErrRow - LeftPnt.ErrRow <= 2 && LeftPnt.ErrCol < MIDDLE && RightPnt.ErrCol > MIDDLE
+			&& LeftPnt.ErrRow > UP_EAGE && RightPnt.ErrRow > UP_EAGE)
 		{
 			int Front = MIN(LeftPnt.ErrRow, RightPnt.ErrRow);
 			int FrontRompGray = RegionAveGray(Front - 10, LeftPnt.ErrCol + 5, RightPnt.ErrCol - 5);
@@ -192,7 +193,7 @@ void ImgJudgeObstacle(void)
 				Img_SpecialElemFlag = 1;
 			}
 			else if (UP_EAGE + 1 == Front && DownGray - FrontRompGray < BrightThreshold && FrontRompGray - DownGray < BrightThreshold
-				&&  (RightPnt.ErrCol - LeftPnt.ErrCol) -  2*MidOffset[Front] > 30)
+				&& FrontRompGray - FrontBlockGray > 8)
 			{
 				Img_RampFlag = 1;//ÆÂµÀ
 				Img_SpecialElemFlag = 1;
@@ -324,7 +325,7 @@ int ImgJudgeSpecialElem(int left_line, int right_line)
 //================================================================//
 int ImgJudgeSpecialLine(int left_row, int left_col, int right_row, int right_col, int type)
 {
-	const int StartLine = 35;
+	const int StartLine = 33;
 	if (!type &&
 		(left_row < StartLine && right_row < StartLine
 			|| left_row - right_row > 8 || right_row - left_row > 8
@@ -477,7 +478,7 @@ int IsRamp(void)
 //================================================================//
 int ImgJudgeOutBroken(void)
 {
-	if (2 == Img_BrokenFlag)
+	if (0)//2 == Img_BrokenFlag)
 	{
 		if (LightThreshold > 50
 			&& RL[DOWN_EAGE] - LL[DOWN_EAGE] > 94

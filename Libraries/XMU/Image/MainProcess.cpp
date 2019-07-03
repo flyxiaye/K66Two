@@ -29,18 +29,20 @@ void MainFill(void)
 	VarInit();
 	SelectFirstLine();
 	g_RoadType = FirstRowProcess();
+
 	if (0 == g_RoadType)
 	{
 		FindLineNormal(1);
-
 		ImgJudgeStopLine();		//识别停车
 		ImgJudgeObstacle();     //识别坡道路障直道断路					
 		ImgJudgeCurveBroken();	//弯道断路
+
 #if CIRCLE == 2
-		CircleFlag = ImgJudgeCircle(0);
+		//CircleFlag = ImgJudgeCircle(0);
+		CircleFlag = Img_JudgeCircleIsland(0);
 		if (CL == CircleFlag)
 		{
-			CircleState = 1;
+			int tmp_row = LeftPnt.ErrRow;
 			GetPointA();
 			GetPointB();
 			GetPointC();
@@ -49,10 +51,18 @@ void MainFill(void)
 			FillLineCD();
 			FillAllEage();
 			CircleFlag = CN;
+		/*	if (Ind_CircleOpen)
+				CircleFlag = CN;
+			else
+			{
+				if (tmp_row > DOWN_EAGE - 10)
+					;
+				else CircleFlag = CN;
+			}*/
 		}
 		else if (CR == CircleFlag)
 		{
-			CircleState = 1;
+			int tmp_row = RightPnt.ErrRow;
 			GetPointA();
 			GetPointB();
 			GetPointC();
@@ -61,6 +71,14 @@ void MainFill(void)
 			FillLineCD();
 			FillAllEage();
 			CircleFlag = CN;
+		/*	if (Ind_CircleOpen)
+				CircleFlag = CN;
+			else
+			{
+				if (tmp_row > DOWN_EAGE - 10)
+					;
+				else CircleFlag = CN;
+			}*/
 		}
 		else
 #endif // CIRCLE
@@ -78,10 +96,10 @@ void MainFill(void)
 	{
 		FindLineLost();
 #if CIRCLE == 2
-		CircleFlag = ImgJudgeCircle(1);
+		//CircleFlag = ImgJudgeCircle(1);
+		CircleFlag = Img_JudgeCircleIsland(1);
 		if (CL == CircleFlag)
 		{
-			CircleState = 2;
 			GetPointA();
 			GetPointB();
 			GetPointC();
@@ -94,7 +112,6 @@ void MainFill(void)
 		}
 		else if (CR == CircleFlag)
 		{
-			CircleState = 2;
 			GetPointA();
 			GetPointB();
 			GetPointC();
@@ -153,5 +170,9 @@ void GetML(void)
 	}
 	if (!ErrorFlag)
 		SpeedRow = GetSpeedRow(ControlMid, LeftPnt.ErrRow, RightPnt.ErrRow);
+	if (!ErrorFlag && UP_EAGE + 1 >= SpeedRow)
+		Ind_LongRoadFlag = 1;
+	else Ind_LongRoadFlag = 0;
+
 
 }
