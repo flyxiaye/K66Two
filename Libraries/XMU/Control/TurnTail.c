@@ -58,7 +58,7 @@ void TurnTail()
       count++;
       if (count < 100)
       {
-        g_mode = 1;
+        g_mode = 5;
         g_angle_set = GroundAngle;
         AngleControl();
       }
@@ -108,6 +108,7 @@ void TurnTail()
       count++;
       if (count < 50)
       {
+        g_mode=5;
         g_angle_set = GroundAngle;
         AngleControl();
       }
@@ -254,7 +255,7 @@ void TurnNoTail()
       count++;
       if (count < 50)
       {
-        g_mode = 1;
+        g_mode = 5;
         g_angle_set = GroundAngle;
         AngleControl();
       }

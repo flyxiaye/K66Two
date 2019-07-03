@@ -29,7 +29,7 @@ void Ramp2()//图像识别
   static float initangleset;
   if(Img_RampFlag&&g_drive_flag&&!rampflag)
   {
-    gpio_init(D0,GPO,0);
+    gpio_init(D1,GPO,0);
     rampflag=1;
     initangleset=g_angle_set;
     g_angle_set=initangleset-Rampangle;
@@ -38,12 +38,17 @@ void Ramp2()//图像识别
     if(rampflag)
   {
     acc_speed+=curSpeed;
-    if(acc_speed>6000)
+    if(acc_speed<6000)
     {
-      gpio_init(D0,GPO,1);
+     AD_DirectionControl(); 
+    }
+    else if(acc_speed>6000)
+    {
+      gpio_init(D1,GPO,1);
       rampflag=0;
       g_mode=3;
       g_angle_set=initangleset;
+      Img_RampFlag=0;
     }
   }
 }

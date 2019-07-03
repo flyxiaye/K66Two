@@ -38,7 +38,7 @@ void Direction()
   {
 	AD_DirectionControl();
   }
-  else if(dialSwitchFlg2&&!TurnTailFlag)
+  else if(dialSwitchFlg2&&!TurnTailFlag&&!Img_RampFlag)
   {
     Camera_DirectionControl();
   }
@@ -65,11 +65,11 @@ void DirectionControlOutput(void)//ƽ�����
 	{
 		g_nDirectionControlPeriod = 0;
 	}
-	if (Img_BlockFlag || g_GetMeetingFlag || Img_BrokenFlag == 3) //�޷�
-	{
+//	if (Img_BlockFlag || g_GetMeetingFlag || Img_BrokenFlag == 3) //�޷�
+//	{
 		g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
 		g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
-	}
+//	}
 	if (Img_BrokenFlag)
 	{
 		;
@@ -110,7 +110,7 @@ void AD_DirectionControl()
 		//    }
 		//    if(!TurnTailFlag)
 		//    {
-		g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD + (g_errorD - g_error_before) * g_dire_D_AD;
+		g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD *(curSpeed/g_fSpeed_set*0.8+0.2)+ (g_errorD - g_error_before) * g_dire_D_AD;
 		g_fDirectionControlOut_new = (curSpeed/g_fSpeed_set+0.8)*(g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd_AD;
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
@@ -149,7 +149,7 @@ void Camera_DirectionControl()
 				g_errorD = g_error_before;
 			}
 		}
-		g_fDirectionAngleControlOut = g_errorD * g_dire_P *(curSpeed/g_fSpeed_set*0.8+0.2)+ (g_errorD - g_error_before) * g_dire_D;
+		g_fDirectionAngleControlOut = g_errorD * g_dire_P *(curSpeed/g_fSpeed_set*0.3+0.7)+ (g_errorD - g_error_before) * g_dire_D;
 		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;

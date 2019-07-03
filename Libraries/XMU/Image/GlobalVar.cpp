@@ -287,6 +287,10 @@ int dialSwitchFlg1=0;
 int dialSwitchFlg2=0;
 int dialSwitchFlg3=0;
 int dialSwitchFlg4=0;
+int dialSwitchFlg5=0;
+int dialSwitchFlg6=0;
+int dialSwitchFlg7=0;
+int dialSwitchFlg8=0;
 int dialSwitchcal=0;
 
 /*=====================================双车状态======================================*/
@@ -309,6 +313,7 @@ int const_error_1 = -20;
 int const_error_2 = 40;
 int max_duty = 8000;
 int OutMeetingDistance = 7000;
+float GroundAngle = 9.73;
 /*====================================路障=====================================*/
 int sum = 0;
 int sum_dist = 4500;
@@ -334,4 +339,4 @@ int Rampangle=12;
 /*************====================开机加速相关变量=======================*************/
 int BootRacerFlag=0;
 int BootRacerDistance=5000;
-int BootRacerAngle=-7;
+int BootRacerAngle=-11;

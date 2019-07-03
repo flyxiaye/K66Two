@@ -358,13 +358,13 @@ void MeetingTwo1(void)
 				 gpio_init(A7, GPO, 0);
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
-			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
+//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //停留等待
-				speed_type = 0;
-			}
+//			else
+//			{
+//				g_StateMaster = StateStop; //停留等待
+//				speed_type = 0;
+//			}
 		}
 		else if (Img_StopLineFlag && g_SlaveOutFlag)
 			g_StateMaster = StateGo;
@@ -374,6 +374,7 @@ void MeetingTwo1(void)
 		if (acc_speed > sum_speed * 1.5)
 		{
 			acc_speed = 0;
+                        count = 0;
 			g_StateMaster = CarFinish;
 		}
 		break;
@@ -389,8 +390,20 @@ void MeetingTwo1(void)
 			}
 		}
 		break;
-	case CarFinish:
-		speed_type = 0;
+	case CarFinish:   //拍地板
+                  count++;
+      if (count < 50)
+      {
+        g_mode=5;
+        g_angle_set = GroundAngle;
+        AngleControl();
+      }
+      else if (count >= 50)
+      {
+        g_drive_flag = 0;
+        count = 0;
+        g_StateMaster = 0;
+      }
 		break;
 	default:
 		break;
@@ -428,7 +441,7 @@ void MeetingTwo2(void)
 		if (g_GetMeetingFlag) 			 //进入会车区 
 		{
 			acc_speed += curSpeed;
-			if (acc_speed > StartDistance)
+			if (acc_speed > 0.01 * ONE_METER)
 			{
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
@@ -469,13 +482,13 @@ void MeetingTwo2(void)
           TurnNoTailFlag=0;
 		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
 		{
-			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
+//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
 				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //停留等待
-				speed_type = 0;
-			}
+//			else
+//			{
+//				g_StateMaster = StateStop; //停留等待
+//				speed_type = 0;
+//			}
 		}
 		else if (Img_StopLineFlag && g_SlaveOutFlag)
 			g_StateMaster = StateGo;
@@ -484,6 +497,7 @@ void MeetingTwo2(void)
 		acc_speed += curSpeed;
 		if (acc_speed > sum_speed * 1.5)
 		{
+                        count=0;
 			acc_speed = 0;
 			g_StateMaster = CarFinish;
 		}
@@ -501,7 +515,19 @@ void MeetingTwo2(void)
 		}
 		break;
 	case CarFinish:
-		speed_type = 0;
+		     count++;
+      if (count < 50)
+      {
+        g_mode=5;
+        g_angle_set = GroundAngle;
+        AngleControl();
+      }
+      else if (count >= 50)
+      {
+        g_drive_flag = 0;
+        count = 0;
+        g_StateMaster = 0;
+      }
 		break;
 	default:
 		break;

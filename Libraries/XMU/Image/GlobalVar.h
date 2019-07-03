@@ -185,7 +185,7 @@ void VarInit(void);
 extern int pro;
 
 //==========================摄像头参数=================================//
-#define ONE_METER 0
+#define ONE_METER 5000
 extern int exp_time;						//曝光时间
 extern int HighThreshold;						//canny高阈值
 extern int LowThreshold;						//canny低阈值
@@ -330,6 +330,10 @@ extern int dialSwitchFlg1;
 extern int dialSwitchFlg2;
 extern int dialSwitchFlg3;
 extern int dialSwitchFlg4;
+extern int dialSwitchFlg5;
+extern int dialSwitchFlg6;
+extern int dialSwitchFlg7;
+extern int dialSwitchFlg8;
 extern int dialSwitchcal;
 //extern signed int DialSwitchFlag1;            //拨码开关1
 //extern signed int DialSwitchFlag2;            //拨码开关2
@@ -339,6 +343,10 @@ extern int dialSwitchcal;
 #define DIALSWITCH_PIN2 E6
 #define DIALSWITCH_PIN3 E7
 #define DIALSWITCH_PIN4 E9
+#define DIALSWITCH_PIN5 D9
+#define DIALSWITCH_PIN6 D10
+#define DIALSWITCH_PIN7 E12
+#define DIALSWITCH_PIN8 E11
 /*===================================双车通讯用=========================================*/
 typedef struct 
 {
@@ -383,6 +391,7 @@ extern int const_error_1;
 extern int const_error_2;
 extern int max_duty;
 extern int OutMeetingDistance;
+extern float GroundAngle;
 /*====================================路障=====================================*/
 extern int sum;
 extern int sum_dist;

@@ -66,8 +66,8 @@ void motormode(float mode)
 	}
 	if (7 == g_mode) //坡道英雄
 	{
-		g_fleft = g_AngleControlOut - g_fDirectionControlOut;
-		g_fright = g_AngleControlOut + g_fDirectionControlOut;
+		g_fleft = 2.3*g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = 2.3*g_AngleControlOut + g_fDirectionControlOut;
 	}
 	if (8 == g_mode) //开机我为王
 	{
@@ -77,10 +77,11 @@ void motormode(float mode)
 }
 void BootRacer()
 {
-	static int acc_speed = 0;
+	static int acc_speed = 0, initg_mode=1;
 	static int initangleset = 0;
-	if (BootRacerFlag)
+	if (BootRacerFlag&&3==initg_mode)
 	{
+          acc_speed+=curSpeed;
 		if (acc_speed < BootRacerDistance)
 		{
 			g_mode = 8;
@@ -88,7 +89,7 @@ void BootRacer()
 		}
 		else
 		{
-			g_mode = 3;
+			g_mode = initg_mode;
 			g_angle_set = initangleset;
                         BootRacerFlag=0;
 		}
@@ -96,6 +97,7 @@ void BootRacer()
 	else
 	{
 		initangleset = g_angle_set;
+                initg_mode=g_mode;
 	}
 }
 //-------------------------------------------------------------------------------------------------------------------
@@ -109,21 +111,21 @@ void BootRacer()
 //-------------------------------------------------------------------------------------------------------------------
 void DrivePWM(float g_duty_PWMleft, float g_duty_PWMright)
 {
-	if (g_duty_PWMright > 8000)
+	if (g_duty_PWMright > 9000)
 	{
-		g_duty_PWMright = 8000;
+		g_duty_PWMright = 9000;
 	}
-	if (g_duty_PWMright < -8000)
+	if (g_duty_PWMright < -9000)
 	{
-		g_duty_PWMright = -8000;
+		g_duty_PWMright = -9000;
 	}
-	if (g_duty_PWMleft > 8000)
+	if (g_duty_PWMleft > 9000)
 	{
-		g_duty_PWMleft = 8000;
+		g_duty_PWMleft = 9000;
 	}
-	if (g_duty_PWMleft < -8000)
+	if (g_duty_PWMleft < -9000)
 	{
-		g_duty_PWMleft = -8000;
+		g_duty_PWMleft = -9000;
 	}
 	if (g_duty_PWMright >= 0 && g_duty_PWMleft >= 0)
 	{

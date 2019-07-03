@@ -12,12 +12,10 @@
 
 int main(void)
 {
-static int lala=0;
 	get_clk();
 	MyFlash_Read(0);
 	system_Init();
 	systick_delay_ms(1000);
-	//    dialSwitchFlg3 = gpio_get(DIALSWITCH_PIN3);
 	//    if (dialSwitchFlg3) g_StartSlave = 1;
 	while (1)
 	{
@@ -25,6 +23,10 @@ static int lala=0;
 		dialSwitchFlg2 = gpio_get(DIALSWITCH_PIN2);
                 dialSwitchFlg3 = gpio_get(DIALSWITCH_PIN3);
 		dialSwitchFlg4 = gpio_get(DIALSWITCH_PIN4);
+                dialSwitchFlg5 = gpio_get(DIALSWITCH_PIN5);
+		dialSwitchFlg6 = gpio_get(DIALSWITCH_PIN6);
+                dialSwitchFlg7 = gpio_get(DIALSWITCH_PIN7);
+		dialSwitchFlg8 = gpio_get(DIALSWITCH_PIN8);
 		//    ftm_pwm_duty(ftm0,RIGHT_GO,0);
 		//    ftm_pwm_duty(ftm0,RIGHT_BACK,8000);
 		//    ftm_pwm_duty(ftm0,LEFT_GO,0);
@@ -50,11 +52,6 @@ static int lala=0;
 		{
 			Menu();
 		}
-                if(!dialSwitchFlg3&&!lala&&g_drive_flag)
-                {
-                lala=1;
-                  g_StateMaster=2;
-                }
 		//Bluebooth_Push_Data();
                 UserData();
 //    SendAngle();

@@ -83,11 +83,12 @@ void PIT0_IRQHandler(void)
 //	DistCI();
 	IndCI();
 	get_ind_error();
-	Ramp2();
+//	BootRacer();
 	AngleControl();
 	inf();
 	roadblock3();
 	circleland2();
+        Ramp2();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //读取编码器计数
@@ -99,7 +100,6 @@ void PIT0_IRQHandler(void)
 
 	//	TurnTail();
 	MeetingTwo1();
-	Dist_ClearIslandSeven();		//清环岛7状态
 	power();
 	PIT_FlAG_CLR(pit0);
 }
