@@ -53,8 +53,8 @@ int main(void)
 			Menu();
 		}
 		//Bluebooth_Push_Data();
-                UserData();
-//    SendAngle();
+//                UserData();
+    SendAngle();
 ////    SendData();
 //                		if (Img_BrokenFlag)
 //			gpio_init(D0, GPO, 0);

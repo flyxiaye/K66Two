@@ -326,12 +326,14 @@ int ImgJudgeSpecialElem(int left_line, int right_line)
 int ImgJudgeSpecialLine(int left_row, int left_col, int right_row, int right_col, int type)
 {
 	const int StartLine = 33;
-	if (!type &&
+	if (!type &&						//Ö±µÀ
 		(left_row < StartLine && right_row < StartLine
 			|| left_row - right_row > 8 || right_row - left_row > 8
-			|| left_col > MIDDLE || right_col < MIDDLE))
+			|| left_col > MIDDLE || right_col < MIDDLE
+			|| right_col - left_col < MidOffset[left_row]
+			|| right_col - left_col < MidOffset[right_row]))
 		return 0;
-	if (type)
+	if (type)				//ÍäµÀ
 	{
 		if (left_col > right_col)
 		{

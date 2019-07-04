@@ -170,9 +170,9 @@ void GetML(void)
 	}
 	if (!ErrorFlag)
 		SpeedRow = GetSpeedRow(ControlMid, LeftPnt.ErrRow, RightPnt.ErrRow);
-	if (!ErrorFlag && UP_EAGE + 1 >= SpeedRow)
-		Ind_LongRoadFlag = 1;
-	else Ind_LongRoadFlag = 0;
+//	if (!ErrorFlag && UP_EAGE + 1 >= SpeedRow)
+//		Ind_LongRoadFlag = 1;
+//	else Ind_LongRoadFlag = 0;
 
 
 }

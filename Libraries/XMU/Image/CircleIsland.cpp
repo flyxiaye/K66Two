@@ -53,6 +53,14 @@ int Img_JudgeCircleIsland(int type)
 			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7
 			&& RightPnt.ErrCol < RIGHT_EAGE - 55)
 		{
+			int middle = (LL[DOWN_EAGE] + RL[DOWN_EAGE]) >> 1;
+			for (int i = DOWN_EAGE - 1; i > DOWN_EAGE - 15; i--)
+			{
+
+				LL[i] = SearchLeftEage(i, middle);
+				if (LL[i] - LL[i + 1] > 8)
+					return CN;
+			}
 			CircleState = 2;
 			return CL;
 		}
@@ -60,6 +68,13 @@ int Img_JudgeCircleIsland(int type)
 			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7
 			&& LeftPnt.ErrCol > LEFT_EAGE + 55)
 		{
+			int middle = (LL[DOWN_EAGE] + RL[DOWN_EAGE]) >> 1;
+			for (int i = DOWN_EAGE - 1; i > DOWN_EAGE - 15; i--)
+			{
+				RL[i] = SearchRightEage(i, middle);
+				if (RL[i + 1] - RL[i] > 8)
+					return CN;
+			}
 			CircleState = 2;
 			return CR;
 		}
@@ -557,13 +572,18 @@ void GetPointC(void)
 		{
 			int Eage = MIN(ConstRightEage, RightPnt.ErrCol);
 			PointC.Col = (LeftPnt.ErrCol + Eage) >> 1;
+			PointC.Col = LeftPnt.ErrCol;
+			PointC.Row = SearchUpEage(LeftPnt.ErrRow - 1, LeftPnt.ErrCol);
 		}
 		else if (CR == CircleFlag)
 		{
 			int Eage = MAX(ConstLeftEage, LeftPnt.ErrCol);
 			PointC.Col = (Eage + RightPnt.ErrCol) >> 1;
+			PointC.Col = RightPnt.ErrCol;
+			PointC.Row = SearchUpEage(RightPnt.ErrRow - 1, RightPnt.ErrCol);
 		}
-		PointC.Row = SearchUpEage((LeftPnt.ErrRow + RightPnt.ErrRow) >> 1, PointC.Col);
+		//PointC.Row = SearchUpEage((LeftPnt.ErrRow + RightPnt.ErrRow) >> 1, PointC.Col);
+
 		break;
 	case 7:
 		if (CL == CircleFlag)
@@ -666,12 +686,12 @@ void GetPointD(void)
 	case 7:
 		if (CL == CircleFlag)
 		{
-			PointD.Col = RL[DOWN_EAGE];
+			PointD.Col = MIN(RL[DOWN_EAGE], ConstRightEage);
 			PointD.Row = DOWN_EAGE;
 		}
 		else if (CR == CircleFlag)
 		{
-			PointD.Col = LL[DOWN_EAGE];
+			PointD.Col = MAX(LL[DOWN_EAGE], ConstLeftEage);
 			PointD.Row = DOWN_EAGE;
 		}
 		break;
@@ -741,6 +761,7 @@ void FillLineCD(void)
 	{
 	case 3:
 	case 4:
+	case 6:
 		if (CL == CircleFlag)
 		{
 			RL[PointC.Row] = PointC.Col;
@@ -774,22 +795,43 @@ void FillLineCD(void)
 			LEFT_PNT(PointC.Row, 1);
 		}
 		break;
-	case 6:
+		/*case 6:
+			if (CL == CircleFlag)
+			{
+				RL[PointD.Row] = PointD.Col;
+				RL[PointC.Row] = PointC.Col;
+				FillLinePoint(RL, PointD.Row, PointC.Row);
+				RIGHT_PNT(PointC.Row, 1);
+			}
+			else if (CR == CircleFlag)
+			{
+				LL[PointD.Row] = PointD.Col;
+				LL[PointC.Row] = PointC.Col;
+				FillLinePoint(LL, PointD.Row, PointC.Row);
+				LEFT_PNT(PointC.Row, 1);
+			}
+			break;*/
+	case 7:
 		if (CL == CircleFlag)
 		{
-			RL[PointD.Row] = PointD.Col;
-			RL[PointC.Row] = PointC.Col;
-			FillLinePoint(RL, PointD.Row, PointC.Row);
-			RIGHT_PNT(PointC.Row, 1);
+			if (PointD.Col != RL[DOWN_EAGE])
+			{
+				RL[PointD.Row] = PointD.Col;
+				RL[PointC.Row] = PointC.Col;
+				FillLinePoint(RL, PointD.Row, PointC.Row);
+				RIGHT_PNT(PointC.Row, 1);
+			}
 		}
 		else if (CR == CircleFlag)
 		{
-			LL[PointD.Row] = PointD.Col;
-			LL[PointC.Row] = PointC.Col;
-			FillLinePoint(LL, PointD.Row, PointC.Row);
-			LEFT_PNT(PointC.Row, 1);
+			if (PointD.Col != LL[DOWN_EAGE])
+			{
+				LL[PointD.Row] = PointD.Col;
+				LL[PointC.Row] = PointC.Col;
+				FillLinePoint(LL, PointD.Row, PointC.Row);
+				LEFT_PNT(PointC.Row, 1);
+			}
 		}
-		break;
 	default:
 		break;
 	}
