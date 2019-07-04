@@ -45,25 +45,30 @@ void AngleMutation()
   static int count=0,number=0,EveryMutationFlag=1;
   static float angle_pitbefore[9]={0},angle_pitnow[9]={0};
   count++;
-  if(count>5&&number<=9)
+  if(count>=2&&number<=4)
   {
     angle_pitbefore[number]=imu_data.pit;
     number++;
     count=0;
   }
-  else if(count>5&&number<=19)
+else if(count>=2&&number<=9)
   {
-    angle_pitnow[9]=imu_data.pit;
-    number++;
+    angle_pitnow[number-5]=imu_data.pit;
+    
     count=0;
-  }
-  else if(20==number)
-  {
-    for (int i = 0; i < 10; i++)
+    number++;
+    if(10==number)
     {
-      if(angle_pitbefore[i]>angle_pitnow[i+10])
+      EveryMutationFlag=1;
+    }
+  }
+   if(10==number)
+  {
+    for (int i = 0; EveryMutationFlag&&(i < 5); i++)
+    {
+      if(angle_pitbefore[i]>angle_pitnow[i])
       {
-        if(angle_pitbefore[i]-angle_pitnow[i+10]<=3)
+        if(angle_pitbefore[i]-angle_pitnow[i]<=0.8)
         {
           EveryMutationFlag=1;
         }
@@ -71,12 +76,16 @@ void AngleMutation()
         {
           EveryMutationFlag=0;
           AngleMutationFlag=0;
+          count=0;
+          number=0;
+          break;
         }
-        
+        count=0;
+        number=0;
       }
-      else if(angle_pitbefore[i]<angle_pitnow[i+10])
+      else if(angle_pitbefore[i]<angle_pitnow[i])
       {
-        if(angle_pitnow[i+10]-angle_pitbefore[i]<=3)
+        if(angle_pitnow[i]-angle_pitbefore[i]<=0.8)
         {
           EveryMutationFlag=1;
         }
@@ -84,12 +93,17 @@ void AngleMutation()
         {
           EveryMutationFlag=0;
           AngleMutationFlag=0;
+          count=0;
+          number=0;
+          break;
         }
       }
     }
   }
-  if(EveryMutationFlag&&20==number)
+  if(EveryMutationFlag&&10==number)
   {
     AngleMutationFlag=1;
+    number=0;
+    count=0;
   }
 }
