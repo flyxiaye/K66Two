@@ -67,6 +67,8 @@ void PIT0_IRQHandler(void)
 {
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
+        if(g_drive_flag)
+	AngleMutation();
 	//    if (g_block_open)           //路障
 	//    {
 	//      inf();
@@ -86,9 +88,10 @@ void PIT0_IRQHandler(void)
 //	BootRacer();
 	AngleControl();
 	inf();
-	roadblock3();
+	
 	circleland2();
         Ramp2();
+        roadblock3();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //读取编码器计数

@@ -1,10 +1,10 @@
-#include  "headfile.h"
-#include  "GlobalVar.h"
-#include  "CameraDisplay.h"
-#include  "TFCard.h"
-#include  "Menu.h"
-#include  "OLED.h"
-#include  "keyboard.h"
+#include "headfile.h"
+#include "GlobalVar.h"
+#include "CameraDisplay.h"
+#include "TFCard.h"
+#include "Menu.h"
+#include "OLED.h"
+#include "keyboard.h"
 #include "Bluetooth.h"
 #include "Screen.h"
 #include "PID.h"
@@ -27,40 +27,40 @@
 #elif _USE_IPS
 #define LINE_MAX 8
 #else
-#define LINE_MAX 4                                           //一页能显示的总行数 OLED为4 LCD横向为8 竖向为10
+#define LINE_MAX 4 //一页能显示的总行数 OLED为4 LCD横向为8 竖向为10
 #endif
 
-signed char g_pageNum = 1;                                   //当前所在页
-signed char g_lineNum = 1;                                   //当前所在行
+signed char g_pageNum = 1; //当前所在页
+signed char g_lineNum = 1; //当前所在行
 signed char g_pageCount = 0;
 signed char g_lineCount = 0;
-signed char g_pageMax = 0;								     //页面总数
-signed char g_lineMax = 0;                                   //当前页变量的个数
+signed char g_pageMax = 0; //页面总数
+signed char g_lineMax = 0; //当前页变量的个数
 
-signed char g_lineLock = 0;                                  //锁定标志
+signed char g_lineLock = 0; //锁定标志
 
-signed char g_plusFlg = 0;                                   //加法标志
-signed char g_minisFlg = 0;                                  //减法标志
+signed char g_plusFlg = 0;  //加法标志
+signed char g_minisFlg = 0; //减法标志
 signed char g_imgFlg = 0;
 
-signed char g_Rate = 0;                                      //倍率指数 方便加减
-float g_addValue = 1;                                        //倍率
+signed char g_Rate = 0; //倍率指数 方便加减
+float g_addValue = 1;   //倍率
 signed char g_picture_show = 0;
-signed char g_explore_page = 0;								//调节曝光功能页
+signed char g_explore_page = 0; //调节曝光功能页
 
 unsigned char Cursor[][16] =
 
-{
+	{
 #if _USE_LCD || _USE_IPS
-	{0x00,0x00,0x00,0x02,0x04,0x08,0x10,0x20,0x40,0x20,0x10,0x08,0x04,0x02,0x00,0x00},//>
-	{0x00,0x00,0x00,0x05,0x0A,0x14,0x28,0x50,0xA0,0x50,0x28,0x14,0x0A,0x05,0x00,0x00}//》
+		{0x00, 0x00, 0x00, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x00, 0x00}, //>
+		{0x00, 0x00, 0x00, 0x05, 0x0A, 0x14, 0x28, 0x50, 0xA0, 0x50, 0x28, 0x14, 0x0A, 0x05, 0x00, 0x00}  //》
 #else
-	{0x00,0x08,0x10,0x20,0x40,0x80,0x00,0x00,0x00,0x20,0x10,0x08,0x04,0x02,0x01,0x00},//>
-	{0x10,0x20,0x40,0x90,0x20,0x40,0x80,0x00,0x10,0x08,0x04,0x12,0x09,0x04,0x02,0x01}//》
+		{0x00, 0x08, 0x10, 0x20, 0x40, 0x80, 0x00, 0x00, 0x00, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01, 0x00}, //>
+		{0x10, 0x20, 0x40, 0x90, 0x20, 0x40, 0x80, 0x00, 0x10, 0x08, 0x04, 0x12, 0x09, 0x04, 0x02, 0x01}  //》
 #endif
 };
 
-void FlagChange(int* flag)
+void FlagChange(int *flag)
 {
 	if (1 == *flag)
 	{
@@ -91,8 +91,10 @@ void Dis_Cursor(unsigned char Position, signed char Number)
 		temp = Cursor[Number][i];
 		for (j = 0; j < 8; j++)
 		{
-			if (temp & 0x01)	LCD_WriteData_16Bit(PENCOLOR);
-			else			LCD_WriteData_16Bit(BGCOLOR);
+			if (temp & 0x01)
+				LCD_WriteData_16Bit(PENCOLOR);
+			else
+				LCD_WriteData_16Bit(BGCOLOR);
 			temp >>= 1;
 		}
 	}
@@ -105,8 +107,10 @@ void Dis_Cursor(unsigned char Position, signed char Number)
 		temp = Cursor[Number][i];
 		for (j = 0; j < 8; j++)
 		{
-			if (temp & 0x01) ips_writedata_16bit(IPS_PENCOLOR);
-			else ips_writedata_16bit(IPS_BGCOLOR);
+			if (temp & 0x01)
+				ips_writedata_16bit(IPS_PENCOLOR);
+			else
+				ips_writedata_16bit(IPS_BGCOLOR);
 			temp >>= 1;
 		}
 	}
@@ -135,7 +139,8 @@ void PageNumReduce(void)
 	OLED_Clear();
 #endif
 	g_pageNum--;
-	if (g_pageNum < 1) g_pageNum = g_pageMax;
+	if (g_pageNum < 1)
+		g_pageNum = g_pageMax;
 	g_lineNum = 1;
 }
 
@@ -154,7 +159,8 @@ void PageNumAdd(void)
 	OLED_Clear();
 #endif
 	g_pageNum++;
-	if (g_pageNum > g_pageMax) g_pageNum = 1;
+	if (g_pageNum > g_pageMax)
+		g_pageNum = 1;
 	g_lineNum = 1;
 }
 
@@ -166,7 +172,8 @@ void PageNumAdd(void)
 void LineNumReduce(void)
 {
 	g_lineNum--;
-	if (g_lineNum < 1) g_lineNum = g_lineMax;
+	if (g_lineNum < 1)
+		g_lineNum = g_lineMax;
 }
 
 //*
@@ -177,9 +184,9 @@ void LineNumReduce(void)
 void LineNumAdd(void)
 {
 	g_lineNum++;
-	if (g_lineNum > g_lineMax) g_lineNum = 1;
+	if (g_lineNum > g_lineMax)
+		g_lineNum = 1;
 }
-
 
 void GotoGivenPage(void)
 {
@@ -194,13 +201,14 @@ void GotoGivenPage(void)
 //*  @brief:		插入一个页面
 //*  @param:		需要显示的标题，当不需要显示标题时字符串写"\0"
 //*  @return:	    void
-//*  @note:     
+//*  @note:
 //*
 void Insert_Page(signed char String[])
 {
 	g_pageCount++;
 
-	if (g_pageMax < g_pageCount) g_pageMax = g_pageCount;
+	if (g_pageMax < g_pageCount)
+		g_pageMax = g_pageCount;
 
 	if (g_pageNum == g_pageCount)
 	{
@@ -218,13 +226,14 @@ void Insert_Page(signed char String[])
 //*  @brief:		插入一幅图像
 //*  @param:		在菜单中的位置 需要显示的标题以及图像显示的函数，当不需要显示标题时字符串写"\0"
 //*  @return:	    void
-//*  @note:     
+//*  @note:
 //*
 void Insert_Img(signed char String[], void pfunc_show(void))
 {
 	g_pageCount++;
 
-	if (g_pageMax < g_pageCount) g_pageMax = g_pageCount;
+	if (g_pageMax < g_pageCount)
+		g_pageMax = g_pageCount;
 
 	if (g_pageNum == g_pageCount)
 	{
@@ -237,22 +246,24 @@ void Insert_Img(signed char String[], void pfunc_show(void))
 	}
 	g_lineCount = 0;
 
-	if (g_pageNum == g_pageCount)pfunc_show();
+	if (g_pageNum == g_pageCount)
+		pfunc_show();
 }
 
 //*
 //*  @brief:		插入字符变量
 //*  @param:		在菜单中的位置 需要插入的变量名以及变量的地址
 //*  @return:	    void
-//*  @note:     
+//*  @note:
 //*
-void Insert_Char(signed char String[], signed char* Number)
+void Insert_Char(signed char String[], signed char *Number)
 {
 	char tmp_line;
 	if (g_pageNum == g_pageCount)
 	{
 		g_lineCount++;
-		if (g_lineMax < g_lineCount) g_lineMax = g_lineCount;
+		if (g_lineMax < g_lineCount)
+			g_lineMax = g_lineCount;
 
 		if (g_lineNum < LINE_MAX)
 		{
@@ -290,15 +301,16 @@ void Insert_Char(signed char String[], signed char* Number)
 //*  @brief:		插入整型变量
 //*  @param:		在菜单中的位置 需要插入的变量名以及变量的地址
 //*  @return:	    void
-//*  @note:     
+//*  @note:
 //*
-void Insert_Int(signed char String[], signed int* Number)
+void Insert_Int(signed char String[], signed int *Number)
 {
 	char tmp_line;
 	if (g_pageNum == g_pageCount)
 	{
 		g_lineCount++;
-		if (g_lineMax < g_lineCount) g_lineMax = g_lineCount;
+		if (g_lineMax < g_lineCount)
+			g_lineMax = g_lineCount;
 
 		if (g_lineNum < LINE_MAX)
 		{
@@ -337,14 +349,15 @@ void Insert_Int(signed char String[], signed int* Number)
 //*  @param:		在菜单中的位置(0~127) 需要插入的变量名以及变量的地址
 //*  @return:	  void
 //*
-void Insert_Float(signed char String[], float* Number)
+void Insert_Float(signed char String[], float *Number)
 {
 	char tmp_line;
 
 	if (g_pageNum == g_pageCount)
 	{
 		g_lineCount++;
-		if (g_lineMax < g_lineCount) g_lineMax = g_lineCount;
+		if (g_lineMax < g_lineCount)
+			g_lineMax = g_lineCount;
 
 		if (g_lineNum < LINE_MAX)
 		{
@@ -377,21 +390,20 @@ void Insert_Float(signed char String[], float* Number)
 	}
 }
 
-
-
 //*
 //*  @brief:		插入volatile浮点型变量
 //*  @param:		在菜单中的位置(0~127) 需要插入的变量名以及变量的地址
 //*  @return:	  void
 //*
-void Insert_VFloat(signed char String[], volatile float* Number)
+void Insert_VFloat(signed char String[], volatile float *Number)
 {
 	char tmp_line;
 
 	if (g_pageNum == g_pageCount)
 	{
 		g_lineCount++;
-		if (g_lineMax < g_lineCount) g_lineMax = g_lineCount;
+		if (g_lineMax < g_lineCount)
+			g_lineMax = g_lineCount;
 
 		if (g_lineNum < LINE_MAX)
 		{
@@ -450,22 +462,23 @@ void Menu(void)
 //*  @brief:		按键功能
 //*  @param:		void
 //*  @return:	    void
-//*  @note:    
-//* 
+//*  @note:
+//*
 void Key_Function(void)
 {
 	if (!g_lineLock)
 	{
 		switch (g_Key)
 		{
-		case 1:           //启动
+		case 1: //启动
 		{
-			FlagChange(&g_drive_flag);//开电机
+			FlagChange(&g_drive_flag); //开电机
 			if (g_drive_flag)
 			{
-                          BootRacerFlag=1;
-//				g_StateMaster = 2;
-				g_MasterOutFlag = 0;;
+				BootRacerFlag = 1;
+				//				g_StateMaster = 2;
+				g_MasterOutFlag = 0;
+				;
 				CircleFlag = 0;
 				CircleState = 0;
 				Img_BrokenFlag = 0;
@@ -479,9 +492,9 @@ void Key_Function(void)
 		break;
 		case 2:
 			if (g_pageNum == 1)
-				g_steer_open = !g_steer_open;   //开舵机
+				g_steer_open = !g_steer_open; //开舵机
 			else
-				LineNumReduce();                //行数上移
+				LineNumReduce(); //行数上移
 			break;
 		case 3:
 #if _USE_LCD
@@ -489,24 +502,39 @@ void Key_Function(void)
 #elif _USE_IPS
 			ips_init();
 #else
-			OLED_Init();               //刷新屏幕
+			OLED_Init(); //刷新屏幕
 			lcd_init();
 #endif
-			set_exposure_time(exp_time);  //曝光时间
+			set_exposure_time(exp_time); //曝光时间
 
 			break;
-		case 4:PageNumReduce();
-			break;//向上翻页
+		case 4:
+			PageNumReduce();
+			break; //向上翻页
 		case 5:
 			if (g_pageNum == 1)
 				g_handle_open = !g_handle_open; //开补图
 			else
-				g_lineLock = 1;                 //进入数值修改
+				g_lineLock = 1; //进入数值修改
 			break;
-		case 6:  PageNumAdd();       break;//向下翻页
+		case 6:
+			PageNumAdd();
+			break; //向下翻页
 		case 7:
-			if (12 == g_pageNum)
+			if (13 == g_pageNum)
+                        {
 				g_ad_flag = !g_ad_flag;
+			ind_left_line_max = 20;
+			ind_left_line_min = 4000;
+			ind_left_column_max = 20;
+			ind_left_column_min = 4000;
+			ind_right_line_max = 20;
+			ind_right_line_min = 4000;
+			ind_right_column_max = 20;
+			ind_right_column_min = 4000;
+			ind_mid_max = 20;
+			ind_mid_min = 4000;
+                        }
 			else changemode();
 			//				SD_Gather_Camera_Picture_120x188();        break; //采图
 			break;
@@ -517,7 +545,7 @@ void Key_Function(void)
 				OLED_Clear();
 			}
 			else
-				LineNumAdd();           //行数下移
+				LineNumAdd(); //行数下移
 			break;
 		case 9:
 
@@ -554,50 +582,79 @@ void Key_Function(void)
 			//				g_ad_flag = 1;
 			//				Img_RampFlag = 0;
 			//			}
-						// g_ramp_enable = 1;
+			// g_ramp_enable = 1;
 
 			//			g_drive_flag = !g_drive_flag;
 			//			TurnTailFlag=!TurnTailFlag;
-//			SD_Gather_Gray_Picture120x188();
+			//			SD_Gather_Gray_Picture120x188();
 
-//			FlagChange(&g_drive_flag);//开电机
-//			if (g_drive_flag)
-//			{
-				g_StateMaster = 2;
-                                g_car_lanuch=1;
-				g_MasterOutFlag = 0;;
-				CircleFlag = 0;
-				CircleState = 0;
-				Img_BrokenFlag = 0;
-				Img_BlockFlag = 0;
-				if (1 == g_camera_open)
-					g_handle_open = 1;
-				g_ad_flag = 1;
-				Img_RampFlag = 0;
-//			}
+			//			FlagChange(&g_drive_flag);//开电机
+			//			if (g_drive_flag)
+			//			{
+                  
+                  
+                  
+                  
+                  
+//			g_StateMaster = 2;
+//			g_car_lanuch = 1;
+//			g_MasterOutFlag = 0;
+//			;
+//			CircleFlag = 0;
+//			CircleState = 0;
+//			Img_BrokenFlag = 0;
+//			Img_BlockFlag = 0;
+//			if (1 == g_camera_open)
+//				g_handle_open = 1;
+//			g_ad_flag = 1;
+//			Img_RampFlag = 0;
+//                        
+                        
+                        
+                        
+                        SD_Gather_Gray_Picture120x188(); 
+			//			}
 			break; //采图
-		default:                     break;
+		default:
+			break;
 		}
 	}
 	else
 	{
 		switch (g_Key)
 		{
-		case 1: MyFlash_Write(0);    break;    //写入FLASH
-		case 2: LineNumReduce();    break;    //行数上移
-		case 3: g_plusFlg = 1;      break;    //数值加
-		case 4: g_Rate--;           break;    //减少倍率
-		case 5: g_lineLock = 0;     break;    //退出数值修改
-		case 6: g_Rate++;           break;    //增加倍率
-		case 7:                     break;
-		case 8: LineNumAdd();       break;    //行数下移
-		case 9: g_minisFlg = 1;     break;    //数值减
-		default:                    break;
+		case 1:
+			MyFlash_Write(0);
+			break; //写入FLASH
+		case 2:
+			LineNumReduce();
+			break; //行数上移
+		case 3:
+			g_plusFlg = 1;
+			break; //数值加
+		case 4:
+			g_Rate--;
+			break; //减少倍率
+		case 5:
+			g_lineLock = 0;
+			break; //退出数值修改
+		case 6:
+			g_Rate++;
+			break; //增加倍率
+		case 7:
+			break;
+		case 8:
+			LineNumAdd();
+			break; //行数下移
+		case 9:
+			g_minisFlg = 1;
+			break; //数值减
+		default:
+			break;
 		}
 	}
 	INTR_Keyboard_Init();
 }
-
 
 //*
 //*  @brief:		显示倍率和光标
@@ -759,42 +816,64 @@ void Extra_Show(void)
 	}
 	switch (g_Rate)
 	{
-	case -4: g_Rate = 2;                         break;
-	case -3: g_addValue = 0.001;                 break;
-	case -2: g_addValue = 0.01;                  break;
-	case -1: g_addValue = 0.1;                   break;
-	case 0: g_addValue = 1;                      break;
-	case 1: g_addValue = 10;                     break;
-	case 2: g_addValue = 100;                    break;
-	case 3: g_addValue = 1000;                  break;
-	case 4: g_Rate = -3;                         break;
-	default: g_Rate = 0;                       break;
+	case -4:
+		g_Rate = 2;
+		break;
+	case -3:
+		g_addValue = 0.001;
+		break;
+	case -2:
+		g_addValue = 0.01;
+		break;
+	case -1:
+		g_addValue = 0.1;
+		break;
+	case 0:
+		g_addValue = 1;
+		break;
+	case 1:
+		g_addValue = 10;
+		break;
+	case 2:
+		g_addValue = 100;
+		break;
+	case 3:
+		g_addValue = 1000;
+		break;
+	case 4:
+		g_Rate = -3;
+		break;
+	default:
+		g_Rate = 0;
+		break;
 	}
 
 #if _USE_LCD
-	if (g_Rate >= 0)                                      //显示倍率
+	if (g_Rate >= 0) //显示倍率
 	{
 		LCD_DispChar(144, 0, ' ');
 		OLED_Write_Int(0, 152, g_Rate);
 	}
-	else OLED_Write_Int(0, 144, g_Rate);
+	else
+		OLED_Write_Int(0, 144, g_Rate);
 #elif _USE_IPS
 	if (g_Rate >= 0)
 	{
 		IPS_DispChar(224, 0, ' ');
 		OLED_Write_Int(0, 232, g_Rate);
 	}
-	else OLED_Write_Int(0, 224, g_Rate);
+	else
+		OLED_Write_Int(0, 224, g_Rate);
 #else
-	if (g_Rate >= 0)                                      //显示倍率
+	if (g_Rate >= 0) //显示倍率
 	{
 		OLED_Write_String(0, 112, " ");
 		OLED_Write_Int(0, 120, g_Rate);
 	}
-	else OLED_Write_Int(0, 112, g_Rate);
-#endif  
+	else
+		OLED_Write_Int(0, 112, g_Rate);
+#endif
 }
-
 
 //*
 //*  @brief:		菜单主体显示 包括变量显示与图像显示
@@ -807,7 +886,7 @@ void Main_Show(void)
 	g_pageCount = 0;
 
 	//图像页
-//	 Insert_Img("\0", DisPlayImage);
+	//	 Insert_Img("\0", DisPlayImage);
 	Insert_Page("Display");
 	if (g_pageNum == 1)
 	{
@@ -817,13 +896,13 @@ void Main_Show(void)
 		case 0:
 			g_picture_show = 1;
 			break;
-		case 1:        //圆环
+		case 1: //圆环
 			OLED_Write_Int(2, 8, Img_RampFlag);
-			OLED_Write_Int(4, 8, Img_BrokenFlag);            //断路标志
-			OLED_Write_Int(6, 8, Img_BlockFlag);			//路障标志
-			OLED_Write_Int(2, 96, g_StateMaster);         //会车状态
-			OLED_Write_Int(4, 96, g_StateSlave);            
-			OLED_Write_Int(6, 96, CircleState);           //环岛状态标志
+			OLED_Write_Int(4, 8, Img_BrokenFlag); //断路标志
+			OLED_Write_Int(6, 8, Img_BlockFlag);  //路障标志
+			OLED_Write_Int(2, 96, g_StateMaster); //会车状态
+			OLED_Write_Int(4, 96, g_StateSlave);
+			OLED_Write_Int(6, 96, CircleState); //环岛状态标志
 			LCD_DispString(16, 2, "Ramp");
 			LCD_DispString(16, 4, "Broken");
 			LCD_DispString(16, 6, "Block");
@@ -859,7 +938,7 @@ void Main_Show(void)
 			//                 OLED_Write_Int(6,96,IdentifyMeetingArea());
 			//                 OLED_Write_Int(6,120,g_score);
 			//                 break;
-		case 3:      //调镜头信息页
+		case 3: //调镜头信息页
 			Dis_Int(1, ML[70]);
 			Dis_Int(2, ML[60]);
 			Dis_Int(3, ML[50]);
@@ -884,20 +963,17 @@ void Main_Show(void)
 	Insert_Float("y", &sensor.Gyro_deg.y);
 	Insert_Float("z", &sensor.Gyro_deg.z);
 
-	Insert_Page("PID_A");//角度
+	Insert_Page("PID_A"); //角度
 	Insert_Float("set", &g_angle_set);
 	Insert_Float("out", &g_AngleOut);
 	Insert_Float("PA", &g_angle_P);
 	Insert_Float("PR", &g_RateP);
 	Insert_Float("DR", &g_RateD);
-        Insert_Float("SP", &g_angle_Psingle);
-         Insert_Float("SD", &g_angle_D);
+	Insert_Float("SP", &g_angle_Psingle);
+	Insert_Float("SD", &g_angle_D);
 	// Insert_Float("flygyro",)
 
-
-
-
-	Insert_Page("PID_D/C");//方向
+	Insert_Page("PID_D/C"); //方向
 	Insert_Float("error", &g_errorD);
 	Insert_Float("Out", &g_fDirectionControlOut);
 	Insert_Float("KP", &gRateKp);
@@ -906,9 +982,9 @@ void Main_Show(void)
 	Insert_Float("D", &g_dire_D);
 	Insert_Int("MAX", &max_duty);
 	Insert_Int("ProOUT", &ProSpect);
-	Insert_Float("xxx", &acc_Xpeed);
+	Insert_Float("Circle_P", &Circle_P);
 
-	Insert_Page("PID_D/AD");//方向
+	Insert_Page("PID_D/AD"); //方向
 	Insert_Float("error", &g_errorD);
 	Insert_Float("Out", &g_fDirectionControlOut);
 	Insert_Float("KP", &gRateKp_AD);
@@ -916,8 +992,7 @@ void Main_Show(void)
 	Insert_Float("P", &g_dire_P_AD);
 	Insert_Float("D", &g_dire_D_AD);
 
-
-	Insert_Page("PID_S");//速度
+	Insert_Page("PID_S"); //速度
 	Insert_Float("SpdSet", &g_fSpeed_set);
 	Insert_Float("error", &g_errorS);
 	Insert_Float("P", &g_Speed_P);
@@ -931,6 +1006,13 @@ void Main_Show(void)
 	Insert_Int("stop_inf", &stop_inf);
 	Insert_Int("angle", &st);
 	Insert_Int("sum_dist", &sum_dist);
+
+	Insert_Page("RampBlockBroken");
+	Insert_Float("Rampangle", &Rampangle);
+	Insert_Int("BrokenTTPWM", &BrokenTurnTailPWM);
+	Insert_Int("BrokenDistance", &BrokenTurnTailDistance);
+        Insert_Int("AngleFlag",&AngleMutationFlag);
+
 	//	Insert_Int("delay_dist", &delay_dist);
 
 	Insert_Page("ImgFlag");
@@ -948,8 +1030,7 @@ void Main_Show(void)
 	Insert_Char("SlaveS", &g_StateSlave);
 	Insert_Char("MasterO", &g_MasterOutFlag);
 	Insert_Char("SlaveO", &g_SlaveOutFlag);
-        Insert_Int("TurnTailPWM", &BrokenTurnTailPWM);
-        
+	Insert_Int("TurnTailPWM", &BrokenTurnTailPWM);
 
 	Insert_Page("PWM"); //电机
 	Insert_Int("left", &lCurSpeed);
@@ -959,7 +1040,7 @@ void Main_Show(void)
 	Insert_Float("duty_L", &g_duty_left);
 	Insert_Float("duty_R", &g_duty_right);
 
-	Insert_Page("camera");//摄像头曝光时间
+	Insert_Page("camera"); //摄像头曝光时间
 	Insert_Int("exp", &exp_time);
 	Insert_Int("HighTH", &HighThreshold);
 	Insert_Int("LowTH", &LowThreshold);
@@ -967,7 +1048,6 @@ void Main_Show(void)
 	Insert_Char("exp_page", &g_explore_page);
 	Insert_Int("Diff", &DiffThreshold);
 	Insert_Int("Light", &LightThreshold);
-
 
 	Insert_Page("AD"); //电感
 	Insert_Int("L-", &ind_left_line);
@@ -986,7 +1066,6 @@ void Main_Show(void)
 	Insert_Float("norm_L|", &left_column_norm);
 	Insert_Float("noem_R|", &right_column_norm);
 	Insert_Int("Flag", &g_ad_flag);
-
 }
 
 //*
@@ -996,8 +1075,8 @@ void Main_Show(void)
 //*
 void ExploreTime(void)
 {
-	static unsigned char DispPicture = 0;	//显示整幅图像
-	static unsigned char DispEage = 1;		//显示边缘
+	static unsigned char DispPicture = 0; //显示整幅图像
+	static unsigned char DispEage = 1;	//显示边缘
 	static signed char AddMul = 0;
 	static unsigned char AddValue = 1;
 	CannyEage();
@@ -1005,27 +1084,32 @@ void ExploreTime(void)
 	displayimage032_zoom(image[0], 64, 10, 70, 0);
 	if (DispEage)
 	{
-		unsigned char* p = ImageEage[0];
+		unsigned char *p = ImageEage[0];
 		for (int i = 10; i <= 70; i++)
 		{
 			for (int j = 0; j < 160; j++)
 			{
-				unsigned char temp = *(p + i * ROW / 120 * COL + j * (COL - 1) / (160 - 1));//读取像素点
+				unsigned char temp = *(p + i * ROW / 120 * COL + j * (COL - 1) / (160 - 1)); //读取像素点
 				if (HIGH_TH == temp)
 				{
-					Lcd_SetRegion(j, i + 54, j, i + 54);		//坐标设置
+					Lcd_SetRegion(j, i + 54, j, i + 54); //坐标设置
 					LCD_WriteData_16Bit(BLUE);
 				}
 			}
 		}
 	}
 	//display
-	Dis_String(1, "exp_time"); Dis_Int(2, exp_time);
-	Dis_String(3, "ave_gray"); Dis_Int(4, LightThreshold);
+	Dis_String(1, "exp_time");
+	Dis_Int(2, exp_time);
+	Dis_String(3, "ave_gray");
+	Dis_Int(4, LightThreshold);
 	OLED_Write_Int(0, 152, AddValue);
-	if (0 == AddMul) AddValue = 1;
-	else if (1 == AddMul) AddValue = 10;
-	else if (2 == AddMul) AddValue = 100;
+	if (0 == AddMul)
+		AddValue = 1;
+	else if (1 == AddMul)
+		AddValue = 10;
+	else if (2 == AddMul)
+		AddValue = 100;
 	switch (g_Key)
 	{
 	case 1:
@@ -1036,11 +1120,13 @@ void ExploreTime(void)
 		break;
 	case 4:
 		AddMul--;
-		if (AddMul < 0)AddMul = 2;
+		if (AddMul < 0)
+			AddMul = 2;
 		break;
 	case 6:
 		AddMul++;
-		if (AddMul > 2) AddMul = 0;
+		if (AddMul > 2)
+			AddMul = 0;
 		break;
 	case 5:
 		set_exposure_time(exp_time);

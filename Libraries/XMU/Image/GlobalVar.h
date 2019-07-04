@@ -36,6 +36,7 @@ extern float g_angle_D;
 //单级
 extern float g_single_angle_P;
 extern float g_single_angle_D;
+extern int AngleMutationFlag;
 //***********MOTOR（电机模式及其输出及开关）***********//
 extern float g_fleft;
 extern float g_fright;
@@ -81,6 +82,8 @@ extern float g_dire_ad_D ;
 
 extern float g_fDirectionControlOut_new;
 extern float g_fDirectionControlOut_before;
+
+extern float Circle_P;
 //**************************Direction方向环（电感）**************//
 extern float gRateKp_AD ;            //串级p
 extern float gRateKd_AD ;            //串级d
@@ -526,7 +529,7 @@ extern int circlelandsymbol;
 /*************====================坡道路障相关可控制变量=======================*************/
 extern int BrokenTurnTailPWM;
 extern int BrokenTurnTailDistance;
-extern int Rampangle;
+extern float Rampangle;
 /*************====================开机加速相关变量=======================*************/
 extern int BootRacerFlag;
 extern int BootRacerDistance;

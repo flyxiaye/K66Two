@@ -56,10 +56,11 @@ int main(void)
 //                UserData();
     SendAngle();
 ////    SendData();
-//                		if (Img_BrokenFlag)
-//			gpio_init(D0, GPO, 0);
-//		else gpio_init(D0, GPO, 1);
-		if (CircleFlag)
+                	if(AngleMutationFlag)
+			gpio_init(D1, GPO, 0);
+		else gpio_init(D1, GPO, 1);
+//		if (CircleFlag)
+                	if (Img_RampFlag||CircleFlag)
 			gpio_init(A7, GPO, 1);
 		else gpio_init(A7, GPO, 0);
          

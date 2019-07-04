@@ -8,11 +8,11 @@ void ind_acq(void)                         //µç¸Ð²É¼¯
 {
 	//²É¼¯µç¸Ð
 
-	ind_left_line = ad_ave(ADC1_SE8, ADC_12bit, 6);
-	ind_left_column = ad_ave(ADC1_SE9, ADC_12bit, 6);
-	ind_right_line = ad_ave(ADC0_SE13, ADC_12bit, 6);
-	ind_right_column = ad_ave(ADC0_SE12, ADC_12bit, 6);
-	ind_mid = ad_ave(ADC0_SE18, ADC_12bit, 6);
+	ind_left_line = collect(ADC1_SE8);
+	ind_left_column = ad_riyueqsort(ADC1_SE9, ADC_12bit);
+	ind_right_line = collect(ADC0_SE13);
+	ind_right_column = ad_riyueqsort(ADC0_SE12, ADC_12bit);
+	ind_mid = collect(ADC0_SE18);
 
 	//µç¸ÐÖµÏÞ·ù
 	ind_left_line = MIN(ind_left_line, 4000);
@@ -34,7 +34,7 @@ void ind_acq(void)                         //µç¸Ð²É¼¯
 void ind_protect(void)
 {
 	static int count = 0;
-	if (ind_left_line < 70 &&ind_right_column<70&&ind_left_column<70&&g_mode!=2&&g_mode!=4&&g_mode!=6&&g_mode!=7&&!Img_BlockFlag)
+	if (ind_left_line < 70 &&ind_right_column<70&&ind_left_column<70&&ind_mid < 70 &&g_mode!=2&&g_mode!=4&&g_mode!=6&&g_mode!=7&&!Img_BlockFlag)
 	{
 		g_drive_flag = 0;
                 g_SlaveOutFlag=1;
@@ -87,8 +87,12 @@ void get_ind_error(void)  //µç¸Ð»ñÈ¡ErrorÖµ note:·ÅÔÚÖÐ¶Ï Èç¹ûµç¸Ð¿ª ÔòÒ»Ö±²É¼¯µ
 
 unsigned char IndJudgeCircle(unsigned char type)
 {
+#if CI_IND
   if(mid_norm > 1.3)
 	return 1;
   else return 0;
+#else 
+  return 1;
+#endif
 }
 

@@ -130,6 +130,7 @@ void Camera_DirectionControl()
 	static float g_fDirectionAngleControlOut = 0.0f;
 	static float sensorGyroZLast = 0.0f;
 	static float g_error_before = 0.0f;
+        static float temporary_P = 0.0f;
 	if (count >= 5)
 	{
 		count = 0;
@@ -139,6 +140,14 @@ void Camera_DirectionControl()
 //		}
 //		else
 //		{	
+         if(CircleState >= 2)
+        {
+          temporary_P = Circle_P;
+        }
+        else
+        {
+          temporary_P = g_dire_P;
+        }
           if(!Img_BlockFlag)
 			{
 			g_errorD = 94 - ML[ProSpect];
@@ -149,10 +158,11 @@ void Camera_DirectionControl()
 				g_errorD = g_error_before;
 			}
 		}
-		g_fDirectionAngleControlOut = g_errorD * g_dire_P *(curSpeed/g_fSpeed_set*0.3+0.7)+ (g_errorD - g_error_before) * g_dire_D;
+		g_fDirectionAngleControlOut = g_errorD * temporary_P *(curSpeed/g_fSpeed_set*0.3+0.7)+ (g_errorD - g_error_before) * g_dire_D;
 		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
 	}
+      
 	else count++;
 }
