@@ -35,7 +35,7 @@ float g_angle_D=100;
 //单级
 float g_single_angle_P = 1;
 float g_single_angle_D = 0;
-int AngleMutationFlag=0;     //跳变检测
+int AngleMutationFlag=1;     //跳变检测
 //***********MOTOR（电机模式及其输出及开关）***********//
 float g_fleft;
 float g_fright;
