@@ -358,3 +358,26 @@ uint16 collect(ADCn_Ch adcn_ch) //一版
 
 }
 #undef  SAMP_COUNT
+int cmp(const void *a, const void *b)
+{
+  return *(int*)a-*(int *)b;
+}
+int ad_riyueqsort(ADCn_Ch adcn_ch, ADC_nbit bit) //巴拉拉掐头去尾滤波
+{
+    uint32_t tmp = 0;
+    uint8_t  i;
+    int adc10[10];
+    //ASSERT( ((adcn == ADC0) && (ch >= AD8 && ch <= AD18)) || ((adcn == ADC1) && (ch >= AD4a && ch <= AD17)) ) ; //使用断言检测ADCn_CHn是否正常
+
+    for(i = 0; i <10; i++)
+    {
+      adc10[i]=adc_once(adcn_ch,bit);
+    }
+    qsort(adc10,10,sizeof(adc10[0]),cmp);
+    for(i = 1; i < 9; i++)
+    {
+        tmp += adc10[i];
+    }
+    tmp = tmp / 8;
+    return (uint16_t)tmp;
+}

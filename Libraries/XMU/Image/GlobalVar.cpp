@@ -35,7 +35,7 @@ float g_angle_D=100;
 //单级
 float g_single_angle_P = 1;
 float g_single_angle_D = 0;
-
+int AngleMutationFlag=0;     //跳变检测
 //***********MOTOR（电机模式及其输出及开关）***********//
 float g_fleft;
 float g_fright;
@@ -333,8 +333,8 @@ int circlelandsymbol=0;
 uint8 phototube=0;
 /*************====================坡道路障相关可控制变量=======================*************/
 int BrokenTurnTailPWM=2900;
-int BrokenTurnTailDistance=300;
-int Rampangle=12;
+int BrokenTurnTailDistance=500;
+float Rampangle=12;
 
 /*************====================开机加速相关变量=======================*************/
 int BootRacerFlag=0;

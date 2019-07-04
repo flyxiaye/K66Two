@@ -138,9 +138,9 @@ uint16 ad_flt(ADCn_Ch adcn_ch, ADC_nbit bit);
 uint16 collect(ADCn_Ch adcn_ch);
 
 
+int cmp(const void *a, const void *b);
 
-
-
+int ad_riyueqsort(ADCn_Ch adcn_ch, ADC_nbit bit);//巴拉拉掐头去尾滤波
 
 
 

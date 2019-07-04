@@ -8,11 +8,11 @@ void ind_acq(void)                         //电感采集
 {
 	//采集电感
 
-	ind_left_line = ad_ave(ADC1_SE8, ADC_12bit, 6);
-	ind_left_column = ad_ave(ADC1_SE9, ADC_12bit, 6);
-	ind_right_line = ad_ave(ADC0_SE13, ADC_12bit, 6);
-	ind_right_column = ad_ave(ADC0_SE12, ADC_12bit, 6);
-	ind_mid = ad_ave(ADC0_SE18, ADC_12bit, 6);
+	ind_left_line = collect(ADC1_SE8);
+	ind_left_column = ad_riyueqsort(ADC1_SE9, ADC_12bit);
+	ind_right_line = collect(ADC0_SE13);
+	ind_right_column = ad_riyueqsort(ADC0_SE12, ADC_12bit);
+	ind_mid = collect(ADC0_SE18);
 
 	//电感值限幅
 	ind_left_line = MIN(ind_left_line, 4000);
