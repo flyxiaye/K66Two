@@ -18,7 +18,7 @@
 
 extern void OLED_Clear(void);
 
-#define First_Time_Init 20
+#define First_Time_Init 21
 
 
 /********** 以下为存储的数据 **********/

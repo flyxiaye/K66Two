@@ -87,8 +87,12 @@ void get_ind_error(void)  //µç¸Ğ»ñÈ¡ErrorÖµ note:·ÅÔÚÖĞ¶Ï Èç¹ûµç¸Ğ¿ª ÔòÒ»Ö±²É¼¯µ
 
 unsigned char IndJudgeCircle(unsigned char type)
 {
+#if CI_IND
   if(mid_norm > 1.3)
 	return 1;
   else return 0;
+#else 
+  return 1;
+#endif
 }
 

@@ -46,6 +46,7 @@ void Ramp2()//图像识别
     }
     else if(acc_speed>6000)
     {
+      acc_speed = 0;
       gpio_init(D1,GPO,1);
       rampflag=0;
       g_mode=3;

@@ -6,8 +6,7 @@ const unsigned char g_Bit_Val_Up[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 const unsigned char g_Bit_Val_Down[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
 //**********Angle(角度控制)**************//
-float g_angle_set=18.09;//车平衡位置角度
-float g_angle_set_const = 26;
+float g_angle_set=-35.7;//车平衡位置角度
 
 float g_gyro_ratio = 4.8;
 float g_AngleControlOut = 0;
@@ -27,9 +26,9 @@ int g_count = 0;
 
 //串级
 float g_AngleOut = 0.0f;
-float g_RateP = 39.09;
-float g_RateD = 61.69;
-float g_angle_P=19.3; 
+float g_RateP = 21.3;
+float g_RateD = 92;
+float g_angle_P=21.3; 
 float g_angle_Psingle=850; 
 float g_angle_D=100; 
 //单级
@@ -44,10 +43,10 @@ float g_duty_left=0;
 float g_duty_right=0;
 //***********Speed(速度控制)**********//
 int g_flag=0;  //是否发车
-float g_Speed_P = 240;
-float g_Speed_I = 0.97;
+float g_Speed_P = 440;
+float g_Speed_I = 1.37;
 float g_fSpeedControlOut = 0;//输出速度控制
-float g_fSpeed_set = 20;//设置的速度值
+float g_fSpeed_set = 30;//设置的速度值
 float g_nSpeedControlPeriod=-1;
 float g_SpeedPeriod=10;
 float g_nLeftMotorPulseSigma = 0;//编码器采集的脉冲值
@@ -60,11 +59,11 @@ int Speed_MAX = 3800;//积分限幅
 
 
 //**************************Direction方向环（摄像头）**************//
-float gRateKp = 8.41;            //串级p
-float gRateKd = 10.1;            //串级d
+float gRateKp = 18.4;            //串级p
+float gRateKd = 15.1;            //串级d
 
-float g_dire_P=9;
-float g_dire_D=9.2;
+float g_dire_P=14;
+float g_dire_D=13.2f;
 float g_errorD=0;//差值
 float g_errorCircleland=0;
 float g_fDirectionControlOut;
@@ -153,7 +152,7 @@ void VarInit(void)
 int StraightFlag = 0;//直道标志位 1为直道
 //==========================摄像头参数==============================//
 unsigned char image[ROW][COL];        //摄像头数据接收
-int exp_time = 300;                           //摄像头曝光时间
+int exp_time = 330;                           //摄像头曝光时间
 int HighThreshold = 50;						//canny高阈值
 int LowThreshold = 20;						//canny低阈值
 int ControlMid = 90;						//图像控制中值
@@ -314,16 +313,16 @@ int obj_angle_2 = -180;
 int const_error_1 = -20;
 int const_error_2 = 40;
 int max_duty = 8000;
-int OutMeetingDistance = 7000;
+int OutMeetingDistance = 4000;
 float GroundAngle = 9.73;
 /*====================================路障=====================================*/
 int sum = 0;
 int sum_dist = 4500;
-int g_inf = 0;
+int g_inf =0 ;
 int st = -40;
-int stop_inf = 900;
+int stop_inf = 1530;
 
-/**************电磁环岛*************/
+/**************0电磁环岛*************/
 float Circlelanderror=0;
 int circlelandflag=0;
 float circlelandSigma=0;
@@ -334,9 +333,9 @@ int circlelandsymbol=0;
 
 uint8 phototube=0;
 /*************====================坡道路障相关可控制变量=======================*************/
-int BrokenTurnTailPWM=2900;
-int BrokenTurnTailDistance=500;
-float Rampangle=12;
+int BrokenTurnTailPWM=2799;
+int BrokenTurnTailDistance=499;
+float Rampangle=9;
 
 /*************====================开机加速相关变量=======================*************/
 int BootRacerFlag=0;

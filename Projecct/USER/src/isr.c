@@ -88,9 +88,10 @@ void PIT0_IRQHandler(void)
 //	BootRacer();
 	AngleControl();
 	inf();
-	roadblock3();
+	
 	circleland2();
         Ramp2();
+        roadblock3();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //¶ÁÈ¡±àÂëÆ÷¼ÆÊý
