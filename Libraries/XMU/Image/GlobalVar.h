@@ -82,6 +82,8 @@ extern float g_dire_ad_D ;
 
 extern float g_fDirectionControlOut_new;
 extern float g_fDirectionControlOut_before;
+
+extern float Circle_P;
 //**************************Direction方向环（电感）**************//
 extern float gRateKp_AD ;            //串级p
 extern float gRateKd_AD ;            //串级d

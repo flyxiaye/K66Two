@@ -35,7 +35,7 @@ float g_angle_D=100;
 //单级
 float g_single_angle_P = 1;
 float g_single_angle_D = 0;
-int AngleMutationFlag=0;     //跳变检测
+int AngleMutationFlag=1;     //跳变检测
 //***********MOTOR（电机模式及其输出及开关）***********//
 float g_fleft;
 float g_fright;
@@ -73,6 +73,8 @@ float g_DirectionPeriod=5;//分的段数
 float AD_flag = 0;
 float g_fDirectionControlOut_new=0;
 float g_fDirectionControlOut_before=0;
+
+float Circle_P = 11;//环岛P
 //**************************Direction方向环（电感）**************//
 float gRateKp_AD = 15;            //串级p
 float gRateKd_AD = 10;            //串级d

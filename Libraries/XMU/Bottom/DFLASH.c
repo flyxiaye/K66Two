@@ -66,6 +66,8 @@ extern void OLED_Clear(void);
 #define DFLASH_PARAM42		ind_right_column_min
 #define DFLASH_PARAM43		ind_mid_max
 #define DFLASH_PARAM44		ind_mid_min
+#define DFLASH_PARAM45		Circle_P
+
 
 
 /********** 以上为存储的数据 **********/
@@ -126,7 +128,7 @@ void MyFlash_Write(signed int flashnum)
 	DFlash_Write_Int(SECTOR_NUM + flashnum, 42, DFLASH_PARAM42);
 	DFlash_Write_Int(SECTOR_NUM + flashnum, 43, DFLASH_PARAM43);
 	DFlash_Write_Int(SECTOR_NUM + flashnum, 44, DFLASH_PARAM44);
-	//    DFlash_Write_Int(SECTOR_NUM + flashnum, 32, DFLASH_PARAM32);
+        DFlash_Write_Float(SECTOR_NUM + flashnum, 45, DFLASH_PARAM45);
 
 		/********** 以上为存储的数据 **********/
 #ifdef _USE_LCD
@@ -190,7 +192,7 @@ void MyFlash_Read(signed int flashnum)
 		DFLASH_PARAM42 = DFlash_Read_Int(SECTOR_NUM + flashnum, 42);
 		DFLASH_PARAM43 = DFlash_Read_Int(SECTOR_NUM + flashnum, 43);
 		DFLASH_PARAM44 = DFlash_Read_Int(SECTOR_NUM + flashnum, 44);
-		//        DFLASH_PARAM32 = DFlash_Read_Int(SECTOR_NUM + flashnum,32);
+		        DFLASH_PARAM45 = DFlash_Read_Float(SECTOR_NUM + flashnum,45);
 
 
 

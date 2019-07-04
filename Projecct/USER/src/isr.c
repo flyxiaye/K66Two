@@ -67,6 +67,7 @@ void PIT0_IRQHandler(void)
 {
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
+        if(g_drive_flag)
 	AngleMutation();
 	//    if (g_block_open)           //Â·ÕÏ
 	//    {

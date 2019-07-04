@@ -591,18 +591,28 @@ void Key_Function(void)
 			//			FlagChange(&g_drive_flag);//开电机
 			//			if (g_drive_flag)
 			//			{
-			g_StateMaster = 2;
-			g_car_lanuch = 1;
-			g_MasterOutFlag = 0;
-			;
-			CircleFlag = 0;
-			CircleState = 0;
-			Img_BrokenFlag = 0;
-			Img_BlockFlag = 0;
-			if (1 == g_camera_open)
-				g_handle_open = 1;
-			g_ad_flag = 1;
-			Img_RampFlag = 0;
+                  
+                  
+                  
+                  
+                  
+//			g_StateMaster = 2;
+//			g_car_lanuch = 1;
+//			g_MasterOutFlag = 0;
+//			;
+//			CircleFlag = 0;
+//			CircleState = 0;
+//			Img_BrokenFlag = 0;
+//			Img_BlockFlag = 0;
+//			if (1 == g_camera_open)
+//				g_handle_open = 1;
+//			g_ad_flag = 1;
+//			Img_RampFlag = 0;
+//                        
+                        
+                        
+                        
+                        SD_Gather_Gray_Picture120x188(); 
 			//			}
 			break; //采图
 		default:
@@ -972,7 +982,7 @@ void Main_Show(void)
 	Insert_Float("D", &g_dire_D);
 	Insert_Int("MAX", &max_duty);
 	Insert_Int("ProOUT", &ProSpect);
-	Insert_Float("xxx", &acc_Xpeed);
+	Insert_Float("Circle_P", &Circle_P);
 
 	Insert_Page("PID_D/AD"); //方向
 	Insert_Float("error", &g_errorD);
@@ -1001,6 +1011,7 @@ void Main_Show(void)
 	Insert_Float("Rampangle", &Rampangle);
 	Insert_Int("BrokenTTPWM", &BrokenTurnTailPWM);
 	Insert_Int("BrokenDistance", &BrokenTurnTailDistance);
+        Insert_Int("AngleFlag",&AngleMutationFlag);
 
 	//	Insert_Int("delay_dist", &delay_dist);
 
