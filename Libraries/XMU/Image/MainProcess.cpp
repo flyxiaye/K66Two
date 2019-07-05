@@ -51,14 +51,14 @@ void MainFill(void)
 			FillLineCD();
 			FillAllEage();
 			CircleFlag = CN;
-		/*	if (Ind_CircleOpen)
+			if (Ind_CircleOpen)
 				CircleFlag = CN;
 			else
 			{
 				if (tmp_row > DOWN_EAGE - 10)
 					;
 				else CircleFlag = CN;
-			}*/
+			}
 		}
 		else if (CR == CircleFlag)
 		{
@@ -71,14 +71,14 @@ void MainFill(void)
 			FillLineCD();
 			FillAllEage();
 			CircleFlag = CN;
-		/*	if (Ind_CircleOpen)
+			if (Ind_CircleOpen)
 				CircleFlag = CN;
 			else
 			{
 				if (tmp_row > DOWN_EAGE - 10)
 					;
 				else CircleFlag = CN;
-			}*/
+			}
 		}
 		else
 #endif // CIRCLE
@@ -170,9 +170,9 @@ void GetML(void)
 	}
 	if (!ErrorFlag)
 		SpeedRow = GetSpeedRow(ControlMid, LeftPnt.ErrRow, RightPnt.ErrRow);
-//	if (!ErrorFlag && UP_EAGE + 1 >= SpeedRow)
-//		Ind_LongRoadFlag = 1;
-//	else Ind_LongRoadFlag = 0;
+	//	if (!ErrorFlag && UP_EAGE + 1 >= SpeedRow)
+	//		Ind_LongRoadFlag = 1;
+	//	else Ind_LongRoadFlag = 0;
 
 
 }

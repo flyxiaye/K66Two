@@ -151,14 +151,25 @@ void Camera_DirectionControl()
 		}
 		if (!Img_BlockFlag)
 		{
+			//动态前瞻
+			int pro = ProSpect;
+			if (curSpeed < 10)
+				pro = ProSpect + 10;
+			else if (curSpeed < 15)
+				pro = ProSpect + 6;
+			else if (curSpeed < 20)
+				pro = ProSpect + 3;
+			else if (curSpeed < 30)
+				pro = ProSpect;
+			else pro = ProSpect - 5;
 			//获取误差
-			if (ProSpect < ML_Count)
+			if (pro < ML_Count)
 			{
 				g_errorD = (ControlMid - ML[ML_Count]);
 			}
 			else
 			{
-				g_errorD = (ControlMid - ML[ProSpect]);
+				g_errorD = (ControlMid - ML[pro]);
 			}
 
 			if (ErrorFlag)
@@ -167,7 +178,14 @@ void Camera_DirectionControl()
 				g_errorD = g_error_before;
 			}
 		}
-		g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.3 + 0.7) + (g_errorD - g_error_before) * g_dire_D;
+		if (curSpeed > 15)
+		{
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.3 + 0.7) + (g_errorD - g_error_before) * g_dire_D;
+		}
+		else
+		{
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.5 + 0.5) + (g_errorD - g_error_before) * g_dire_D;
+		}
 		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
