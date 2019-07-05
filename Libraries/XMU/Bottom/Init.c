@@ -90,6 +90,14 @@ void DialSwitchInit()
     port_init_NoAlt(DIALSWITCH_PIN2,PULLUP);
     port_init_NoAlt(DIALSWITCH_PIN3,PULLUP);    
     port_init_NoAlt(DIALSWITCH_PIN4,PULLUP);
+        gpio_init(DIALSWITCH_PIN5, GPI, 1);   
+    gpio_init(DIALSWITCH_PIN6, GPI, 1);
+    gpio_init(DIALSWITCH_PIN7, GPI, 1);
+    gpio_init(DIALSWITCH_PIN8, GPI, 1);    
+    port_init_NoAlt(DIALSWITCH_PIN5,PULLUP);    
+    port_init_NoAlt(DIALSWITCH_PIN6,PULLUP);
+    port_init_NoAlt(DIALSWITCH_PIN7,PULLUP);    
+    port_init_NoAlt(DIALSWITCH_PIN8,PULLUP);
 
 
 }

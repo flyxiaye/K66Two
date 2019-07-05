@@ -255,6 +255,18 @@ void TurnNoTail()
     case 1: //拍地板
     {
       count++;
+       acc_Speed+=curSpeed;
+      if(g_StateSlave>=StateTwo)
+      {
+        AD_DirectionControl();
+        DirectionControlOutput();
+        if (acc_Speed > 1200)
+        {
+          TurnNoTail = 2;
+        }
+      }
+      else
+      {
       if (count < 50)
       {
         g_mode = 5;
@@ -282,11 +294,11 @@ void TurnNoTail()
       {
         count++;
       }
-      if (count <= 300)
+      if (count <= 300&&g_StateSlave<StateTwo)
       {
         g_drive_flag = 0;
       }
-      else if (count > 400)
+      else if (count > 400||g_StateSlave>=StateTwo)
       {
         acc_Speed+=curSpeed;
         count++;
@@ -344,4 +356,5 @@ void TurnNoTail()
       break;
     }
   }
+}
 }
