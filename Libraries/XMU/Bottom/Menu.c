@@ -596,23 +596,23 @@ void Key_Function(void)
                   
                   
                   
-//			g_StateMaster = 2;
-//			g_car_lanuch = 1;
-//			g_MasterOutFlag = 0;
-//			;
-//			CircleFlag = 0;
-//			CircleState = 0;
-//			Img_BrokenFlag = 0;
-//			Img_BlockFlag = 0;
-//			if (1 == g_camera_open)
-//				g_handle_open = 1;
-//			g_ad_flag = 1;
-//			Img_RampFlag = 0;
+			g_StateMaster = 0;
+			g_car_lanuch = 1;
+			g_MasterOutFlag = 0;
+			BootRacerFlag = 1;
+			CircleFlag = 0;
+			CircleState = 0;
+			Img_BrokenFlag = 0;
+			Img_BlockFlag = 0;
+			if (1 == g_camera_open)
+				g_handle_open = 1;
+			g_ad_flag = 1;
+			Img_RampFlag = 0;
 //                        
                         
                         
                         
-                        SD_Gather_Gray_Picture120x188(); 
+//                        SD_Gather_Gray_Picture120x188(); 
 			//			}
 			break; //≤…Õº
 		default:
@@ -1003,7 +1003,8 @@ void Main_Show(void)
 
 	Insert_Page("Obstacle");
 	Insert_Int("g_inf", &g_inf);
-	Insert_Int("stop_inf", &stop_inf);
+        Insert_Int("block_inf", &block_inf);
+	Insert_Int("ramp_inf", &ramp_inf);
 	Insert_Int("angle", &st);
 	Insert_Int("sum_dist", &sum_dist);
 

@@ -63,11 +63,11 @@ void TurnTail()
         g_angle_set = GroundAngle;
         AngleControl();
       }
-      else if (count >= 100 && count < 1000)
+      else if (count >= 100 && count < 500)
       {
         g_drive_flag = 0;
       }
-      else if (count >= 2000)
+      else if (count >= 500)
       {
         g_drive_flag = 1;
 

@@ -37,7 +37,7 @@ void ind_protect(void)
 	if (ind_left_line < 70 &&ind_right_column<70&&ind_left_column<70&&ind_mid < 70 &&g_mode!=2&&g_mode!=4&&g_mode!=6&&g_mode!=7&&!Img_BlockFlag)
 	{
 		g_drive_flag = 0;
-                g_SlaveOutFlag=1;
+                g_MasterOutFlag=1;
 		//    protect_flag=1;
 	}
 }
