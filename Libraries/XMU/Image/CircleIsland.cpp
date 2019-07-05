@@ -50,31 +50,16 @@ int Img_JudgeCircleIsland(int type)
 	else
 	{
 		if (Img_CircleOpen && !Img_SpecialElemFlag
-			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7
+			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE
 			&& RightPnt.ErrCol < RIGHT_EAGE - 55)
 		{
-			int middle = (LL[DOWN_EAGE] + RL[DOWN_EAGE]) >> 1;
-			for (int i = DOWN_EAGE - 1; i > DOWN_EAGE - 15; i--)
-			{
-
-				LL[i] = SearchLeftEage(i, middle);
-				if (LL[i] - LL[i + 1] > 8)
-					return CN;
-			}
 			CircleState = 2;
 			return CL;
 		}
 		else if (Img_CircleOpen && !Img_SpecialElemFlag
-			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7
+			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE
 			&& LeftPnt.ErrCol > LEFT_EAGE + 55)
 		{
-			int middle = (LL[DOWN_EAGE] + RL[DOWN_EAGE]) >> 1;
-			for (int i = DOWN_EAGE - 1; i > DOWN_EAGE - 15; i--)
-			{
-				RL[i] = SearchRightEage(i, middle);
-				if (RL[i + 1] - RL[i] > 8)
-					return CN;
-			}
 			CircleState = 2;
 			return CR;
 		}
