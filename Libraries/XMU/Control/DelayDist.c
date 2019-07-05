@@ -220,6 +220,7 @@ void DistBroken(void)
 {
 	static int BR_sum_dist = 7000;
 	static int BR_acc_dist = 0;
+	static float flipgyro=0;
           if (1 == Img_BrokenFlag)
           {
             BR_acc_dist += curSpeed;
@@ -228,4 +229,73 @@ void DistBroken(void)
           }
           else BR_acc_dist = 0;
           
+}
+void ADclearCircle2()
+{
+	static int CI_sum_dist =5700,CircleIntoFlag=0;
+	static int clearflag,indmidflag=0,indlineflag=0,indcolumnflag=0;   //各项Flag  中竖横各项电感
+	static int state=0;
+	static int CI_acc_dist=0;
+	static float entermidnorm=0,enterleftlinenorm=0,enterleftcolumnnorm=0,
+				 enterrighttlinenorm=0,enterightcolumnnorm=0;
+	switch(state)
+	{
+		case 0:
+		if(CircleFlag&&7!=CircleState)
+		{
+			state=1;
+			entermidnorm=mid_norm;
+			enterleftlinenorm=left_line_norm;
+			enterrighttlinenorm=right_line_norm;
+			enterleftcolumnnorm=left_column_norm;
+			enterightcolumnnorm=right_column_norm;
+			CircleIntoFlag=1;
+		}
+		break;
+		case 1:
+		{
+			CI_acc_dist+=curSpeed;
+			if(CI_acc_dist>CI_sum_dist)
+			{
+				state=0;
+				CircleFlag=0;
+				CircleState=0;
+				CI_acc_dist=0;
+				CircleIntoFlag=0;
+			}
+			if((left_column_norm-right_column_norm)>0.2||-(left_column_norm-right_column_norm)>0.2)
+		{
+			CircleIntoFlag=2;
+			if((left_line_norm>enterleftlinenorm&&right_line_norm>enterrighttlinenorm&&mid_norm>1.2*entermidnorm)
+				||(left_line_norm>1.5*enterleftlinenorm&&mid_norm<1.2*entermidnorm)
+				||(right_line_norm>1.5*enterrighttlinenorm&&mid_norm<1.2*entermidnorm))
+		{
+			CircleIntoFlag=3;
+			if(CircleState>3)
+			{
+				CircleState=3;
+				state=2;
+				CI_acc_dist=0;
+			}
+		}
+		}
+		}
+		break;
+	}
+	case 2:
+	 flipgyro += sensor.Gyro_deg.z * 0.002;
+	CI_acc_dist +=curSpeed;
+	if(CI_acc_dist>50000&&CircleState<=7)
+	{
+		CircleState=0;
+		state=0;
+	}
+	if(flipgyro>160)
+	{
+		CircleState=6;
+	}
+	if(7==CircleState)
+	{
+		state=0;
+	}
 }

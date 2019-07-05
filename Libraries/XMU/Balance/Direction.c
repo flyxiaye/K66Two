@@ -150,7 +150,10 @@ void Camera_DirectionControl()
         }
           if(!Img_BlockFlag)
 			{
-			g_errorD = 94 - ML[ProSpect];
+				if(ProSpect < ML_Count)
+					g_error = 94 - ML[ProSpect];
+				else
+					g_errorD = 94 - ML[ProSpect];
                           
 			if (ErrorFlag)
 			{
