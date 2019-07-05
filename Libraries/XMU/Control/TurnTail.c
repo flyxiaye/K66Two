@@ -241,8 +241,11 @@ void TurnNoTail()
         initmode = g_mode;
         initcameraopen = g_camera_open;
         initindopen = g_ind_open;
+        g_camera_open = 0;
+        g_ind_open = 0;
         lastspeed = curSpeed;
         lastangle = _ANGLE;
+
         TurnNoTail = 1;
         acc_Speed = 0;
         flipgyro = 0;
@@ -252,18 +255,6 @@ void TurnNoTail()
     case 1: //拍地板
     {
       count++;
-      acc_Speed+=curSpeed;
-      if(g_StateSlave>=StateTwo)
-      {
-      AD_DirectionControl();
-      DirectionControlOutput();
-      if(acc_Speed>1200)
-      {
-        TurnNoTail = 2;
-      }
-      }
-      else
-      {
       if (count < 50)
       {
         g_mode = 5;
@@ -283,7 +274,6 @@ void TurnNoTail()
         g_StateMaster = StateTwo;
         acc_Speed=0;
       }
-      }
       break;
     }
     case 2:
@@ -296,7 +286,7 @@ void TurnNoTail()
       {
         g_drive_flag = 0;
       }
-      else if (count > 400||g_StateSlave>=StateTwo)
+      else if (count > 400)
       {
         acc_Speed+=curSpeed;
         count++;
