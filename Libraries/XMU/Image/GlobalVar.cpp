@@ -320,8 +320,7 @@ int sum = 0;
 int sum_dist = 4500;
 int g_inf =0 ;
 int st = -40;
-int block_inf = 900;
-int ramp_inf = 1200;
+int stop_inf = 1530;
 
 /**************0电磁环岛*************/
 float Circlelanderror=0;
@@ -341,4 +340,4 @@ float Rampangle=9;
 /*************====================开机加速相关变量=======================*************/
 int BootRacerFlag=0;
 int BootRacerDistance=5000;
-int BootRacerAngle=-30;
+int BootRacerAngle=-11;

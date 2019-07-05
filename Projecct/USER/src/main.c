@@ -54,8 +54,8 @@ int main(void)
 		}
 		//Bluebooth_Push_Data();
 //                UserData();
-//    SendAngle();
-    SendData();
+    SendAngle();
+////    SendData();
                 	if(AngleMutationFlag)
 			gpio_init(D1, GPO, 0);
 		else gpio_init(D1, GPO, 1);

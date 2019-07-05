@@ -15,7 +15,7 @@ void Ramp1()// 沙雕识别
   if(rampflag)
   {
     acc_speed+=curSpeed;
-    if(acc_speed>8000&&gpio_get(C8)==1)
+    if(acc_speed>4000&&gpio_get(C8)==1)
     {
       rampflag=0;
       g_mode=3;
@@ -25,7 +25,7 @@ void Ramp1()// 沙雕识别
 }
 void Ramp2()//图像识别
 {
-  static int rampflag=0,all_speed=0,acc_speed=0;
+  static int rampflag=0,acc_speed=0;
   static float initangleset,initg_mode;
   if(Img_RampFlag&&g_drive_flag&&!rampflag)
   {
@@ -38,34 +38,20 @@ void Ramp2()//图像识别
   }
     if(rampflag)
   {
-    all_speed+=curSpeed;
     acc_speed+=curSpeed;
-    if(acc_speed<7000)
+    if(acc_speed<6000)
     {
      AD_DirectionControl();
      DirectionControlOutput(); 
     }
-    else if(acc_speed>7000)
+    else if(acc_speed>6000)
     {
       acc_speed = 0;
       gpio_init(D1,GPO,1);
-      
+      rampflag=0;
       g_mode=3;
       g_angle_set=initangleset;
       Img_RampFlag=0;
-    }
-    if(all_speed<12000)
-    {
-      Img_BrokenFlag = 0;
-      Img_BlockFlag = 0;
-      if(all_speed>7000)
-      {
-        Img_RampFlag=0;
-      }
-    }
-    else if(all_speed>=12000)
-    {
-      rampflag=0;
     }
     if(!g_drive_flag&&rampflag)
     {
