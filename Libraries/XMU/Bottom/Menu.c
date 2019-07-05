@@ -962,6 +962,8 @@ void Main_Show(void)
 	Insert_Float("x", &sensor.Gyro_deg.x);
 	Insert_Float("y", &sensor.Gyro_deg.y);
 	Insert_Float("z", &sensor.Gyro_deg.z);
+        Insert_Float("fly", &flipgyrow);
+        
 
 	Insert_Page("PID_A"); //½Ç¶È
 	Insert_Float("set", &g_angle_set);

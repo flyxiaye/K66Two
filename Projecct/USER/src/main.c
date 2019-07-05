@@ -60,7 +60,7 @@ int main(void)
 			gpio_init(D1, GPO, 0);
 		else gpio_init(D1, GPO, 1);
 //		if (CircleFlag)
-                	if ((Img_RampFlag||CircleFlag|| Img_BrokenFlag)&&dialSwitchFlg8)
+                	if ((Img_RampFlag||CircleFlag|| Img_BrokenFlag)&&dialSwitchFlg3)
 			gpio_init(A7, GPO, 1);
 		else gpio_init(A7, GPO, 0);
          
