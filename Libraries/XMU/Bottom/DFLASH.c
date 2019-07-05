@@ -36,7 +36,7 @@ extern void OLED_Clear(void);
 #define DFLASH_PARAM12      MaxSpeed
 #define DFLASH_PARAM13      ProSpect
 #define DFLASH_PARAM14      max_duty
-#define DFLASH_PARAM15      stop_inf
+#define DFLASH_PARAM15      ramp_inf
 #define DFLASH_PARAM16      sum_dist
 #define DFLASH_PARAM17      Speed_MAX
 #define DFLASH_PARAM18      exp_time

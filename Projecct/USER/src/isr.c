@@ -85,7 +85,7 @@ void PIT0_IRQHandler(void)
 //	DistCI();
 	IndCI();
 	get_ind_error();
-//	BootRacer();
+	BootRacer();
 	AngleControl();
 	inf();
 	

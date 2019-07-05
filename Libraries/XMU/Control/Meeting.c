@@ -54,6 +54,16 @@ void MeetingTwo1(void)
 	case WaitingBegin:
 		if (g_StateSlave > Ready)
 		{
+                  		
+			g_car_lanuch = 1;
+			g_MasterOutFlag = 0;
+			CircleFlag = 0;
+			CircleState = 0;
+			Img_BrokenFlag = 0;
+			Img_BlockFlag = 0;
+                        g_handle_open = 1;
+			g_ad_flag = 1;
+			Img_RampFlag = 0;
 			g_StateMaster = CarGo;
 			g_drive_flag = 1;
 		}
@@ -120,12 +130,12 @@ void MeetingTwo1(void)
 			g_StateMaster = CarFinish;
 		}
 		break;
-	case StateStop:
+	case StateStop:    
 		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
 		{
 			speed_type = 1;
 			acc_speed += curSpeed;
-			if (acc_speed > sum_speed * 1.5)
+			if (acc_speed > 1000 * 1.5)
 			{
 				g_StateMaster = CarFinish;
 				acc_speed = 0;
@@ -134,17 +144,18 @@ void MeetingTwo1(void)
 		break;
 	case CarFinish:   //拍地板
                   count++;
-      if (count < 50)
+      if (count < 100)
       {
-        g_mode=5;
+        g_mode=1;
         g_angle_set = GroundAngle;
         AngleControl();
       }
-      else if (count >= 50)
+      else if (count >= 100)
       {
         g_drive_flag = 0;
         count = 0;
-        g_StateMaster = 0;
+        g_mode=1;
+        g_StateMaster = 99;
       }
 		break;
 	default:
