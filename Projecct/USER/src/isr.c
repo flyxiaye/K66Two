@@ -102,7 +102,9 @@ void PIT0_IRQHandler(void)
 		//	}
 
 	//	TurnTail();
-	MeetingTwo1();
+//	MeetingTwo1();
+	ADclearCircle2();
+        Meeting();
 	power();
 	Dist_ClearIslandSeven();
 	PIT_FlAG_CLR(pit0);

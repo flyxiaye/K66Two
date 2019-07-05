@@ -604,6 +604,7 @@ void Key_Function(void)
 			CircleState = 0;
 			Img_BrokenFlag = 0;
 			Img_BlockFlag = 0;
+                        BootRacerFlag = 1;
 			if (1 == g_camera_open)
 				g_handle_open = 1;
 			g_ad_flag = 1;
@@ -1011,7 +1012,9 @@ void Main_Show(void)
 	Insert_Page("RampBlockBroken");
 	Insert_Float("Rampangle", &Rampangle);
 	Insert_Int("BrokenTTPWM", &BrokenTurnTailPWM);
-	Insert_Int("BrokenDistance", &BrokenTurnTailDistance);
+	Insert_Int("BrokenDistance1", &BrokenTurnTailDistance);
+        Insert_Int("OutDistance1", &OutMeetingDistance1);
+        Insert_Int("OutDistance2", &OutMeetingDistance2);
         Insert_Int("AngleFlag",&AngleMutationFlag);
 
 	//	Insert_Int("delay_dist", &delay_dist);

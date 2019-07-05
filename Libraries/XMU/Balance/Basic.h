@@ -11,4 +11,5 @@ void DrivePWM(float g_duty_PWMleft, float g_duty_PWMright);
 void power();
 void Ground();
 void StartSpeed();
+void Parameter();
 #endif

@@ -7,7 +7,7 @@
 #include "FirstLineProcess.h"
 #include "canny.h"
 #include "SpecialElem.h"
-#define MAXNUM 30
+#define MAXNUM 60
 #define _type int
 #include "queue.h"
 

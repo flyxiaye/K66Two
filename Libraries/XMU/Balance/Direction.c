@@ -182,9 +182,13 @@ void Camera_DirectionControl()
 		{
 			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.3 + 0.7) + (g_errorD - g_error_before) * g_dire_D;
 		}
-		else
+		else if (curSpeed >= 10&&curSpeed<=15)
 		{
-			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.5 + 0.5) + (g_errorD - g_error_before) * g_dire_D;
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.7 + 0.3) + (g_errorD - g_error_before) * g_dire_D;
+		}
+		else if(curSpeed <10)
+		{
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.8 + 0.2) + (g_errorD - g_error_before) * g_dire_D;
 		}
 		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;

@@ -393,7 +393,8 @@ extern int obj_angle_2;
 extern int const_error_1;
 extern int const_error_2;
 extern int max_duty;
-extern int OutMeetingDistance;
+extern int OutMeetingDistance1;
+extern int OutMeetingDistance2;
 extern float GroundAngle;
 /*====================================Â·ÕÏ=====================================*/
 extern int sum;

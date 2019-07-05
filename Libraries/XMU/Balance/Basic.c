@@ -66,8 +66,8 @@ void motormode(float mode)
 	}
 	if (7 == g_mode) //坡道英雄
 	{
-		g_fleft = 3*g_AngleControlOut - g_fDirectionControlOut;
-		g_fright = 3*g_AngleControlOut + g_fDirectionControlOut;
+		g_fleft = 3 * g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = 3 * g_AngleControlOut + g_fDirectionControlOut;
 	}
 	if (8 == g_mode) //开机我为王
 	{
@@ -77,11 +77,11 @@ void motormode(float mode)
 }
 void BootRacer()
 {
-	static int acc_speed = 0, initg_mode=1;
+	static int acc_speed = 0, initg_mode = 1;
 	static int initangleset = 0;
-	if (BootRacerFlag&&3==initg_mode)
+	if (BootRacerFlag && 3 == initg_mode)
 	{
-          acc_speed+=curSpeed;
+		acc_speed += curSpeed;
 		if (acc_speed < BootRacerDistance)
 		{
 			g_mode = 8;
@@ -91,13 +91,13 @@ void BootRacer()
 		{
 			g_mode = initg_mode;
 			g_angle_set = initangleset;
-                        BootRacerFlag=0;
+			BootRacerFlag = 0;
 		}
 	}
 	else
 	{
 		initangleset = g_angle_set;
-                initg_mode=g_mode;
+		initg_mode = g_mode;
 	}
 }
 //-------------------------------------------------------------------------------------------------------------------
@@ -301,6 +301,112 @@ void StartSpeed()
 		g_angle_set = angle_init;
 	}
 }
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      调车参数
+////  @param
+////  @param
+////  @param
+////  @return
+////---------------------------------------------------------------------------------------------------------------------
+void Parameter()
+{
+	static int dialSwitchFlg = 0;
+	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0);
+	{
+		dialSwitchFlg = 0;
+	}
+	if (dialSwitchFlg6 == 1 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0)
+	{
+		dialSwitchFlg = 1;
+	}
+	if (dialSwitchFlg6 == 1 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
+	{
+		dialSwitchFlg = 2;
+	}
+	if (dialSwitchFlg6 == 1 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 1)
+	{
+		dialSwitchFlg = 3;
+	}
+	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
+	{
+		dialSwitchFlg = 4;
+	}
+	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 1)
+	{
+		dialSwitchFlg = 5;
+	}
+	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 1)
+	{
+		dialSwitchFlg = 6;
+	}
+	switch (dialSwitchFlg)
+	{
+	case 0:
+	{
+		;
+	}
+	case 1://稳定参数
+	{
+		g_angle_set = -32;
+		gRateKp = 18.1;
+		gRateKd = 17.1;
+		g_dire_P = 10.7;
+		g_dire_D = 10.1;
+		max_duty = 3100;
+		ProSpect = 53;
+		Circle_P = 8;
+
+		gRateKp_AD = 14.9;
+		gRateKd_AD = 9.9;
+		g_dire_P_AD = 10.9;
+		g_dire_D_AD = 9.9;
+
+	}
+	case 2:
+	{
+		;
+	}
+	case 3:
+	{
+		;
+	}
+	case 4:
+	{
+		;
+	}
+	case 5:
+	{
+		;
+	}
+	case 6:
+	{
+		;
+	}
+	}
+	if (!g_drive_flag)
+	{
+		dialSwitchFlg = 0;
+	}
+}
+////-------------------------------------------------------------------------------------------------------------------
+////  @brief      拨码开关会车
+////  @param
+////  @param
+////  @param
+////  @return
+////---------------------------------------------------------------------------------------------------------------------
+void Meeting()
+{
+	if (dialSwitchFlg4)
+	{
+		MeetingTwo1();
+	}
+	else
+	{
+		MeetingTwo2();
+	}
+}
+
 ////-------------------------------------------------------------------------------------------------------------------
 ////  @brief      停车函数
 ////  @param

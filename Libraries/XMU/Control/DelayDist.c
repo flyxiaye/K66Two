@@ -11,7 +11,7 @@
 //================================================================//
 void Dist_ClearIslandSeven(void)
 {
-	static int sum_dist = 1.3 * ONE_METER;
+	static int sum_dist = 1.1 * ONE_METER;
 	static int acc_dist = 0;
 	if (7 == CircleState)
 	{
@@ -62,26 +62,26 @@ void DistCI(void)
 			CI_acc_dist = 0;
 			CircleIsland_into_flag = 0;
 		}
-//		else if (ind_left_cross + ind_right_cross > 1800 && ind_left_cross > 450 && ind_right_cross > 450)
-//		{
-//			if (CircleState > 3) CircleState = 3;
-//			state = 2;
-//			CI_acc_dist = 0;
-//		}
-				if ((left_column_norm - right_column_norm) > 0.3 || -(left_column_norm - right_column_norm) > 0.3)
-		
-				{
-		                        CircleIsland_into_flag = 2;
-		                        if((left_line_norm > ind_left_flag && right_line_norm > ind_right_flag && mid_norm > 1.4 * ind_mid_flag)
-		                           || (left_line_norm > 1.8 * ind_left_flag && ind_mid_flag < mid_norm)
-		                           || (right_line_norm > 1.8 * ind_right_flag && ind_mid_flag < mid_norm))
-		                        {
-		                          CircleIsland_into_flag = 3;
-		                          if (CircleState > 3) CircleState = 3; 
-		                          state = 2;
-		                          CI_acc_dist = 0;
-		                        }
-				}
+		//		else if (ind_left_cross + ind_right_cross > 1800 && ind_left_cross > 450 && ind_right_cross > 450)
+		//		{
+		//			if (CircleState > 3) CircleState = 3;
+		//			state = 2;
+		//			CI_acc_dist = 0;
+		//		}
+		if ((left_column_norm - right_column_norm) > 0.3 || -(left_column_norm - right_column_norm) > 0.3)
+
+		{
+			CircleIsland_into_flag = 2;
+			if ((left_line_norm > ind_left_flag && right_line_norm > ind_right_flag && mid_norm > 1.4 * ind_mid_flag)
+				|| (left_line_norm > 1.8 * ind_left_flag && ind_mid_flag < mid_norm)
+				|| (right_line_norm > 1.8 * ind_right_flag && ind_mid_flag < mid_norm))
+			{
+				CircleIsland_into_flag = 3;
+				if (CircleState > 3) CircleState = 3;
+				state = 2;
+				CI_acc_dist = 0;
+			}
+		}
 		break;
 	case 2:
 		if (7 == CircleState)
@@ -123,24 +123,24 @@ void DistCI(void)
 //  @return :		void
 //  @note   :		放在中断
 //================================================================//
-	int DIndLeftcol=0,DIndRightcol=0,DIndMid=0,DistFlag=0,count=0;
+int DIndLeftcol = 0, DIndRightcol = 0, DIndMid = 0, DistFlag = 0, count = 0;
 //	int DIndLeftcol_before=0,DIndRightcol_before=0,DIndMid_before=0;
-      float Dpit=0;
+float Dpit = 0;
 void IndCI(void)
 {
 	static int count;
-//static int DIndLeftcol=0,DIndRightcol=0,DIndMid=0,DistFlag=0,count=0;
-	if(count<=4)
+	//static int DIndLeftcol=0,DIndRightcol=0,DIndMid=0,DistFlag=0,count=0;
+	if (count <= 4)
 	{
-	static int DIndLeftcol_before=0,DIndRightcol_before=0,DIndMid_before=0;
-	static float Dpit=0,pit_before=0; //angle pit
-	DIndLeftcol=ABS(ind_left_column-DIndLeftcol_before);   //求TMD微分
-	DIndRightcol=ABS(ind_right_column-DIndRightcol_before);
-	DIndMid=ABS(ind_mid-DIndMid_before);
-	Dpit=imu_data.pit-pit_before;
-	DIndLeftcol_before=DIndLeftcol;
-	DIndRightcol_before=DIndRightcol;
-	pit_before=imu_data.pit;
+		static int DIndLeftcol_before = 0, DIndRightcol_before = 0, DIndMid_before = 0;
+		static float Dpit = 0, pit_before = 0; //angle pit
+		DIndLeftcol = ABS(ind_left_column - DIndLeftcol_before);   //求TMD微分
+		DIndRightcol = ABS(ind_right_column - DIndRightcol_before);
+		DIndMid = ABS(ind_mid - DIndMid_before);
+		Dpit = imu_data.pit - pit_before;
+		DIndLeftcol_before = DIndLeftcol;
+		DIndRightcol_before = DIndRightcol;
+		pit_before = imu_data.pit;
 	}
 	else count++;
 	// if(Dpit<1&&!DistFlag&&g_drive_flag)
@@ -161,10 +161,10 @@ void IndCI(void)
 	// 		{
 	// 			/* code */
 	// 		}
-			
+
 	// 	}
 
-		
+
 	// }
 	// 	if(Dpit>1&&g_drive_flag)
 	// 	{
@@ -220,82 +220,85 @@ void DistBroken(void)
 {
 	static int BR_sum_dist = 7000;
 	static int BR_acc_dist = 0;
-	static float flipgyro=0;
-          if (1 == Img_BrokenFlag)
-          {
-            BR_acc_dist += curSpeed;
-            if (BR_acc_dist > BR_sum_dist)
-              Img_BrokenFlag = 0;
-          }
-          else BR_acc_dist = 0;
-          
+	static float flipgyro = 0;
+	if (1 == Img_BrokenFlag)
+	{
+		BR_acc_dist += curSpeed;
+		if (BR_acc_dist > BR_sum_dist)
+			Img_BrokenFlag = 0;
+	}
+	else BR_acc_dist = 0;
+
 }
 void ADclearCircle2()
 {
-	static int CI_sum_dist =5700,CircleIntoFlag=0;
-	static int clearflag,indmidflag=0,indlineflag=0,indcolumnflag=0;   //各项Flag  中竖横各项电感
-	static int state=0;
-	static int CI_acc_dist=0;
-	static float entermidnorm=0,enterleftlinenorm=0,enterleftcolumnnorm=0,
-				 enterrighttlinenorm=0,enterightcolumnnorm=0;
-	switch(state)
+	static int CI_sum_dist = 5700, CircleIntoFlag = 0;
+	static int clearflag, indmidflag = 0, indlineflag = 0, indcolumnflag = 0;   //各项Flag  中竖横各项电感
+	static int state = 0;
+	static int CI_acc_dist = 0;
+	static float entermidnorm = 0, enterleftlinenorm = 0, enterleftcolumnnorm = 0,
+		enterrighttlinenorm = 0, enterightcolumnnorm = 0;
+	switch (state)
 	{
-		case 0:
-		if(CircleFlag&&7!=CircleState)
+	case 0:
+		if (CircleFlag && 7 != CircleState)
 		{
-			state=1;
-			entermidnorm=mid_norm;
-			enterleftlinenorm=left_line_norm;
-			enterrighttlinenorm=right_line_norm;
-			enterleftcolumnnorm=left_column_norm;
-			enterightcolumnnorm=right_column_norm;
-			CircleIntoFlag=1;
+			state = 1;
+			entermidnorm = mid_norm;
+			enterleftlinenorm = left_line_norm;
+			enterrighttlinenorm = right_line_norm;
+			enterleftcolumnnorm = left_column_norm;
+			enterightcolumnnorm = right_column_norm;
+			CircleIntoFlag = 1;
 		}
 		break;
-		case 1:
+	case 1:
+	{
+		CI_acc_dist += curSpeed;
+		if (CI_acc_dist > CI_sum_dist)
 		{
-			CI_acc_dist+=curSpeed;
-			if(CI_acc_dist>CI_sum_dist)
+			state = 0;
+			CircleFlag = 0;
+			CircleState = 0;
+			CI_acc_dist = 0;
+			CircleIntoFlag = 0;
+		}
+		if ((left_column_norm - right_column_norm) > 0.2 || -(left_column_norm - right_column_norm) > 0.2)
+		{
+			CircleIntoFlag = 2;
+			if ((left_line_norm > enterleftlinenorm && right_line_norm > enterrighttlinenorm && mid_norm > 1.2 * entermidnorm)
+				|| (left_line_norm > 1.5 * enterleftlinenorm && mid_norm >  entermidnorm)
+				|| (right_line_norm > 1.5 * enterrighttlinenorm && mid_norm >  entermidnorm))
 			{
-				state=0;
-				CircleFlag=0;
-				CircleState=0;
-				CI_acc_dist=0;
-				CircleIntoFlag=0;
-			}
-			if((left_column_norm-right_column_norm)>0.2||-(left_column_norm-right_column_norm)>0.2)
-		{
-			CircleIntoFlag=2;
-			if((left_line_norm>enterleftlinenorm&&right_line_norm>enterrighttlinenorm&&mid_norm>1.2*entermidnorm)
-				||(left_line_norm>1.5*enterleftlinenorm&&mid_norm<1.2*entermidnorm)
-				||(right_line_norm>1.5*enterrighttlinenorm&&mid_norm<1.2*entermidnorm))
-		{
-			CircleIntoFlag=3;
-			if(CircleState>3)
-			{
-				CircleState=3;
-				state=2;
-				CI_acc_dist=0;
+				CircleIntoFlag = 3;
+				if (CircleState > 3)
+				{
+					CircleState = 3;
+					state = 2;
+					CI_acc_dist = 0;
+				}
 			}
 		}
-		}
-		}
-		break;
 	}
+	break;
+
 	case 2:
-	 flipgyro += sensor.Gyro_deg.z * 0.002;
-	CI_acc_dist +=curSpeed;
-	if(CI_acc_dist>50000&&CircleState<=7)
-	{
-		CircleState=0;
-		state=0;
-	}
-	if(flipgyro>160)
-	{
-		CircleState=6;
-	}
-	if(7==CircleState)
-	{
-		state=0;
+		flipgyro += sensor.Gyro_deg.z * 0.002;
+		CI_acc_dist += curSpeed;
+		if (CI_acc_dist > 50000 && CircleState <= 7)
+		{
+			CircleState = 0;
+			state = 0;
+		}
+		if (flipgyro > 160)
+		{
+			CircleState = 6;
+		}
+		if (7 == CircleState)
+		{
+			state = 0;
+			flipgyro = 0;
+			CI_acc_dist = 0;
+		}
 	}
 }

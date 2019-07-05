@@ -313,7 +313,8 @@ int obj_angle_2 = -180;
 int const_error_1 = -20;
 int const_error_2 = 40;
 int max_duty = 8000;
-int OutMeetingDistance = 4000;
+int OutMeetingDistance1 = 4000;
+int OutMeetingDistance2 = 8000;
 float GroundAngle = 9.73;
 /*====================================Â·ÕÏ=====================================*/
 int sum = 0;

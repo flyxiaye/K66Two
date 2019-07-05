@@ -46,6 +46,7 @@ void MeetingTwo1(void)
 	static float yaw_init_2 = 0;
 	static int get_flag = 0;
 	static int count = 0;
+        static int Meetingcount = 0;
 	switch (g_StateMaster)
 	{
 	case Ready:
@@ -91,7 +92,8 @@ void MeetingTwo1(void)
           gpio_init(D2,GPO,0);
 	TurnTailFlag=1;
 	}
-	TurnTail();			//进入后一波操作掉头
+	TurnTail();	//进入后一波操作掉头
+        
 		break;
 	case StateTwo:
 	//等待接收信号
