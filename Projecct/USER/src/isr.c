@@ -27,7 +27,7 @@
 
 
 int startcarlinewait = 0;
-
+float flipgyrow=0;
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      PROTAÖÐ¶ÏÖ´ÐÐº¯Êý
@@ -65,6 +65,7 @@ void DMA0_IRQHandler(void)
 int time = 0;
 void PIT0_IRQHandler(void)
 {
+  flipgyrow += sensor.Gyro_deg.z * 0.002;
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
 	if (g_drive_flag)

@@ -24,6 +24,8 @@
 
 
 #include "headfile.h"
+extern float flipgyrow;
+
 void PORTA_IRQHandler(void);
 void PORTB_IRQHandler(void);
 
