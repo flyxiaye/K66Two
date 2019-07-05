@@ -50,15 +50,15 @@ int Img_JudgeCircleIsland(int type)
 	else
 	{
 		if (Img_CircleOpen && !Img_SpecialElemFlag
-			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE
-			&& RightPnt.ErrCol < RIGHT_EAGE - 55)
+			&& LL[DOWN_EAGE] <= LEFT_EAGE + 3 && RightPnt.ErrRow < UP_EAGE + 10 && RightPnt.ErrCol > MIDDLE - 7
+			&& RightPnt.ErrCol < RIGHT_EAGE - 65 && AngleMutationFlag)
 		{
 			CircleState = 2;
 			return CL;
 		}
 		else if (Img_CircleOpen && !Img_SpecialElemFlag
-			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE
-			&& LeftPnt.ErrCol > LEFT_EAGE + 55)
+			&& RL[DOWN_EAGE] >= RIGHT_EAGE - 3 && LeftPnt.ErrRow < UP_EAGE + 10 && LeftPnt.ErrCol < MIDDLE + 7
+			&& LeftPnt.ErrCol > LEFT_EAGE + 65 && AngleMutationFlag)
 		{
 			CircleState = 2;
 			return CR;
@@ -506,17 +506,14 @@ void GetPointC(void)
 		}
 		break;
 	case 3:
-		int TmpRow;
 		if (CL == CircleFlag)		//Left CircleIsland
 		{
-			TmpRow = SearchUpEage(PointB.Row - 1, PointB.Col + 1);
-			PointC.Row = TmpRow;
+			PointC.Row = SearchUpEage(PointB.Row - 1, PointB.Col + 11);
 			PointC.Col = PointB.Col + 11;
 		}
 		else if (CR == CircleFlag)		//Right CircleIsland
 		{
-			TmpRow = SearchUpEage(PointB.Row - 1, PointB.Col - 1);
-			PointC.Row = TmpRow;
+			PointC.Row = SearchUpEage(PointB.Row - 1, PointB.Col - 11);
 			PointC.Col = PointB.Col - 11;
 		}
 		else return;

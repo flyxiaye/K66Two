@@ -34,18 +34,18 @@ void Direction()
 	//  {
 	//
 //  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
-    if((!dialSwitchFlg2||Img_BrokenFlag)&&!TurnTailFlag&&!TurnNoTailFlag)
-  {
-	AD_DirectionControl();
-  }
-  else if(dialSwitchFlg2&&!TurnTailFlag&&!Img_RampFlag&&!TurnNoTailFlag)
-  {
-    Camera_DirectionControl();
-  }
+	if ((!dialSwitchFlg2 || Img_BrokenFlag) && !TurnTailFlag && !TurnNoTailFlag)
+	{
+		AD_DirectionControl();
+	}
+	else if (dialSwitchFlg2 && !TurnTailFlag && !Img_RampFlag && !TurnNoTailFlag)
+	{
+		Camera_DirectionControl();
+	}
 
-        ////      AD_CircleIsland_Control();
-	//    
-	//  }
+	////      AD_CircleIsland_Control();
+//    
+//  }
 }
 
 //================================================================//
@@ -65,11 +65,11 @@ void DirectionControlOutput(void)//∆ΩÔøΩÔøΩÔøΩÔøΩÔø?
 	{
 		g_nDirectionControlPeriod = 0;
 	}
-//	if (Img_BlockFlag || g_GetMeetingFlag || Img_BrokenFlag == 3) //ÔøΩﬁ∑ÔøΩ
-//	{
-		g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
-		g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
-//	}
+	//	if (Img_BlockFlag || g_GetMeetingFlag || Img_BrokenFlag == 3) //ÔøΩﬁ∑ÔøΩ
+	//	{
+	g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
+	g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
+	//	}
 	if (Img_BrokenFlag)
 	{
 		;
@@ -99,10 +99,10 @@ void AD_DirectionControl()
 		//    }
 		//    if(!CircleIsland_into_flag)//‘≤ÔøΩÔøΩ
 		//    {
-			if(!Img_BlockFlag&&circlelandflag!=2)
-			{
-		g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100-g_errorCircleland;
-			}
+		if (!Img_BlockFlag && circlelandflag != 2)
+		{
+			g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100 - g_errorCircleland;
+		}
 		//    }
 		//    else if(CircleIsland_into_flag)
 		//    {
@@ -110,11 +110,12 @@ void AD_DirectionControl()
 		//    }
 		//    if(!TurnTailFlag)
 		//    {
-		g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD *(curSpeed/g_fSpeed_set*0.8+0.2)+ (g_errorD - g_error_before) * g_dire_D_AD;
-		g_fDirectionControlOut_new = (curSpeed/g_fSpeed_set+0.8)*(g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd_AD;
+		g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD * (curSpeed / g_fSpeed_set * 0.8 + 0.2) + (g_errorD - g_error_before) * g_dire_D_AD;
+		g_fDirectionControlOut_new = (curSpeed / g_fSpeed_set + 0.8) * (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd_AD;
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
 		//    }
+
 	}
 	else count++;
 }
@@ -130,39 +131,47 @@ void Camera_DirectionControl()
 	static float g_fDirectionAngleControlOut = 0.0f;
 	static float sensorGyroZLast = 0.0f;
 	static float g_error_before = 0.0f;
-        static float temporary_P = 0.0f;
+	static float temporary_P = 0.0f;
 	if (count >= 5)
 	{
 		count = 0;
-//		if (Img_BlockFlag || g_GetMeetingFlag)                //¬∑ÔøΩœøÔøΩÔøΩÔøΩ
-//		{
-//			;
-//		}
-//		else
-//		{	
-         if(CircleState >= 2)
-        {
-          temporary_P = Circle_P;
-        }
-        else
-        {
-          temporary_P = g_dire_P;
-        }
-          if(!Img_BlockFlag)
+		//		if (Img_BlockFlag || g_GetMeetingFlag)                //¬∑ÔøΩœøÔøΩÔøΩÔøΩ
+		//		{
+		//			;
+		//		}
+		//		else
+		//		{	
+		if (CircleState >= 2)
+		{
+			temporary_P = Circle_P;
+		}
+		else
+		{
+			temporary_P = g_dire_P;
+		}
+		if (!Img_BlockFlag)
+		{
+			//ªÒ»°ŒÛ≤Ó
+			if (ProSpect < ML_Count)
 			{
-			g_errorD = 94 - ML[ProSpect];
-                          
+				g_errorD = (ControlMid - ML[ML_Count]);
+			}
+			else
+			{
+				g_errorD = (ControlMid - ML[ProSpect]);
+			}
+
 			if (ErrorFlag)
 			{
 				g_ErrorImageNumber++;
 				g_errorD = g_error_before;
 			}
 		}
-		g_fDirectionAngleControlOut = g_errorD * temporary_P *(curSpeed/g_fSpeed_set*0.3+0.7)+ (g_errorD - g_error_before) * g_dire_D;
+		g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.3 + 0.7) + (g_errorD - g_error_before) * g_dire_D;
 		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
 		g_error_before = g_errorD;
 	}
-      
+
 	else count++;
 }
