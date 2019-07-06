@@ -71,8 +71,8 @@ void motormode(float mode)
 	}
 	if (8 == g_mode) //开机我为王
 	{
-		g_fleft = 1.5 * g_AngleControlOut - g_fDirectionControlOut;
-		g_fright = 1.5 * g_AngleControlOut + g_fDirectionControlOut;
+		g_fleft = g_AngleControlOut - g_fDirectionControlOut;
+		g_fright = g_AngleControlOut + g_fDirectionControlOut;
 	}
 }
 void BootRacer()
