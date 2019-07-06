@@ -79,7 +79,7 @@ void BootRacer()
 {
 	static int acc_speed = 0, initg_mode = 1;
 	static int initangleset = 0;
-	if (BootRacerFlag && 3 == initg_mode)
+	if (BootRacerFlag && 3 == initg_mode&&BootRacerOpen)
 	{
 		acc_speed += curSpeed;
 		if (acc_speed < BootRacerDistance)
@@ -397,7 +397,20 @@ void Parameter()
 		g_dire_P_AD = 10.89;
 		g_dire_D_AD = 9.89;
 		break;
-	case 4:
+	case 4:  //双车三电池  走线海口一
+          	g_angle_set = -31;
+		gRateKp = 24;
+		gRateKd = 18.1;
+		g_dire_P = 12.68;
+		g_dire_D = 12.1;
+		max_duty = 3500;
+		ProSpect = 53;
+		Circle_P = 10;
+
+		gRateKp_AD = 14.89;
+		gRateKd_AD = 9.89;
+		g_dire_P_AD = 10.89;
+		g_dire_D_AD = 9.89;
 		break;
 	case 5:
 		break;

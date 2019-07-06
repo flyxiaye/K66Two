@@ -106,4 +106,8 @@ void AngleMutation()
 		number = 0;
 		count = 0;
 	}
+        if(!AngleMutationOpenFlag)
+        {
+          AngleMutationFlag = 1;
+        }
 }

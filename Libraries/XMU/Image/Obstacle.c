@@ -83,7 +83,7 @@ void roadblock3(void)
 			}
 			else
 			{
-				g_errorD = -AngleError(_ANGLE, yaw_obj) / 94;
+				g_errorD = -AngleError(_ANGLE, yaw_obj) ;
 			}
 			if (sum > sum_dist)
 			{
@@ -100,10 +100,10 @@ void roadblock3(void)
 			}
 			else
 			{
-				g_errorD = -AngleError(_ANGLE, yaw_obj) / 94;
+				g_errorD = -AngleError(_ANGLE, yaw_obj) ;
 			}
 
-			if (sum > sum_dist * 0.8
+			if (sum > sum_dist * 0.9
 				&& (ind_left_line > 100 || ind_right_line > 100))
 			{
 				state = 0;

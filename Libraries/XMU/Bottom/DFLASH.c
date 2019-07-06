@@ -74,6 +74,11 @@ extern void OLED_Clear(void);
 #define DFLASH_PARAM50          block_inf
 #define DFLASH_PARAM51          Img_GrayJumpOpen
 #define DFLASH_PARAM52          BrokenThreshold
+#define DFLASH_PARAM53          Stopdistance
+#define DFLASH_PARAM54          BootRacerOpen
+#define DFLASH_PARAM55          AngleMutationOpenFlag
+#define DFLASH_PARAM56          ADclearCircleFlag
+
 
 
 /********** 以上为存储的数据 **********/
@@ -139,8 +144,12 @@ void MyFlash_Write(signed int flashnum)
 	DFlash_Write_Int(SECTOR_NUM + flashnum, 47, DFLASH_PARAM47);
 	DFlash_Write_Int(SECTOR_NUM + flashnum, 49, DFLASH_PARAM49);
 	DFlash_Write_Int(SECTOR_NUM + flashnum, 50, DFLASH_PARAM50);
-	DFlash_Write_Int(SECTOR_NUM + flashnum, 51, DFLASH_PARAM50);
-	DFlash_Write_Int(SECTOR_NUM + flashnum, 52, DFLASH_PARAM50);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 51, DFLASH_PARAM51);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 52, DFLASH_PARAM52);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 53, DFLASH_PARAM53);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 54, DFLASH_PARAM54);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 55, DFLASH_PARAM55);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 56, DFLASH_PARAM56);
 
 	/********** 以上为存储的数据 **********/
 #ifdef _USE_LCD
@@ -210,6 +219,12 @@ void MyFlash_Read(signed int flashnum)
 		DFLASH_PARAM48 = DFlash_Read_Int(SECTOR_NUM + flashnum, 48);
 		DFLASH_PARAM49 = DFlash_Read_Int(SECTOR_NUM + flashnum, 49);
 		DFLASH_PARAM50 = DFlash_Read_Int(SECTOR_NUM + flashnum, 50);
+                DFLASH_PARAM51 = DFlash_Read_Int(SECTOR_NUM + flashnum, 51);
+                DFLASH_PARAM52 = DFlash_Read_Int(SECTOR_NUM + flashnum, 52);
+                DFLASH_PARAM53 = DFlash_Read_Int(SECTOR_NUM + flashnum, 53);
+                DFLASH_PARAM54 = DFlash_Read_Int(SECTOR_NUM + flashnum, 54);
+                DFLASH_PARAM55 = DFlash_Read_Int(SECTOR_NUM + flashnum, 55);
+                DFLASH_PARAM56 = DFlash_Read_Int(SECTOR_NUM + flashnum, 56);
 
 
 		/********** 以上为存储的数据 **********/

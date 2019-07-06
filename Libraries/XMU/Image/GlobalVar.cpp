@@ -324,12 +324,13 @@ int OutMeetingDistance2 = 8000;
 float GroundAngle = 9.73;
 int StayCarFlag=1;
 int Stopdistance=500;
+int StayTime=1200;
 /*====================================Â·ÕÏ=====================================*/
 int sum = 0;
 int sum_dist = 4500;
 int g_inf =0 ;
 int st = -40;
-int ST[5] = {1,2,2,-1,1};
+int ST[5] = {1,-1,1,-1,1};
 
 int block_count=0;
 int block_inf = 900;
@@ -354,3 +355,8 @@ float Rampangle=9;
 int BootRacerFlag=0;
 int BootRacerDistance=5000;
 int BootRacerAngle=-25;
+
+
+int BootRacerOpen=1;
+int AngleMutationOpenFlag=1; // ·À¶¶±êÖ¾
+int ADclearCircleFlag=1;

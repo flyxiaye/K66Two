@@ -237,6 +237,7 @@ void ADclearCircle2()
 	static int CI_acc_dist = 0, CI_Direction = 0; //1 left  -1 right
 	static float entermidnorm = 0, enterleftlinenorm = 0, enterleftcolumnnorm = 0,
 				 enterrighttlinenorm = 0, enterightcolumnnorm = 0;
+        if()
 	switch (state)
 	{
 	case 0:

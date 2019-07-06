@@ -17,6 +17,7 @@ int main(void)
 	system_Init();
 	systick_delay_ms(1000);
 	//    if (dialSwitchFlg3) g_StartSlave = 1;
+        dialSwitchFlg5 = gpio_get(DIALSWITCH_PIN5);//控制参数FLASH
 	dialSwitchFlg6 = gpio_get(DIALSWITCH_PIN6);//
 	dialSwitchFlg7 = gpio_get(DIALSWITCH_PIN7);//
 	dialSwitchFlg8 = gpio_get(DIALSWITCH_PIN8);//
@@ -27,7 +28,7 @@ int main(void)
 		dialSwitchFlg2 = gpio_get(DIALSWITCH_PIN2);//电磁
 		dialSwitchFlg3 = gpio_get(DIALSWITCH_PIN3);//蜂鸣器
 		dialSwitchFlg4 = gpio_get(DIALSWITCH_PIN4);//会车改变  1为掉头
-		dialSwitchFlg5 = gpio_get(DIALSWITCH_PIN5);//控制参数FLASH
+		
 
 		//    ftm_pwm_duty(ftm0,RIGHT_GO,0);
 		//    ftm_pwm_duty(ftm0,RIGHT_BACK,8000);

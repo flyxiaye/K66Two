@@ -101,7 +101,7 @@ void AD_DirectionControl()
 		//    {
 		if (!Img_BlockFlag && circlelandflag != 2)
 		{
-			g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100 - g_errorCircleland;
+			g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100 ;
 		}
 		//    }
 		//    else if(CircleIsland_into_flag)
