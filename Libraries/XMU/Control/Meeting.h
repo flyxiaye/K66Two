@@ -12,5 +12,5 @@ void MeetingCtrlFun(void);
 void MeetingCtrlFun_1(void);
 void MeetingFour(void);
 void MeetingTwo(void);
-
+extern int staycount;
 #endif //!MEETING_H

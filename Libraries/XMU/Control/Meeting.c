@@ -98,10 +98,14 @@ void MeetingTwo1(void)
 		break;
 	case StateTwo:
 	//等待接收信号
-          if(g_StateSlave <= CarGo&&StayCarFlag)
+          if(g_StateSlave <= CarGo&&StayCarFlag&&!g_SlaveOutFlag)
           {
 			  staycount++;
           }
+           if(g_SlaveOutFlag)
+           {
+             staycount=0;
+           }
 	if ((g_StateSlave > CarGo || g_SlaveOutFlag)&&!TurnTailGoFlag)		//隔壁车已过断路
 		{
 			//GOGOGO!!!
@@ -130,7 +134,7 @@ void MeetingTwo1(void)
 		break;
 	case StateGo:
 		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 1.5)
+		if (acc_speed > sum_speed * 0.5)
 		{
 			acc_speed = 0;
                         count = 0;
@@ -255,7 +259,7 @@ void MeetingTwo2(void)
 		break;
 	case StateGo:
 		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 1.5)
+		if (acc_speed > sum_speed * 0.5)
 		{
                         count=0;
 			acc_speed = 0;

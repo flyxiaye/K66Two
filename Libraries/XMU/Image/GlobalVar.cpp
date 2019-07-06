@@ -353,4 +353,4 @@ float Rampangle=9;
 /*************====================开机加速相关变量=======================*************/
 int BootRacerFlag=0;
 int BootRacerDistance=5000;
-int BootRacerAngle=-28;
+int BootRacerAngle=-25;
