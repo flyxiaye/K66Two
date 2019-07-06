@@ -50,7 +50,7 @@ signed char g_explore_page = 0; //调节曝光功能页
 
 unsigned char Cursor[][16] =
 
-	{
+{
 #if _USE_LCD || _USE_IPS
 		{0x00, 0x00, 0x00, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x00, 0x00}, //>
 		{0x00, 0x00, 0x00, 0x05, 0x0A, 0x14, 0x28, 0x50, 0xA0, 0x50, 0x28, 0x14, 0x0A, 0x05, 0x00, 0x00}  //》
@@ -60,7 +60,7 @@ unsigned char Cursor[][16] =
 #endif
 };
 
-void FlagChange(int *flag)
+void FlagChange(int* flag)
 {
 	if (1 == *flag)
 	{
@@ -256,7 +256,7 @@ void Insert_Img(signed char String[], void pfunc_show(void))
 //*  @return:	    void
 //*  @note:
 //*
-void Insert_Char(signed char String[], signed char *Number)
+void Insert_Char(signed char String[], signed char* Number)
 {
 	char tmp_line;
 	if (g_pageNum == g_pageCount)
@@ -303,7 +303,7 @@ void Insert_Char(signed char String[], signed char *Number)
 //*  @return:	    void
 //*  @note:
 //*
-void Insert_Int(signed char String[], signed int *Number)
+void Insert_Int(signed char String[], signed int* Number)
 {
 	char tmp_line;
 	if (g_pageNum == g_pageCount)
@@ -349,7 +349,7 @@ void Insert_Int(signed char String[], signed int *Number)
 //*  @param:		在菜单中的位置(0~127) 需要插入的变量名以及变量的地址
 //*  @return:	  void
 //*
-void Insert_Float(signed char String[], float *Number)
+void Insert_Float(signed char String[], float* Number)
 {
 	char tmp_line;
 
@@ -395,7 +395,7 @@ void Insert_Float(signed char String[], float *Number)
 //*  @param:		在菜单中的位置(0~127) 需要插入的变量名以及变量的地址
 //*  @return:	  void
 //*
-void Insert_VFloat(signed char String[], volatile float *Number)
+void Insert_VFloat(signed char String[], volatile float* Number)
 {
 	char tmp_line;
 
@@ -522,19 +522,19 @@ void Key_Function(void)
 			break; //向下翻页
 		case 7:
 			if (13 == g_pageNum)
-                        {
+			{
 				g_ad_flag = !g_ad_flag;
-			ind_left_line_max = 20;
-			ind_left_line_min = 4000;
-			ind_left_column_max = 20;
-			ind_left_column_min = 4000;
-			ind_right_line_max = 20;
-			ind_right_line_min = 4000;
-			ind_right_column_max = 20;
-			ind_right_column_min = 4000;
-			ind_mid_max = 20;
-			ind_mid_min = 4000;
-                        }
+				ind_left_line_max = 20;
+				ind_left_line_min = 4000;
+				ind_left_column_max = 20;
+				ind_left_column_min = 4000;
+				ind_right_line_max = 20;
+				ind_right_line_min = 4000;
+				ind_right_column_max = 20;
+				ind_right_column_min = 4000;
+				ind_mid_max = 20;
+				ind_mid_min = 4000;
+			}
 			else changemode();
 			//				SD_Gather_Camera_Picture_120x188();        break; //采图
 			break;
@@ -591,11 +591,11 @@ void Key_Function(void)
 			//			FlagChange(&g_drive_flag);//开电机
 			//			if (g_drive_flag)
 			//			{
-                  
-                  
-                  
-                  
-                  
+
+
+
+
+
 			g_StateMaster = 0;
 			g_car_lanuch = 1;
 			g_MasterOutFlag = 0;
@@ -604,17 +604,17 @@ void Key_Function(void)
 			CircleState = 0;
 			Img_BrokenFlag = 0;
 			Img_BlockFlag = 0;
-                        BootRacerFlag = 1;
+			BootRacerFlag = 1;
 			if (1 == g_camera_open)
 				g_handle_open = 1;
 			g_ad_flag = 1;
 			Img_RampFlag = 0;
-//                        
-                        
-                        
-                        
-//                        SD_Gather_Gray_Picture120x188(); 
-			//			}
+			//                        
+
+
+
+			//                        SD_Gather_Gray_Picture120x188(); 
+						//			}
 			break; //采图
 		default:
 			break;
@@ -963,8 +963,8 @@ void Main_Show(void)
 	Insert_Float("x", &sensor.Gyro_deg.x);
 	Insert_Float("y", &sensor.Gyro_deg.y);
 	Insert_Float("z", &sensor.Gyro_deg.z);
-        Insert_Float("fly", &flipgyrow);
-        
+	Insert_Float("fly", &flipgyrow);
+
 
 	Insert_Page("PID_A"); //角度
 	Insert_Float("set", &g_angle_set);
@@ -1006,24 +1006,24 @@ void Main_Show(void)
 
 	Insert_Page("Obstacle");
 	Insert_Int("g_inf", &g_inf);
-        Insert_Int("block_inf", &block_inf);
+	Insert_Int("block_inf", &block_inf);
 	Insert_Int("ramp_inf", &ramp_inf);
 
-        Insert_Int("BLOCK1", &ST[0]);
-        Insert_Int("BLOCK2", &ST[1]);
-        Insert_Int("BLOCK3", &ST[2]);
-        Insert_Int("BLOCK4", &ST[3]);
-        Insert_Int("block_count", &block_count);
-        
+	Insert_Int("BLOCK1", &ST[0]);
+	Insert_Int("BLOCK2", &ST[1]);
+	Insert_Int("BLOCK3", &ST[2]);
+	Insert_Int("BLOCK4", &ST[3]);
+	Insert_Int("block_count", &block_count);
+
 	Insert_Int("sum_dist", &sum_dist);
 
 	Insert_Page("RampBlockBroken");
 	Insert_Float("Rampangle", &Rampangle);
 	Insert_Int("BrokenTTPWM", &BrokenTurnTailPWM);
 	Insert_Int("BrokenDistance1", &BrokenTurnTailDistance);
-        Insert_Int("OutDistance1", &OutMeetingDistance1);
-        Insert_Int("OutDistance2", &OutMeetingDistance2);
-        Insert_Int("AngleFlag",&AngleMutationFlag);
+	Insert_Int("OutDistance1", &OutMeetingDistance1);
+	Insert_Int("OutDistance2", &OutMeetingDistance2);
+	Insert_Int("AngleFlag", &AngleMutationFlag);
 
 	//	Insert_Int("delay_dist", &delay_dist);
 
@@ -1034,6 +1034,7 @@ void Main_Show(void)
 	Insert_Char("ImgBlock", &Img_BlockOpen);
 	Insert_Char("ImgRamp", &Img_RampOpen);
 	Insert_Char("ImgStop", &Img_StopOpen);
+	Insert_Char("ImgGrayJump", &Img_GrayJumpOpen);
 
 	Insert_Page("MeetFlag");
 	Insert_Char("Mode", &g_MeetingMode);
@@ -1052,10 +1053,11 @@ void Main_Show(void)
 	Insert_Float("duty_L", &g_duty_left);
 	Insert_Float("duty_R", &g_duty_right);
 
-	Insert_Page("camera"); //摄像头曝光时间
-	Insert_Int("exp", &exp_time);
+	Insert_Page("Camera");
+	Insert_Int("exp_time", &exp_time);
 	Insert_Int("HighTH", &HighThreshold);
 	Insert_Int("LowTH", &LowThreshold);
+	Insert_Int("BrokenTH", &BrokenThreshold);
 	Insert_Int("ConMid", &ControlMid);
 	Insert_Char("exp_page", &g_explore_page);
 	Insert_Int("Diff", &DiffThreshold);
@@ -1096,7 +1098,7 @@ void ExploreTime(void)
 	displayimage032_zoom(image[0], 64, 10, 70, 0);
 	if (DispEage)
 	{
-		unsigned char *p = ImageEage[0];
+		unsigned char* p = ImageEage[0];
 		for (int i = 10; i <= 70; i++)
 		{
 			for (int j = 0; j < 160; j++)

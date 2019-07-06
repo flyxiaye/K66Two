@@ -69,7 +69,7 @@ void roadblock3(void)
 		{
 			yaw_init = _ANGLE;
 			get_flag = 1;
-			yaw_obj = yaw_init + ST[block_count]*st;
+			yaw_obj = yaw_init + ST[block_count] * st;
 			speed_type = 3;
 		}
 
@@ -88,7 +88,7 @@ void roadblock3(void)
 			if (sum > sum_dist)
 			{
 				state = 1;
-				yaw_obj = yaw_init -ST[block_count]* st;
+				yaw_obj = yaw_init - ST[block_count] * st;
 				sum = 0;
 			}
 			break;
@@ -103,8 +103,8 @@ void roadblock3(void)
 				g_errorD = -AngleError(_ANGLE, yaw_obj) / 94;
 			}
 
-			if (sum > sum_dist
-				||(ind_left_line > 100 && ind_right_line > 100))
+			if (sum > sum_dist * 0.8
+				&& (ind_left_line > 100 || ind_right_line > 100))
 			{
 				state = 0;
 				sum = 0;
@@ -113,7 +113,7 @@ void roadblock3(void)
 				CircleFlag = 0;
 				CircleState = 0;
 				Img_BrokenFlag = 0;
-                                block_count++;
+				block_count++;
 				if (1 == g_camera_open)
 					g_handle_open = 1;
 			}

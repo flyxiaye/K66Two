@@ -81,6 +81,11 @@ float gRateKd_AD = 10;            //串级d
 float g_dire_P_AD=6;
 float g_dire_D_AD=10;
 int protect_flag=0;
+
+//==========================方案选择模式============================//
+unsigned char BlockMode = 0;			//纯红外1，红外加摄像头0
+unsigned char Img_GrayJumpOpen = 0;		//灰度跳变检测断路开关
+
 //==========================元素计数变量============================//
 
 unsigned char CircleDir[10];		//环岛计数
@@ -99,6 +104,7 @@ int DarkThreshold = 55;                         //暗阈值（路障）
 int BrightThreshold = 15;                      //亮阈值（坡道）
 int LightThreshold = 80;						//去高光噪声阈值
 int LightThreshold2 = 150;						//去高光噪声阈值2
+int BrokenThreshold = 35;						//断路灰度阈值
 int FindLineType = 0;							//是否加入高光滤波标志
 int g_RoadType = 0;
 int ErrorFlag = 0;								//错误标志位

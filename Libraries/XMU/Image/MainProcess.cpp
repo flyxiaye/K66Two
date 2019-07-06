@@ -36,6 +36,7 @@ void MainFill(void)
 		ImgJudgeStopLine();		//识别停车
 		ImgJudgeObstacle();     //识别坡道路障直道断路					
 		ImgJudgeCurveBroken();	//弯道断路
+		if (Img_GrayJumpOpen) ImgJudgeOutBroken();			//灰度跳变检测断路
 
 #if CIRCLE == 2
 		//CircleFlag = ImgJudgeCircle(0);
