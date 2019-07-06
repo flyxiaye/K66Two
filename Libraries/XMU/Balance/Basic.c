@@ -310,7 +310,7 @@ void StartSpeed()
 ////---------------------------------------------------------------------------------------------------------------------
 void Parameter()
 {
-	static int dialSwitchFlg = 0;
+	int dialSwitchFlg = 0;
 	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0);
 	{
 		dialSwitchFlg = 0;
@@ -342,11 +342,8 @@ void Parameter()
 	switch (dialSwitchFlg)
 	{
 	case 0:
-	{
-		;
-	}
+		break;
 	case 1://稳定参数
-	{
 		g_angle_set = -32;
 		gRateKp = 18.1;
 		gRateKd = 17.1;
@@ -360,11 +357,9 @@ void Parameter()
 		gRateKd_AD = 9.9;
 		g_dire_P_AD = 10.9;
 		g_dire_D_AD = 9.9;
-
-	}
+		break;
 	case 2:   //特别稳定参数   三轮7电池
-	{
-			g_angle_set = -34;
+		g_angle_set = -34;
 		gRateKp = 25.10;
 		gRateKd = 17.10;
 		g_dire_P = 10.69;
@@ -377,10 +372,9 @@ void Parameter()
 		gRateKd_AD = 9.89;
 		g_dire_P_AD = 10.89;
 		g_dire_D_AD = 9.89;
-	}
+		break;
 	case 3://双车旧电池  提速
-	{
-                g_angle_set = -31;
+		g_angle_set = -31;
 		gRateKp = 24;
 		gRateKd = 18.1;
 		g_dire_P = 12.69;
@@ -393,23 +387,13 @@ void Parameter()
 		gRateKd_AD = 9.89;
 		g_dire_P_AD = 10.89;
 		g_dire_D_AD = 9.89;
-	}
+		break;
 	case 4:
-	{
-		;
-	}
+		break;
 	case 5:
-	{
-		;
-	}
+		break;
 	case 6:
-	{
-		;
-	}
-	}
-	if (!g_drive_flag)
-	{
-		dialSwitchFlg = 0;
+		break;
 	}
 }
 ////-------------------------------------------------------------------------------------------------------------------
