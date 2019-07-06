@@ -362,9 +362,21 @@ void Parameter()
 		g_dire_D_AD = 9.9;
 
 	}
-	case 2:
+	case 2:   //特别稳定参数   三轮7电池
 	{
-		;
+			g_angle_set = -34;
+		gRateKp = 25.10;
+		gRateKd = 17.10;
+		g_dire_P = 10.69;
+		g_dire_D = 10.1;
+		max_duty = 3300;
+		ProSpect = 53;
+		Circle_P = 8;
+
+		gRateKp_AD = 14.89;
+		gRateKd_AD = 9.89;
+		g_dire_P_AD = 10.89;
+		g_dire_D_AD = 9.89;
 	}
 	case 3:
 	{
