@@ -154,9 +154,9 @@ void Camera_DirectionControl()
 			//¶¯Ì¬Ç°Õ°
 			int pro = ProSpect;
 			if (curSpeed < 10)
-				pro = ProSpect + 10;
+				pro = ProSpect + 13;
 			else if (curSpeed < 15)
-				pro = ProSpect + 6;
+				pro = ProSpect + 9;
 			else if (curSpeed < 20)
 				pro = ProSpect + 3;
 			else if (curSpeed < 30)
@@ -184,11 +184,11 @@ void Camera_DirectionControl()
 		}
 		else if (curSpeed >= 10&&curSpeed<=15)
 		{
-			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.7 + 0.3) + (g_errorD - g_error_before) * g_dire_D;
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.6 + 0.2) + (g_errorD - g_error_before) * g_dire_D;
 		}
 		else if(curSpeed <10)
 		{
-			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.8 + 0.2) + (g_errorD - g_error_before) * g_dire_D;
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.6 + 0.1) + (g_errorD - g_error_before) * g_dire_D;
 		}
 		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
 		sensorGyroZLast = sensor.Gyro_deg.z;
