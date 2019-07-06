@@ -92,7 +92,7 @@ void PIT0_IRQHandler(void)
 	AngleControl();
 	inf();
 
-	circleland2();
+//	circleland2();
 	Ramp2();
 	roadblock3();
 	Direction();

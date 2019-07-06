@@ -1054,6 +1054,8 @@ void Main_Show(void)
 	Insert_Int("ProtectFlag", &protect_flag);
         Insert_Int("BootRacerOpen", &BootRacerOpen);
            Insert_Int("AngleMutationOpen", &AngleMutationOpenFlag);
+           Insert_Int("ADclearCircleFlag", &ADclearCircleFlag);
+           
         
         
 
