@@ -134,7 +134,7 @@ void MeetingTwo1(void)
 		break;
 	case StateGo:
 		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 1.5)
+		if (acc_speed > sum_speed * 0.5)
 		{
 			acc_speed = 0;
                         count = 0;
@@ -259,7 +259,7 @@ void MeetingTwo2(void)
 		break;
 	case StateGo:
 		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 1.5)
+		if (acc_speed > sum_speed * 0.5)
 		{
                         count=0;
 			acc_speed = 0;

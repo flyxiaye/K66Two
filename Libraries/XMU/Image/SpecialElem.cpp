@@ -502,7 +502,7 @@ int ImgJudgeOutBroken(void)
 		qUpdateQueue(&qLight, LightThreshold);
 		int max = qGetMax(&qLight);
 		int min = qGetMin(&qLight);
-		if (max - min > 35)
+		if (max - min > BrokenThreshold)
 		{
 			initQueue(&qLight);
 			return 1;

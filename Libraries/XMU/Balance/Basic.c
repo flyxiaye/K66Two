@@ -311,34 +311,43 @@ void StartSpeed()
 void Parameter()
 {
 	int dialSwitchFlg = 0;
-	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0);
+	if (dialSwitchFlg5 == 0 && dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 0;
 	}
-	if (dialSwitchFlg6 == 1 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0)
+	if (dialSwitchFlg5 == 1 && dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 1;
 	}
-	if (dialSwitchFlg6 == 1 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
+	if (dialSwitchFlg5 == 0 && dialSwitchFlg6 == 1 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 2;
 	}
-	if (dialSwitchFlg6 == 1 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 1)
+	if (dialSwitchFlg5 == 1 && dialSwitchFlg6 == 1 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 3;
 	}
-	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
+	if (dialSwitchFlg5 == 0 && dialSwitchFlg6 == 0 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 4;
 	}
-	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 1)
+	if (dialSwitchFlg5 == 1 && dialSwitchFlg6 == 0 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 5;
 	}
-	if (dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 1)
+	if (dialSwitchFlg5 == 0 && dialSwitchFlg6 == 1 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
 	{
 		dialSwitchFlg = 6;
 	}
+        if (dialSwitchFlg5 == 1 && dialSwitchFlg6 == 1 && dialSwitchFlg7 == 1 && dialSwitchFlg8 == 0)
+        {
+          dialSwitchFlg = 7;
+        }
+        if (dialSwitchFlg5 == 0 && dialSwitchFlg6 == 0 && dialSwitchFlg7 == 0 && dialSwitchFlg8 == 1)
+        {
+          dialSwitchFlg = 8;
+        }
+
 	switch (dialSwitchFlg)
 	{
 	case 0:
@@ -394,6 +403,10 @@ void Parameter()
 		break;
 	case 6:
 		break;
+        case 7 :
+                break;
+        case 8:
+                break;
 	}
 }
 ////-------------------------------------------------------------------------------------------------------------------
