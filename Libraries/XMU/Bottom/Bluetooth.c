@@ -12,18 +12,18 @@ SerialPortType SerialPortRx;
 
 void SendUserData()
 {
-  SendInt(g_ErrorImageNumber);
-  SendFloat(imu_data.pit);
+	//SendInt(g_ErrorImageNumber);
+	//SendFloat(imu_data.pit);
 
-////	SendInt(LightThreshold);
-//	SendInt(ind_left_line);
-//	SendInt(ind_right_line);
-//        SendInt(ind_left_column);
-//	SendInt(ind_right_column);
-//		SendFloat(curSpeed);
-//                SendInt(lCurSpeed);
-//		SendInt(rCurSpeed);
-               SendInt(AngleMutationFlag); 
+	////	SendInt(LightThreshold);
+	//	SendInt(ind_left_line);
+	//	SendInt(ind_right_line);
+	//        SendInt(ind_left_column);
+	//	SendInt(ind_right_column);
+	SendFloat(curSpeed);
+	SendInt(lCurSpeed);
+	SendInt(rCurSpeed);
+	//SendInt(AngleMutationFlag); 
 //	SendInt(Img_BrokenFlag);
 //	SendInt(Img_BlockFlag);
 //	SendFloat(leftExpect);

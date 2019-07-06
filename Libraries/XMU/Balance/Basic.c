@@ -378,9 +378,21 @@ void Parameter()
 		g_dire_P_AD = 10.89;
 		g_dire_D_AD = 9.89;
 	}
-	case 3:
+	case 3://双车旧电池  提速
 	{
-		;
+                g_angle_set = -31;
+		gRateKp = 24;
+		gRateKd = 18.1;
+		g_dire_P = 12.69;
+		g_dire_D = 12.1;
+		max_duty = 3500;
+		ProSpect = 53;
+		Circle_P = 10;
+
+		gRateKp_AD = 14.89;
+		gRateKd_AD = 9.89;
+		g_dire_P_AD = 10.89;
+		g_dire_D_AD = 9.89;
 	}
 	case 4:
 	{
