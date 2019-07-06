@@ -98,7 +98,7 @@ void MeetingTwo1(void)
 		break;
 	case StateTwo:
 	//等待接收信号
-          if(g_StateSlave < CarGo&&StayCarFlag)
+          if(g_StateSlave <= CarGo&&StayCarFlag)
           {
 			  staycount++;
           }
