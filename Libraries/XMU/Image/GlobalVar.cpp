@@ -321,9 +321,12 @@ int sum = 0;
 int sum_dist = 4500;
 int g_inf =0 ;
 int st = -40;
+int ST[5] = {1,2,2,-1,1};
+
+int block_count=0;
 int block_inf = 900;
 int ramp_inf = 1200;
-
+int singleRedFlag=0;
 /**************0µç´Å»·µº*************/
 float Circlelanderror=0;
 int circlelandflag=0;
