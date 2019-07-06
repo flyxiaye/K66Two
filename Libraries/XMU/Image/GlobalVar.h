@@ -92,7 +92,7 @@ extern float g_dire_P_AD;
 extern float g_dire_D_AD;
 
 //==========================方案选择模式============================//
-extern unsigned char BlockMode;			//纯红外1，红外加摄像头0
+extern unsigned char BlockCount;			//纯红外1，红外加摄像头0
 extern unsigned char Img_GrayJumpOpen;		//灰度跳变检测断路开关
 
 //==========================元素计数变量============================//
