@@ -1008,7 +1008,13 @@ void Main_Show(void)
 	Insert_Int("g_inf", &g_inf);
         Insert_Int("block_inf", &block_inf);
 	Insert_Int("ramp_inf", &ramp_inf);
-	Insert_Int("angle", &st);
+
+        Insert_Int("BLOCK1", &ST[0]);
+        Insert_Int("BLOCK2", &ST[1]);
+        Insert_Int("BLOCK3", &ST[2]);
+        Insert_Int("BLOCK4", &ST[3]);
+        Insert_Int("block_count", &block_count);
+        
 	Insert_Int("sum_dist", &sum_dist);
 
 	Insert_Page("RampBlockBroken");

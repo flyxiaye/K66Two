@@ -69,7 +69,7 @@ void roadblock3(void)
 		{
 			yaw_init = _ANGLE;
 			get_flag = 1;
-			yaw_obj = yaw_init + st;
+			yaw_obj = yaw_init + ST[block_count++];
 			speed_type = 3;
 		}
 		sum += curSpeed;
