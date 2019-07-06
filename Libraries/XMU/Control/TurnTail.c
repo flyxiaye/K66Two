@@ -119,7 +119,7 @@ void TurnTail()
 				TurnTail = 4;
 				count = 0;
 				g_StateMaster = StateTwo;
-				//        TurnTailGoFlag = 1;
+		
 			}
 			break;
 		}
@@ -133,7 +133,7 @@ void TurnTail()
 			{
 				g_drive_flag = 0;
 			}
-			else if (count > 400)
+			else if (count > 400+staycount)
 			{
 				acc_Speed += curSpeed;
 				if (acc_Speed < OutMeetingDistance1)
@@ -164,7 +164,7 @@ void TurnTail()
 					Img_RampFlag = 0;
 					CircleFlag = 0;
 					CircleState = 0;
-
+          staycount=0;
 					g_StateMaster = WaitingStop;
 					count = 0;
 				}

@@ -29,7 +29,7 @@ void MeetingToImage(void)
 		else Img_StopLineFlag = 0;
 	}
 }
-
+ int staycount=0;
 
 //================================================================//
 //  @brief  :		二轮车会车函数(掉头)
@@ -46,6 +46,7 @@ void MeetingTwo1(void)
 	static float yaw_init_2 = 0;
 	static int get_flag = 0;
 	static int count = 0;
+       
         static int Meetingcount = 0;
 	switch (g_StateMaster)
 	{
@@ -97,6 +98,10 @@ void MeetingTwo1(void)
 		break;
 	case StateTwo:
 	//等待接收信号
+          if(g_StateSlave <= CarGo&&StayCarFlag)
+          {
+			  staycount++;
+          }
 	if ((g_StateSlave > CarGo || g_SlaveOutFlag)&&!TurnTailGoFlag)		//隔壁车已过断路
 		{
 			//GOGOGO!!!
@@ -137,7 +142,7 @@ void MeetingTwo1(void)
 		{
 			speed_type = 1;
 			acc_speed += curSpeed;
-			if (acc_speed > 1000 * 1.5)
+			if (acc_speed > Stopdistance)
 			{
 				g_StateMaster = CarFinish;
 				acc_speed = 0;
@@ -262,7 +267,7 @@ void MeetingTwo2(void)
 		{
 			speed_type = 1;
 			acc_speed += curSpeed;
-			if (acc_speed > sum_speed * 1.5)
+			if (acc_speed > Stopdistance)
 			{
 				g_StateMaster = CarFinish;
 				acc_speed = 0;

@@ -322,6 +322,8 @@ int max_duty = 8000;
 int OutMeetingDistance1 = 4000;
 int OutMeetingDistance2 = 8000;
 float GroundAngle = 9.73;
+int StayCarFlag=1;
+int Stopdistance=500;
 /*====================================Â·ÕÏ=====================================*/
 int sum = 0;
 int sum_dist = 4500;

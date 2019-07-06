@@ -402,6 +402,8 @@ extern int max_duty;
 extern int OutMeetingDistance1;
 extern int OutMeetingDistance2;
 extern float GroundAngle;
+extern int StayCarFlag;
+extern int Stopdistance;
 /*====================================Â·ÕÏ=====================================*/
 extern int sum;
 extern int sum_dist;
