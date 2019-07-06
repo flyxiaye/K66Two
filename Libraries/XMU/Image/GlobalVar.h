@@ -407,8 +407,11 @@ extern int sum;
 extern int sum_dist;
 extern int g_inf;
 extern int st;
+extern int ST[5];
+extern int block_count;
 extern int block_inf;
 extern int ramp_inf;
+extern int singleRedFlag;
 /*=====================================陀螺仪变量======================================*/
 extern signed int I2C_Wait_Times;        //i2c等待次数
 extern signed int I2C_Wait_Err_Flg;      //i2c等待死循环错误标志
