@@ -1023,6 +1023,7 @@ void Main_Show(void)
 	Insert_Int("BrokenDistance1", &BrokenTurnTailDistance);
 	Insert_Int("OutDistance1", &OutMeetingDistance1);
 	Insert_Int("OutDistance2", &OutMeetingDistance2);
+        Insert_Int("StopDistance", &Stopdistance);
 	Insert_Int("AngleFlag", &AngleMutationFlag);
 
 	//	Insert_Int("delay_dist", &delay_dist);
