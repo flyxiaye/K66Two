@@ -605,6 +605,8 @@ void Key_Function(void)
 			Img_BrokenFlag = 0;
 			Img_BlockFlag = 0;
 			BootRacerFlag = 1;
+                        block_count=0;
+                        block_count=0;
 			if (1 == g_camera_open)
 				g_handle_open = 1;
 			g_ad_flag = 1;
@@ -974,6 +976,7 @@ void Main_Show(void)
 	Insert_Float("DR", &g_RateD);
 	Insert_Float("SP", &g_angle_Psingle);
 	Insert_Float("SD", &g_angle_D);
+        
 	// Insert_Float("flygyro",)
 
 	Insert_Page("PID_D/C"); //方向
@@ -1008,11 +1011,12 @@ void Main_Show(void)
 	Insert_Int("g_inf", &g_inf);
 	Insert_Int("block_inf", &block_inf);
 	Insert_Int("ramp_inf", &ramp_inf);
-
+        Insert_Int("st", &st);
 	Insert_Int("BLOCK1", &ST[0]);
 	Insert_Int("BLOCK2", &ST[1]);
 	Insert_Int("BLOCK3", &ST[2]);
 	Insert_Int("BLOCK4", &ST[3]);
+        
 	Insert_Int("block_count", &block_count);
 
 	Insert_Int("sum_dist", &sum_dist);
@@ -1045,7 +1049,15 @@ void Main_Show(void)
 	Insert_Char("SlaveS", &g_StateSlave);
 	Insert_Char("MasterO", &g_MasterOutFlag);
 	Insert_Char("SlaveO", &g_SlaveOutFlag);
-	Insert_Int("TurnTailPWM", &BrokenTurnTailPWM);
+        Insert_Int("TurnTailPWM", &BrokenTurnTailPWM);
+        Insert_Int("StayTime", &StayTime);
+	Insert_Int("ProtectFlag", &protect_flag);
+        Insert_Int("BootRacerOpen", &BootRacerOpen);
+           Insert_Int("AngleMutationOpen", &AngleMutationOpenFlag);
+           Insert_Int("ADclearCircleFlag", &ADclearCircleFlag);
+           
+        
+        
 
 	Insert_Page("PWM"); //电机
 	Insert_Int("left", &lCurSpeed);

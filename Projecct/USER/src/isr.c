@@ -68,8 +68,10 @@ void PIT0_IRQHandler(void)
   flipgyrow += sensor.Gyro_deg.z * 0.002;
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
-	if (g_drive_flag)
+	if (g_drive_flag&&AngleMutationOpenFlag)
+        {
 		AngleMutation();
+        }
 	//    if (g_block_open)           //Â·ÕÏ
 	//    {
 	//      inf();
@@ -90,7 +92,7 @@ void PIT0_IRQHandler(void)
 	AngleControl();
 	inf();
 
-	circleland2();
+//	circleland2();
 	Ramp2();
 	roadblock3();
 	Direction();

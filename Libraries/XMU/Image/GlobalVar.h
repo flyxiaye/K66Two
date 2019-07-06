@@ -90,7 +90,7 @@ extern float gRateKd_AD ;            //串级d
 
 extern float g_dire_P_AD;
 extern float g_dire_D_AD;
-
+extern int protect_flag;
 //==========================方案选择模式============================//
 extern unsigned char BlockCount;			//纯红外1，红外加摄像头0
 extern unsigned char Img_GrayJumpOpen;		//灰度跳变检测断路开关
@@ -404,6 +404,7 @@ extern int OutMeetingDistance2;
 extern float GroundAngle;
 extern int StayCarFlag;
 extern int Stopdistance;
+extern int StayTime;
 /*====================================路障=====================================*/
 extern int sum;
 extern int sum_dist;
@@ -548,6 +549,7 @@ extern int BootRacerFlag;
 extern int BootRacerDistance;
 extern int BootRacerAngle;
 
-
-
+extern int BootRacerOpen;
+extern int AngleMutationOpenFlag;
+extern int ADclearCircleFlag;
 #endif

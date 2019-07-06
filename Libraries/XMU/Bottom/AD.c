@@ -34,12 +34,23 @@ void ind_acq(void)                         //电感采集
 void ind_protect(void)
 {
 	static int count = 0;
-	if (ind_left_line < 70 &&ind_right_column<70&&ind_left_column<70&&ind_mid < 70 &&g_mode!=2&&g_mode!=4&&g_mode!=6&&g_mode!=7&&!Img_BlockFlag)
+	if (ind_left_line < 100 &&ind_right_line < 100 &&ind_right_column<100&&ind_left_column<100&&ind_mid < 100 &&g_mode!=2&&g_mode!=4&&g_mode!=6&&g_mode!=7&&!Img_BlockFlag)
 	{
-		g_drive_flag = 0;
-                g_MasterOutFlag=1;
-		//    protect_flag=1;
+          count++;
+        
 	}
+        else
+        {
+          count=0;
+        }
+          if(count>=50)
+          {
+            if(protect_flag)
+            {
+		g_drive_flag = 0;
+            }
+                g_MasterOutFlag=1;
+          }
 }
 void ind_norm_maxmin(void)                //左右电感最大最小
 {

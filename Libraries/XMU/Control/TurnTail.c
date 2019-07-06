@@ -133,7 +133,7 @@ void TurnTail()
 			{
 				g_drive_flag = 0;
 			}
-			else if (count > 400+staycount)
+			else if (count > 400+staycount+StayTime)
 			{
 				acc_Speed += curSpeed;
 				if (acc_Speed < OutMeetingDistance1)

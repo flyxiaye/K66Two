@@ -79,7 +79,7 @@ void MeetingTwo1(void)
 				g_GetMeetingState=1;
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
-//				g_handle_open = 0;
+
 				acc_speed = 0;
 				//改变状态 调整下一状态标志
 //				g_StateMaster = 1;
@@ -205,7 +205,7 @@ void MeetingTwo2(void)
 		if (g_GetMeetingFlag) 			 //进入会车区 
 		{
 			acc_speed += curSpeed;
-			if (acc_speed > 0.01 * ONE_METER)
+			if (acc_speed > 0)
 			{
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
