@@ -184,9 +184,11 @@ void ImgJudgeObstacle(void)
 		{
 			int Front = MIN(LeftPnt.ErrRow, RightPnt.ErrRow);
 			int FrontRompGray = RegionAveGray(Front - -10, LeftPnt.ErrCol + 5, RightPnt.ErrCol - 5);
-			int FrontBlockGray = RegionAveGray(Front - 10, LeftPnt.ErrCol, RightPnt.ErrCol);
+			int FrontBlockGray = RegionAveGray(Front - 8, LeftPnt.ErrCol, RightPnt.ErrCol);
+                        int FrontBlockGray2 = RegionAveGray(Front - 2, LeftPnt.ErrCol, RightPnt.ErrCol);
 			int DownGray = RegionAveGray(DOWN_EAGE - 2, LL[DOWN_EAGE - 2], RL[DOWN_EAGE - 2]);
-			if ( DownGray - FrontBlockGray > DarkThreshold )
+			if ( DownGray - FrontBlockGray > DarkThreshold
+                            && FrontBlockGray2 - FrontBlockGray < 15 && FrontBlockGray - FrontBlockGray2 <15)
 			{
 				Img_BlockFlag = 1;//Â·ÕÏ
 				Img_SpecialElemFlag = 1;

@@ -3,77 +3,77 @@
 #include "RampandBlock.h"
 void Ramp1()// 沙雕识别
 {
-  static int acc_speed=0,rampflag=0;
-  static float initangleset=0;
-  if(gpio_get(C8)==0&&g_drive_flag&&!rampflag)
-  {
-    initangleset=g_angle_set;
-    g_angle_set=initangleset-Rampangle;
-    g_mode=7;
-    rampflag=1;
-  }
-  if(rampflag)
-  {
-    acc_speed+=curSpeed;
-    if(acc_speed>8000&&gpio_get(C8)==1)
-    {
-      rampflag=0;
-      g_mode=3;
-      g_angle_set=initangleset;
-    }
-  }
+	static int acc_speed = 0, rampflag = 0;
+	static float initangleset = 0;
+	if (gpio_get(C8) == 0 && g_drive_flag && !rampflag)
+	{
+		initangleset = g_angle_set;
+		g_angle_set = initangleset - Rampangle;
+		g_mode = 7;
+		rampflag = 1;
+	}
+	if (rampflag)
+	{
+		acc_speed += curSpeed;
+		if (acc_speed > 8000 && gpio_get(C8) == 1)
+		{
+			rampflag = 0;
+			g_mode = 3;
+			g_angle_set = initangleset;
+		}
+	}
 }
 void Ramp2()//图像识别
 {
-  static int rampflag=0,all_speed=0,acc_speed=0;
-  static float initangleset,initg_mode;
-  if(Img_RampFlag&&g_drive_flag&&!rampflag)
-  {
-    gpio_init(D1,GPO,0);
-    rampflag=1;
-    initangleset=g_angle_set;
-    initg_mode=g_mode;
-    g_angle_set=initangleset-Rampangle;
-    g_mode=7;
-  }
-    if(rampflag)
-  {
-    all_speed+=curSpeed;
-    acc_speed+=curSpeed;
-    if(acc_speed<7000)
-    {
-     AD_DirectionControl();
-     DirectionControlOutput(); 
-    }
-    else if(acc_speed>7000)
-    {
-      acc_speed = 0;
-      gpio_init(D1,GPO,1);
-      
-      g_mode=3;
-      g_angle_set=initangleset;
-      Img_RampFlag=0;
-    }
-    if(all_speed<12000)
-    {
-      Img_BrokenFlag = 0;
-      Img_BlockFlag = 0;
-      if(all_speed>7000)
-      {
-        Img_RampFlag=0;
-      }
-    }
-    else if(all_speed>=12000)
-    {
-      rampflag=0;
-    }
-    if(!g_drive_flag&&rampflag)
-    {
-      rampflag=0;
-      g_mode=initg_mode;
-      rampflag=0;
-    }
-  }
+	static int rampflag = 0, all_speed = 0, acc_speed = 0;
+	static float initangleset, initg_mode;
+	if (Img_RampFlag && g_drive_flag && !rampflag)
+	{
+		gpio_init(D1, GPO, 0);
+		rampflag = 1;
+		initangleset = g_angle_set;
+		initg_mode = g_mode;
+		g_angle_set = initangleset - Rampangle;
+		g_mode = 7;
+	}
+	if (rampflag)
+	{
+		all_speed += curSpeed;
+		acc_speed += curSpeed;
+		if (acc_speed < 7000)
+		{
+			AD_DirectionControl();
+			DirectionControlOutput();
+		}
+		else if (acc_speed > 7000)
+		{
+			acc_speed = 0;
+			gpio_init(D1, GPO, 1);
+
+			g_mode = 3;
+			g_angle_set = initangleset;
+			Img_RampFlag = 0;
+		}
+		if (all_speed < 12000)
+		{
+			Img_BrokenFlag = 0;
+			Img_BlockFlag = 0;
+			if (all_speed > 7000)
+			{
+				Img_RampFlag = 0;
+			}
+		}
+		else if (all_speed >= 12000)
+		{
+			rampflag = 0;
+		}
+		if (!g_drive_flag && rampflag)
+		{
+			rampflag = 0;
+			g_mode = initg_mode;
+			rampflag = 0;
+		}
+	}
 }
 //void inf(void)
 //{

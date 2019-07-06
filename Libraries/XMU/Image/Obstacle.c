@@ -72,35 +72,38 @@ void roadblock3(void)
 			yaw_obj = yaw_init + st;
 			speed_type = 3;
 		}
-		sum += curSpeed;
+
 		switch (state)
 		{
 		case 0:
-		if(dialSwitchFlg2)
-		{
-			g_errorD = -AngleError(_ANGLE, yaw_obj);
-		}
-		else
-		{
-			g_errorD = -AngleError(_ANGLE, yaw_obj)/94;
-		}
+			sum += curSpeed;
+			if (dialSwitchFlg2)
+			{
+				g_errorD = -AngleError(_ANGLE, yaw_obj);
+			}
+			else
+			{
+				g_errorD = -AngleError(_ANGLE, yaw_obj) / 94;
+			}
 			if (sum > sum_dist)
 			{
 				state = 1;
 				yaw_obj = yaw_init - st;
+				sum = 0;
 			}
 			break;
 		case 1:
-                  	if(dialSwitchFlg2)
-		{
-			g_errorD = -AngleError(_ANGLE, yaw_obj);
-		}
-                  		else
-		{
-			g_errorD = -AngleError(_ANGLE, yaw_obj)/94;
-		}
-			
-			if (sum > (sum_dist << 1)
+			sum += curSpeed;
+			if (dialSwitchFlg2)
+			{
+				g_errorD = -AngleError(_ANGLE, yaw_obj);
+			}
+			else
+			{
+				g_errorD = -AngleError(_ANGLE, yaw_obj) / 94;
+			}
+
+			if (sum > sum_dist
 				&& ind_left_line > 100 && ind_right_line > 100)
 			{
 				state = 0;

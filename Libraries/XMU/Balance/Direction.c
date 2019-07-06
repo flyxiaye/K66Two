@@ -154,11 +154,11 @@ void Camera_DirectionControl()
 			//¶¯Ì¬Ç°Õ°
 			int pro = ProSpect;
 			if (curSpeed < 10)
-				pro = ProSpect + 13;
+				pro = ProSpect + 14;
 			else if (curSpeed < 15)
-				pro = ProSpect + 9;
+				pro = ProSpect + 10;
 			else if (curSpeed < 20)
-				pro = ProSpect + 3;
+				pro = ProSpect + 7;
 			else if (curSpeed < 30)
 				pro = ProSpect;
 			else pro = ProSpect - 5;
