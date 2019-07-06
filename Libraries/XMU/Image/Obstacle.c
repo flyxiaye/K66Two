@@ -104,7 +104,7 @@ void roadblock3(void)
 			}
 
 			if (sum > sum_dist
-				&& ind_left_line > 100 && ind_right_line > 100)
+				||(ind_left_line > 100 && ind_right_line > 100))
 			{
 				state = 0;
 				sum = 0;
