@@ -27,7 +27,7 @@ void Ramp2()//图像识别
 {
 	static int rampflag = 0, all_speed = 0, acc_speed = 0;
 	static float initangleset, initg_mode;
-	if (Img_RampFlag && g_drive_flag && !rampflag)
+	if (Img_RampFlag && g_drive_flag && !rampflag&&2==ST[block_count])
 	{
 		gpio_init(D1, GPO, 0);
 		rampflag = 1;
@@ -53,6 +53,7 @@ void Ramp2()//图像识别
 			g_mode = 3;
 			g_angle_set = initangleset;
 			Img_RampFlag = 0;
+                        
 		}
 		if (all_speed < 12000)
 		{
