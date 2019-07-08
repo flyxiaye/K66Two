@@ -78,8 +78,7 @@ extern void OLED_Clear(void);
 #define DFLASH_PARAM54          BootRacerOpen
 #define DFLASH_PARAM55          AngleMutationOpenFlag
 #define DFLASH_PARAM56          ADclearCircleFlag
-
-
+#define DFLASH_PARAM57			Meeting13Flag
 
 /********** 以上为存储的数据 **********/
 
@@ -150,6 +149,7 @@ void MyFlash_Write(signed int flashnum)
         DFlash_Write_Int(SECTOR_NUM + flashnum, 54, DFLASH_PARAM54);
         DFlash_Write_Int(SECTOR_NUM + flashnum, 55, DFLASH_PARAM55);
         DFlash_Write_Int(SECTOR_NUM + flashnum, 56, DFLASH_PARAM56);
+		DFlash_Write_Int(SECTOR_NUM + flashnum, 57, DFLASH_PARAM57);
 
 	/********** 以上为存储的数据 **********/
 #ifdef _USE_LCD
@@ -225,6 +225,7 @@ void MyFlash_Read(signed int flashnum)
                 DFLASH_PARAM54 = DFlash_Read_Int(SECTOR_NUM + flashnum, 54);
                 DFLASH_PARAM55 = DFlash_Read_Int(SECTOR_NUM + flashnum, 55);
                 DFLASH_PARAM56 = DFlash_Read_Int(SECTOR_NUM + flashnum, 56);
+				DFLASH_PARAM57 = DFlash_Read_Int(SECTOR_NUM + flashnum, 57);
 
 
 		/********** 以上为存储的数据 **********/

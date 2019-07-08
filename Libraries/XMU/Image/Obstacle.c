@@ -3,7 +3,7 @@
 #include "headfile.h"
 #include "PID.h"
 //
-////ÆÂµÀÊ¶±ð
+////ï¿½Âµï¿½Ê¶ï¿½ï¿½
 //void JudgeRamp(void)
 //{
 //  static int angle_init = 0;
@@ -38,7 +38,7 @@
 //}
 //
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      »ñÈ¡ºìÍâÖµ
+//  @brief      ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Öµ
 //  @param      void
 //  @param      void
 //  @return     void 
@@ -50,9 +50,9 @@ void inf(void)
 }
 #define _ANGLE imu_data.yaw
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ºá¶ÏÂ·ÕÏ2 Á½¹Õ ÍÓÂÝÒÇ
-//  @param      camera_RB_flag    //ÉãÏñÍ·Ê¶±ðºá¶ÏÂ·ÕÏ±êÖ¾Î»
-//  @param      inf_RB_flag  //ºìÍâ±êÖ¾Î»
+//  @brief      ï¿½ï¿½ï¿½Â·ï¿½ï¿½2 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//  @param      camera_RB_flag    //ï¿½ï¿½ï¿½ï¿½Í·Ê¶ï¿½ï¿½ï¿½ï¿½Â·ï¿½Ï±ï¿½Ö¾Î»
+//  @param      inf_RB_flag  //ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Î»
 //  Sample usage:				
 //-------------------------------------------------------------------------------------------------------------------
 void roadblock3(void)
@@ -85,7 +85,7 @@ void roadblock3(void)
 			{
 				g_errorD = -AngleError(_ANGLE, yaw_obj) ;
 			}
-			if (sum > sum_dist)
+			if (sum > sum_dist||ST[block_count]==0)
 			{
 				state = 1;
 				yaw_obj = yaw_init - ST[block_count] * st;
@@ -103,8 +103,8 @@ void roadblock3(void)
 				g_errorD = -AngleError(_ANGLE, yaw_obj) ;
 			}
 
-			if (sum > sum_dist * 0.9
-				&& (ind_left_line > 100 || ind_right_line > 100))
+			if ((sum > sum_dist * 0.9
+				&& (ind_left_line > 100 || ind_right_line > 100))||ST[block_count]==0)
 			{
 				state = 0;
 				sum = 0;
@@ -126,9 +126,9 @@ void roadblock3(void)
 
 #undef _ANGLE  
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ÍÓÂÝÒÇ±È½Ï´óÐ¡(·Ç´ó¼´Ð¡)
-//  @param      real_angle    //Êµ¼Ê½Ç¶È
-//  @param      obj_angle  //Ä¿±ê½Ç¶È
+//  @brief      ï¿½ï¿½ï¿½ï¿½ï¿½Ç±È½Ï´ï¿½Ð¡(ï¿½Ç´ï¿½Ð¡)
+//  @param      real_angle    //Êµï¿½Ê½Ç¶ï¿½
+//  @param      obj_angle  //Ä¿ï¿½ï¿½Ç¶ï¿½
 //  Sample usage:				
 //------------------------------------------------------------------------------------------------------------------- 
 int JudgeMaxAngle(float real_angle, float obj_angle)
@@ -143,9 +143,9 @@ int JudgeMaxAngle(float real_angle, float obj_angle)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//  @brief      ·µ»ØÍÓÂÝÒÇ²îÖµ
-//  @param      real_angle    //Êµ¼Ê½Ç¶È
-//  @param      obj_angle  //Ä¿±ê½Ç¶È
+//  @brief      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç²ï¿½Öµ
+//  @param      real_angle    //Êµï¿½Ê½Ç¶ï¿½
+//  @param      obj_angle  //Ä¿ï¿½ï¿½Ç¶ï¿½
 //  Sample usage:				
 //------------------------------------------------------------------------------------------------------------------- 
 float AngleError(float real_angle, float obj_angle)

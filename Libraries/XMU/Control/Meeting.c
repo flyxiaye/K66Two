@@ -11,31 +11,32 @@ int StartDistance = 0.5 * ONE_METER;
 //  @brief  :		补图变量与会车变量调整
 //  @param  :		void
 //  @return :		void
-//  @note   :		放在补图后面	
+//  @note   :		放在补图后面
 //================================================================//
 void MeetingToImage(void)
 {
-	if (!g_single_open)			//非单车模式
+	if (!g_single_open) //非单车模式
 	{
-		if (0 == g_GetMeetingState && !g_GetMeetingFlag			//未开始会车
+		if (0 == g_GetMeetingState && !g_GetMeetingFlag //未开始会车
 			&& 2 == Img_BrokenFlag && CarGo == g_StateMaster)
 			g_GetMeetingFlag = 1;
-		else if (g_GetMeetingState && !g_GetMeetingFlag			//已经完成会车，不再识别断路
-			&& Img_BrokenFlag)
+		else if (g_GetMeetingState && !g_GetMeetingFlag //已经完成会车，不再识别断路
+				 && Img_BrokenFlag)
 			Img_BrokenFlag = 0;
 
-		if (g_GetMeetingState && 1 == Img_StopLineFlag && WaitingStop <= g_StateMaster)		//已经完成会车，开始识别停车线
+		if (g_GetMeetingState && 1 == Img_StopLineFlag && WaitingStop <= g_StateMaster) //已经完成会车，开始识别停车线
 			;
-		else Img_StopLineFlag = 0;
+		else
+			Img_StopLineFlag = 0;
 	}
 }
- int staycount=0;
+int staycount = 0;
 
 //================================================================//
 //  @brief  :		二轮车会车函数(掉头)
 //  @param  :		void
 //  @return :		void
-//  @note   :		void	
+//  @note   :		void
 //================================================================//
 void MeetingTwo1(void)
 {
@@ -46,24 +47,25 @@ void MeetingTwo1(void)
 	static float yaw_init_2 = 0;
 	static int get_flag = 0;
 	static int count = 0;
-       
-        static int Meetingcount = 0;
+
+	static int Meetingcount = 0;
 	switch (g_StateMaster)
 	{
 	case Ready:
-		if (g_car_lanuch) g_StateMaster = WaitingBegin;
+		if (g_car_lanuch)
+			g_StateMaster = WaitingBegin;
 		break;
 	case WaitingBegin:
 		if (g_StateSlave > Ready)
 		{
-                  		
+
 			g_car_lanuch = 1;
 			g_MasterOutFlag = 0;
 			CircleFlag = 0;
 			CircleState = 0;
 			Img_BrokenFlag = 0;
 			Img_BlockFlag = 0;
-                        g_handle_open = 1;
+			g_handle_open = 1;
 			g_ad_flag = 1;
 			Img_RampFlag = 0;
 			g_StateMaster = CarGo;
@@ -71,78 +73,108 @@ void MeetingTwo1(void)
 		}
 		break;
 	case CarGo:
-		if (g_GetMeetingFlag) 			 //进入会车区 
+		if (g_GetMeetingFlag) //进入会车区
 		{
 			acc_speed += curSpeed;
 			if (acc_speed > 0)
 			{
-				g_GetMeetingState=1;
+				g_GetMeetingState = 1;
 				g_StateMaster = StateOne;
 				Img_BlockFlag = 0;
 
 				acc_speed = 0;
 				//改变状态 调整下一状态标志
-//				g_StateMaster = 1;
+				//				g_StateMaster = 1;
 			}
 		}
-		else acc_speed = 0;
+		else
+			acc_speed = 0;
 		break;
-	case StateOne:		//会车区动作以及状态  
-	if(!TurnTailFlag) 
-	{
-          gpio_init(D2,GPO,0);
-	TurnTailFlag=1;
-	}
-	TurnTail();	//进入后一波操作掉头
-        
+	case StateOne: //会车区动作以及状态
+		if (!TurnTailFlag)
+		{
+			gpio_init(D2, GPO, 0);
+			TurnTailFlag = 1;
+		}
+		TurnTail(); //进入后一波操作掉头
+
 		break;
 	case StateTwo:
-	//等待接收信号
-          if(g_StateSlave <= CarGo&&StayCarFlag&&!g_SlaveOutFlag)
-          {
-			  staycount++;
-          }
-           if(g_SlaveOutFlag)
-           {
-             staycount=0;
-           }
-	if ((g_StateSlave > CarGo || g_SlaveOutFlag)&&!TurnTailGoFlag)		//隔壁车已过断路
+		//等待接收信号
+		if (g_StateSlave <= CarGo && StayCarFlag && !g_SlaveOutFlag)
+		{
+			staycount++;
+		}
+		if (g_SlaveOutFlag)
+		{
+			staycount = 0;
+		}
+		if ((g_StateSlave > CarGo || g_SlaveOutFlag) && !TurnTailGoFlag) //隔壁车已过断路
 		{
 			//GOGOGO!!!
 
-			TurnTailGoFlag=1;
-			g_handle_open=1;
-        }
-			TurnTail();
-        
-	break;
-	case WaitingStop:		//等待识别停车线
-                TurnTailFlag=0;
-				 gpio_init(A7, GPO, 0);
-		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
+			TurnTailGoFlag = 1;
+			g_handle_open = 1;
+		}
+		TurnTail();
+
+		break;
+	case WaitingStop: //等待识别停车线
+		TurnTailFlag = 0;
+		gpio_init(A7, GPO, 0);
+		if(!Meeting13Flag)
 		{
-//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
-				g_StateMaster = StateGo;
-//			else
-//			{
-//				g_StateMaster = StateStop; //停留等待
-//				speed_type = 0;
-//			}
+		if (Img_StopLineFlag && !g_SlaveOutFlag) //识别停车线 判断从车状态
+		{
+			//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
+			g_StateMaster = StateGo;
+			//			else
+			//			{
+			//				g_StateMaster = StateStop; //停留等待
+			//				speed_type = 0;
+			//			}
 		}
 		else if (Img_StopLineFlag && g_SlaveOutFlag)
 			g_StateMaster = StateGo;
+		}
+		else
+		{
+			if(g_inf>3000&&g_StateSlave>=CarFinish)
+			{
+				g_StateMaster=CarFinish;
+			}
+			if(Img_StopLineFlag && !g_SlaveOutFlag)
+			{
+				g_StateMaster = StateGo;
+			}
+			else if (Img_StopLineFlag && g_SlaveOutFlag)
+			g_StateMaster = StateGo;
+		}
+		}
 		break;
 	case StateGo:
 		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 0.5)
+		if(!Meeting13Flag)
+		{
+		if (acc_speed > Stopdistance)
 		{
 			acc_speed = 0;
-                        count = 0;
+			count = 0;
 			g_StateMaster = CarFinish;
 		}
+		}
+		else
+		{
+		if (acc_speed > 0)
+		{
+			acc_speed = 0;
+			count = 0;
+			g_StateMaster = CarFinish;
+		}
+		}
 		break;
-	case StateStop:    
-		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
+	case StateStop:
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag) //从车到达 或者从车出界
 		{
 			speed_type = 1;
 			acc_speed += curSpeed;
@@ -153,21 +185,21 @@ void MeetingTwo1(void)
 			}
 		}
 		break;
-	case CarFinish:   //拍地板
-                  count++;
-      if (count < 100)
-      {
-        g_mode=1;
-        g_angle_set = GroundAngle;
-        AngleControl();
-      }
-      else if (count >= 100)
-      {
-        g_drive_flag = 0;
-        count = 0;
-        g_mode=1;
-        g_StateMaster = 99;
-      }
+	case CarFinish: //拍地板
+		count++;
+		if (count < 100)
+		{
+			g_mode = 1;
+			g_angle_set = GroundAngle;
+			AngleControl();
+		}
+		else if (count >= 100)
+		{
+			g_drive_flag = 0;
+			count = 0;
+			g_mode = 1;
+			g_StateMaster = 99;
+		}
 		break;
 	default:
 		break;
@@ -178,7 +210,7 @@ void MeetingTwo1(void)
 //  @brief  :		二轮车会车函数(继续跑路)
 //  @param  :		void
 //  @return :		void
-//  @note   :		void	
+//  @note   :		void
 //================================================================//
 void MeetingTwo2(void)
 {
@@ -192,7 +224,8 @@ void MeetingTwo2(void)
 	switch (g_StateMaster)
 	{
 	case Ready:
-		if (g_car_lanuch) g_StateMaster = WaitingBegin;
+		if (g_car_lanuch)
+			g_StateMaster = WaitingBegin;
 		break;
 	case WaitingBegin:
 		if (g_StateSlave > Ready)
@@ -202,7 +235,7 @@ void MeetingTwo2(void)
 		}
 		break;
 	case CarGo:
-		if (g_GetMeetingFlag) 			 //进入会车区 
+		if (g_GetMeetingFlag) //进入会车区
 		{
 			acc_speed += curSpeed;
 			if (acc_speed > 0)
@@ -216,58 +249,87 @@ void MeetingTwo2(void)
 				spdExp3 = MEETING_SPEED;
 				yaw_init = _ANGLE;
 				yaw_init_1 = yaw_init + 90;
-				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+				if (yaw_init_1 > 180)
+					yaw_init_1 -= 360;
 			}
 		}
-		else acc_speed = 0;
+		else
+			acc_speed = 0;
 		break;
-	case StateOne:		//会车区动作以及状态  
-	if(!TurnNoTailFlag) 
-	{
-	TurnNoTailFlag=1;
-	}
-	TurnNoTail();			//进入后一波操作掉头
+	case StateOne: //会车区动作以及状态
+		if (!TurnNoTailFlag)
+		{
+			TurnNoTailFlag = 1;
+		}
+		TurnNoTail(); //进入后一波操作掉头
 		break;
 	case StateTwo:
-	//等待接收信号
-	if (g_StateSlave > CarGo || g_SlaveOutFlag)		//隔壁车已过断路
-        {
-			//GOGOGO!!!
-			if(!TurnNoTailGoFlag)
-			{
-			TurnNoTailGoFlag=1;
-                          
-			}
-        }
-			TurnNoTail();
-	break;
-	case WaitingStop:		//等待识别停车线
-          gpio_init(A7, GPO, 0);
-          TurnNoTailFlag=0;
-		if (Img_StopLineFlag && !g_SlaveOutFlag)		//识别停车线 判断从车状态
+		//等待接收信号
+		if (g_StateSlave > CarGo || g_SlaveOutFlag) //隔壁车已过断路
 		{
-//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
-				g_StateMaster = StateGo;
-//			else
-//			{
-//				g_StateMaster = StateStop; //停留等待
-//				speed_type = 0;
-//			}
+			//GOGOGO!!!
+			if (!TurnNoTailGoFlag)
+			{
+				TurnNoTailGoFlag = 1;
+			}
 		}
-		else if (Img_StopLineFlag && g_SlaveOutFlag)
-			g_StateMaster = StateGo;
+		TurnNoTail();
+		break;
+	case WaitingStop: //等待识别停车线
+		gpio_init(A7, GPO, 0);
+		TurnNoTailFlag = 0;
+		if (!Meeting13Flag)
+		{
+			if (Img_StopLineFlag && !g_SlaveOutFlag) //识别停车线 判断从车状态
+			{
+				//			if (g_StateSlave == StateStop) //从车已到 继续跑一段距离停下
+				g_StateMaster = StateGo;
+				//			else
+				//			{
+				//				g_StateMaster = StateStop; //停留等待
+				//				speed_type = 0;
+				//			}
+			}
+			else if (Img_StopLineFlag && g_SlaveOutFlag)
+				g_StateMaster = StateGo;
+		}
+		else
+		{
+			if(g_inf>=3000&&g_StateSlave>=StateStop)
+			{
+				g_StateMaster=CarFinish;
+			}
+			if (Img_StopLineFlag && !g_SlaveOutFlag)
+			{
+				g_StateMaster = StateGo;
+			}
+			else if (Img_StopLineFlag && g_SlaveOutFlag)
+				g_StateMaster = StateGo;
+		}
 		break;
 	case StateGo:
 		acc_speed += curSpeed;
-		if (acc_speed > sum_speed * 0.5)
+		if(!Meeting13Flag)
 		{
-                        count=0;
+		if (acc_speed > Stopdistance)
+		{
+			count = 0;
 			acc_speed = 0;
 			g_StateMaster = CarFinish;
 		}
+		}
+		else
+		{
+					if (acc_speed > 0)
+		{
+			count = 0;
+			acc_speed = 0;
+			g_StateMaster = CarFinish;
+		}
+		}
 		break;
 	case StateStop:
-		if (g_StateSlave >= StateGo || g_SlaveOutFlag)		//从车到达 或者从车出界
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag) //从车到达 或者从车出界
 		{
 			speed_type = 1;
 			acc_speed += curSpeed;
@@ -279,19 +341,19 @@ void MeetingTwo2(void)
 		}
 		break;
 	case CarFinish:
-		     count++;
-      if (count < 50)
-      {
-        g_mode=5;
-        g_angle_set = GroundAngle;
-        AngleControl();
-      }
-      else if (count >= 50)
-      {
-        g_drive_flag = 0;
-        count = 0;
-        g_StateMaster = 0;
-      }
+		count++;
+		if (count < 100)
+		{
+			g_mode = 5;
+			g_angle_set = GroundAngle;
+			AngleControl();
+		}
+		else if (count >= 100)
+		{
+			g_drive_flag = 0;
+			count = 0;
+			g_StateMaster = 0;
+		}
 		break;
 	default:
 		break;
@@ -312,7 +374,7 @@ void MeetingTwo2(void)
 ////  @brief  :		四轮车会车函数
 ////  @param  :		void
 ////  @return :		void
-////  @note   :		void	
+////  @note   :		void
 ////================================================================//
 //void MeetingFour(void)
 //{
@@ -327,7 +389,7 @@ void MeetingTwo2(void)
 //	switch (g_StartMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区
 //		{
 //			acc_speed += curSpeed;
 //			if (acc_speed > StartDistance)
@@ -463,7 +525,7 @@ void MeetingTwo2(void)
 //	switch (g_StateMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区
 //		{
 //			acc_speed += curSpeed;
 //			if (acc_speed > StartDistance)
@@ -614,7 +676,7 @@ void MeetingTwo2(void)
 ////  @brief  :		二轮车会车函数
 ////  @param  :		void
 ////  @return :		void
-////  @note   :		void	
+////  @note   :		void
 ////================================================================//
 //void MeetingTwo(void)
 //{
@@ -629,9 +691,9 @@ void MeetingTwo2(void)
 //	switch (g_StateMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区
 //		{
-//			BlockFlag = 0;//clear block 
+//			BlockFlag = 0;//clear block
 //                        acc_speed+=curSpeed;
 //			if (acc_speed > StartDistance)
 //			{
@@ -711,9 +773,9 @@ void MeetingTwo2(void)
 //	switch (g_StateMaster)
 //	{
 //	case 0:
-//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区 
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //进入断路区
 //		{
-//			BlockFlag = 0;//clear block 
+//			BlockFlag = 0;//clear block
 //                        acc_speed+=curSpeed;
 //			if (acc_speed > StartDistance)
 //			{
@@ -728,7 +790,7 @@ void MeetingTwo2(void)
 ////                if(Img_BrokenFlag == 2)
 ////                {
 //////                  MeetingCtrlFun_2();
-////                } 
+////                }
 //                if(g_StateSlave < 3 && g_SlaveOutFlag != 1)//从车未到达并且未出界，主车等待
 //                {
 ////                  g_drive_flag = 0;
@@ -767,7 +829,7 @@ void MeetingTwo2(void)
 //			else
 //			{
 //				g_StateMaster = StateStop; //停留等待
-//				
+//
 //			}
 //		}
 ////                else if ((Img_BrokenFlag== 3 || Img_BrokenFlag == 1)&&4 ==  dialSwitchFlg4)
@@ -787,7 +849,7 @@ void MeetingTwo2(void)
 //			g_StateMaster = CarFinish;
 //		}
 //		break;
-//                
+//
 //	case StateStop:
 //                Ground();
 //		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//从车到达
@@ -805,14 +867,14 @@ void MeetingTwo2(void)
 //                  g_drive_flag = 1;
 //			acc_speed += curSpeed;
 //			if (acc_speed > sum_speed + 200)
-//			{ 
+//			{
 //				g_StateMaster = CarFinish;
-//				acc_speed = 0; 
+//				acc_speed = 0;
 //			}
 //                }
 //		break;
 //	case CarFinish:
-//          
+//
 //		g_drive_flag = 0;
 //                break;
 //	default:
@@ -837,7 +899,7 @@ void MeetingTwo2(void)
 //  @return :		输出量
 //  @note   :		源输出向目标输出过渡
 //================================================================//
-//void MeetingCtrlFun_1(void) 
+//void MeetingCtrlFun_1(void)
 //{
 //  gpio_init(D0,GPO,0);
 //  static int stage = 0;
@@ -851,7 +913,7 @@ void MeetingTwo2(void)
 //    get_flag = 1;
 //    g_drive_flag = 0;
 //    last_yaw = _ANGLE;
-//  } 
+//  }
 //  switch(stage)
 //  {
 //    case 0:
@@ -886,7 +948,7 @@ void MeetingTwo2(void)
 //    case 2:
 //      sum_right += rCurSpeed;
 //      g_errorD =  meet_st;
-//      
+//
 //      if(_ANGLE * last_yaw <= 0)
 //      {
 //        error_yaw = abs(abs(_ANGLE - last_yaw) - 360);
@@ -908,15 +970,14 @@ void MeetingTwo2(void)
 //    default:
 //      break;
 //  }
-//    
+//
 //
 //}
 
-
 //================================================================//
 //  @brief  :		电感会车算法,不掉头（两轮）
-//  @param  :		
-//  @return :		
+//  @param  :
+//  @return :
 //  @note   :		void
 //================================================================//
 //void MeetingCtrlFun_2()//现用
@@ -985,9 +1046,6 @@ void MeetingTwo2(void)
 //#endif
 //
 //}
-
-
-
 
 //void MeetingCtrlFun(void) // 会车区控制车辆函数1
 //{
@@ -1125,6 +1183,4 @@ void MeetingTwo2(void)
 //	}
 //}
 
-
-#undef _ANGLE 
-
+#undef _ANGLE
