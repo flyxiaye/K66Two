@@ -83,7 +83,7 @@ float g_dire_D_AD=10;
 int protect_flag=0;
 
 //==========================方案选择模式============================//
-unsigned char BlockMode = 0;			//纯红外1，红外加摄像头0
+unsigned char BlockCount = 0;			//纯红外1，红外加摄像头0
 unsigned char Img_GrayJumpOpen = 0;		//灰度跳变检测断路开关
 
 //==========================元素计数变量============================//
