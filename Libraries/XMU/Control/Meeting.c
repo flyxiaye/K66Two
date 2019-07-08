@@ -150,7 +150,7 @@ void MeetingTwo1(void)
 			else if (Img_StopLineFlag && g_SlaveOutFlag)
 			g_StateMaster = StateGo;
 		}
-		}
+		
 		break;
 	case StateGo:
 		acc_speed += curSpeed;

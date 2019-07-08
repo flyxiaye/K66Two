@@ -552,4 +552,5 @@ extern int BootRacerAngle;
 extern int BootRacerOpen;
 extern int AngleMutationOpenFlag;
 extern int ADclearCircleFlag;
+extern int Meeting13Flag;
 #endif

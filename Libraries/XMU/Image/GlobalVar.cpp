@@ -360,3 +360,4 @@ int BootRacerAngle=-25;
 int BootRacerOpen=1;
 int AngleMutationOpenFlag=1; // ∑¿∂∂±Í÷æ
 int ADclearCircleFlag=1;
+int Meeting13Flag=0;
