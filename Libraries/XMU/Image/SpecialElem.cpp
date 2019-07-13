@@ -643,6 +643,18 @@ int ImgJudgeOutBroken(void)
 //  @return :		1停车线  0非停车线
 //  @note   :		void
 //================================================================//
+//int ImgIsStopLine(int line, int left, int right)
+//{
+//	int count = 0;
+//	for (int i = left + 1; i < right; )
+//	{
+//		i = SearchRightEage(line, i);
+//		i = SearchRightNoEage(line, i);
+//		count++;
+//		if (count > 6) return 1;
+//	}
+//	return 0;
+//}
 int ImgIsStopLine(int line, int left, int right)
 {
 	int count = 0;
@@ -651,7 +663,9 @@ int ImgIsStopLine(int line, int left, int right)
 		i = SearchRightEage(line, i);
 		i = SearchRightNoEage(line, i);
 		count++;
-		if (count > 6) return 1;
+		if (count > 6 )//&& RegionAveGray(DOWN_EAGE - 2, LL[DOWN_EAGE - 2], RL[DOWN_EAGE - 2]) 
+			//- RegionAveGray(line, left, right) > BrightThreshold)
+                  return 1;
 	}
 	return 0;
 }

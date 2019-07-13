@@ -236,7 +236,9 @@ void StopCar()
 //void Ground()
 //{
 //
-//         static float angle_init = 0;
+//         static float angle_init = 0; \
+
+
 //         static float flag = 0;
 //         static float time = 0;
 //         if((BrokenFlag == 2 && g_StateSlave < 3 && g_SlaveOutFlag != 1 && flag == 0) || (StopLineFlag && flag == 0))
@@ -353,7 +355,7 @@ void Parameter()
 	case 0:
 		break;
 	case 1://稳定参数
-		g_angle_set = -32;
+		g_angle_set = -29;
 		gRateKp = 18.1;
 		gRateKd = 17.1;
 		g_dire_P = 10.7;
@@ -368,7 +370,7 @@ void Parameter()
 		g_dire_D_AD = 9.9;
 		break;
 	case 2:   //特别稳定参数   三轮7电池
-		g_angle_set = -34;
+		g_angle_set = -29;
 		gRateKp = 25.10;
 		gRateKd = 17.10;
 		g_dire_P = 10.69;
@@ -383,7 +385,7 @@ void Parameter()
 		g_dire_D_AD = 9.89;
 		break;
 	case 3://双车旧电池  提速
-		g_angle_set = -31;
+		g_angle_set = -28;
 		gRateKp = 24;
 		gRateKd = 18.1;
 		g_dire_P = 12.69;
@@ -398,7 +400,7 @@ void Parameter()
 		g_dire_D_AD = 9.89;
 		break;
 	case 4:  //双车三电池  走线海口一
-          	g_angle_set = -31;
+          	g_angle_set = -28;
 		gRateKp = 24;
 		gRateKd = 18.1;
 		g_dire_P = 12.68;

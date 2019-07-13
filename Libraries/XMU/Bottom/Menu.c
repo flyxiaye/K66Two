@@ -476,7 +476,7 @@ void Key_Function(void)
 			if (g_drive_flag)
 			{
 				BootRacerFlag = 1;
-				//				g_StateMaster = 2;
+								g_StateMaster = 2;
 				g_MasterOutFlag = 0;
 				;
 				CircleFlag = 0;
@@ -958,56 +958,27 @@ void Main_Show(void)
 		}
 	}
 
-	Insert_Page("Angle"); //四元素//SPI
-	Insert_Float("pit", &imu_data.pit);
-	Insert_Float("rol", &imu_data.rol);
-	Insert_Float("yaw", &imu_data.yaw);
-	Insert_Float("x", &sensor.Gyro_deg.x);
-	Insert_Float("y", &sensor.Gyro_deg.y);
-	Insert_Float("z", &sensor.Gyro_deg.z);
-	Insert_Float("fly", &flipgyrow);
-
-
-	Insert_Page("PID_A"); //角度
-	Insert_Float("set", &g_angle_set);
-	Insert_Float("out", &g_AngleOut);
-	Insert_Float("PA", &g_angle_P);
-	Insert_Float("PR", &g_RateP);
-	Insert_Float("DR", &g_RateD);
-	Insert_Float("SP", &g_angle_Psingle);
-	Insert_Float("SD", &g_angle_D);
         
-	// Insert_Float("flygyro",)
-
-	Insert_Page("PID_D/C"); //方向
-	Insert_Float("error", &g_errorD);
-	Insert_Float("Out", &g_fDirectionControlOut);
+        
+        
+        	Insert_Page("PID_D/C"); //方向
+        Insert_Float("set", &g_angle_set);
 	Insert_Float("KP", &gRateKp);
 	Insert_Float("KD", &gRateKd);
-	Insert_Float("P", &g_dire_P);
+        	Insert_Float("P", &g_dire_P);
 	Insert_Float("D", &g_dire_D);
-	Insert_Int("MAX", &max_duty);
-	Insert_Int("ProOUT", &ProSpect);
-	Insert_Float("Circle_P", &Circle_P);
+        Insert_Float("Circle_P", &Circle_P);
 
-	Insert_Page("PID_D/AD"); //方向
-	Insert_Float("error", &g_errorD);
+            Insert_Int("StayTime", &StayTime);
+	
+	
+        Insert_Int("StayFlag", &StayCarFlag);
+        	Insert_Float("error", &g_errorD);
 	Insert_Float("Out", &g_fDirectionControlOut);
-	Insert_Float("KP", &gRateKp_AD);
-	Insert_Float("KD", &gRateKd_AD);
-	Insert_Float("P", &g_dire_P_AD);
-	Insert_Float("D", &g_dire_D_AD);
-
-	Insert_Page("PID_S"); //速度
-	Insert_Float("SpdSet", &g_fSpeed_set);
-	Insert_Float("error", &g_errorS);
-	Insert_Float("P", &g_Speed_P);
-	Insert_Float("I", &g_Speed_I);
-	Insert_Int("MaxSpeed", &MaxSpeed);
-	Insert_Int("MaxI", &Speed_MAX);
-	Insert_Float("g_fI", &g_fI);
-
-	Insert_Page("Obstacle");
+        Insert_Int("MAX", &max_duty);
+        Insert_Int("ProOUT", &ProSpect);
+        Insert_Int("ProtectFlag", &protect_flag);
+        Insert_Page("Obstacle");
 	Insert_Int("g_inf", &g_inf);
 	Insert_Int("block_inf", &block_inf);
 	Insert_Int("ramp_inf", &ramp_inf);
@@ -1028,21 +999,11 @@ void Main_Show(void)
 	Insert_Int("OutDistance1", &OutMeetingDistance1);
 	Insert_Int("OutDistance2", &OutMeetingDistance2);
 	Insert_Int("StopDistance", &Stopdistance);
-	Insert_Int("StayFlag", &StayCarFlag);
+	
 	Insert_Int("AngleFlag", &AngleMutationFlag);
 	Insert_Int("Meeting13", &Meeting13Flag);
-	//	Insert_Int("delay_dist", &delay_dist);
-
-	Insert_Page("ImgFlag");
-	Insert_Char("ImgCircle", &Img_CircleOpen);
-	Insert_Char("ImgStraiBroken", &Img_StraightBrokenOpen);
-	Insert_Char("ImgCurveBroken", &Img_CurveBrokenOpen);
-	Insert_Char("ImgBlock", &Img_BlockOpen);
-	Insert_Char("ImgRamp", &Img_RampOpen);
-	Insert_Char("ImgStop", &Img_StopOpen);
-	Insert_Char("ImgGrayJump", &Img_GrayJumpOpen);
-
-	Insert_Page("MeetFlag");
+        
+        Insert_Page("MeetFlag");
 	Insert_Char("Mode", &g_MeetingMode);
 	Insert_Char("Dir", &g_MeetingDir);
 	Insert_Char("MasterS", &g_StateMaster);
@@ -1050,12 +1011,72 @@ void Main_Show(void)
 	Insert_Char("MasterO", &g_MasterOutFlag);
 	Insert_Char("SlaveO", &g_SlaveOutFlag);
         Insert_Int("TurnTailPWM", &BrokenTurnTailPWM);
-        Insert_Int("StayTime", &StayTime);
-	Insert_Int("ProtectFlag", &protect_flag);
+    
+	
         Insert_Int("BootRacerOpen", &BootRacerOpen);
            Insert_Int("AngleMutationOpen", &AngleMutationOpenFlag);
            Insert_Int("ADclearCircleFlag", &ADclearCircleFlag);
            Insert_Int("Meeting13", &Meeting13Flag);
+        
+        
+           
+           
+           Insert_Page("ImgFlag");
+	Insert_Char("ImgCircle", &Img_CircleOpen);
+	Insert_Char("ImgStraiBroken", &Img_StraightBrokenOpen);
+	Insert_Char("ImgCurveBroken", &Img_CurveBrokenOpen);
+	Insert_Char("ImgBlock", &Img_BlockOpen);
+	Insert_Char("ImgRamp", &Img_RampOpen);
+	Insert_Char("ImgStop", &Img_StopOpen);
+	Insert_Char("ImgGrayJump", &Img_GrayJumpOpen);
+        
+        
+	Insert_Page("Angle"); //四元素//SPI
+	Insert_Float("pit", &imu_data.pit);
+	Insert_Float("rol", &imu_data.rol);
+	Insert_Float("yaw", &imu_data.yaw);
+	Insert_Float("x", &sensor.Gyro_deg.x);
+	Insert_Float("y", &sensor.Gyro_deg.y);
+	Insert_Float("z", &sensor.Gyro_deg.z);
+	Insert_Float("fly", &flipgyrow);
+
+
+	Insert_Page("PID_A"); //角度
+	
+	Insert_Float("out", &g_AngleOut);
+	Insert_Float("PA", &g_angle_P);
+	Insert_Float("PR", &g_RateP);
+	Insert_Float("DR", &g_RateD);
+	Insert_Float("SP", &g_angle_Psingle);
+	Insert_Float("SD", &g_angle_D);
+        
+	// Insert_Float("flygyro",)
+
+
+
+	Insert_Page("PID_D/AD"); //方向
+	Insert_Float("error", &g_errorD);
+	Insert_Float("Out", &g_fDirectionControlOut);
+	Insert_Float("KP", &gRateKp_AD);
+	Insert_Float("KD", &gRateKd_AD);
+	Insert_Float("P", &g_dire_P_AD);
+	Insert_Float("D", &g_dire_D_AD);
+
+	Insert_Page("PID_S"); //速度
+	Insert_Float("SpdSet", &g_fSpeed_set);
+	Insert_Float("error", &g_errorS);
+	Insert_Float("P", &g_Speed_P);
+	Insert_Float("I", &g_Speed_I);
+	Insert_Int("MaxSpeed", &MaxSpeed);
+	Insert_Int("MaxI", &Speed_MAX);
+	Insert_Float("g_fI", &g_fI);
+
+	
+	//	Insert_Int("delay_dist", &delay_dist);
+
+	
+
+	
         
         
 

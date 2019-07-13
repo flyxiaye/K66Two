@@ -6,7 +6,7 @@ const unsigned char g_Bit_Val_Up[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 const unsigned char g_Bit_Val_Down[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
 //**********Angle(角度控制)**************//
-float g_angle_set=-35.7;//车平衡位置角度
+float g_angle_set=-32;//车平衡位置角度
 
 float g_gyro_ratio = 4.8;
 float g_AngleControlOut = 0;
@@ -26,8 +26,8 @@ int g_count = 0;
 
 //串级
 float g_AngleOut = 0.0f;
-float g_RateP = 21.3;
-float g_RateD = 92;
+float g_RateP = 23.1;
+float g_RateD = 91.1;
 float g_angle_P=21.3; 
 float g_angle_Psingle=850; 
 float g_angle_D=100; 
@@ -62,8 +62,8 @@ int Speed_MAX = 3800;//积分限幅
 float gRateKp = 18.4;            //串级p
 float gRateKd = 15.1;            //串级d
 
-float g_dire_P=14;
-float g_dire_D=13.2f;
+float g_dire_P=10.7;
+float g_dire_D=10.1f;
 float g_errorD=0;//差值
 float g_errorCircleland=0;
 float g_fDirectionControlOut;
@@ -73,13 +73,13 @@ float AD_flag = 0;
 float g_fDirectionControlOut_new=0;
 float g_fDirectionControlOut_before=0;
 
-float Circle_P = 11;//环岛P
+float Circle_P = 7;//环岛P
 //**************************Direction方向环（电感）**************//
-float gRateKp_AD = 15;            //串级p
+float gRateKp_AD = 14.9;            //串级p
 float gRateKd_AD = 10;            //串级d
 
-float g_dire_P_AD=6;
-float g_dire_D_AD=10;
+float g_dire_P_AD=10.9;
+float g_dire_D_AD=9.9;
 int protect_flag=0;
 
 //==========================方案选择模式============================//
@@ -161,7 +161,7 @@ unsigned char image[ROW][COL];        //摄像头数据接收
 int exp_time = 330;                           //摄像头曝光时间
 int HighThreshold = 50;						//canny高阈值
 int LowThreshold = 20;						//canny低阈值
-int ControlMid = 90;						//图像控制中值
+int ControlMid = 94;						//图像控制中值
 
 //==========================菜单标志==============================//
 
@@ -201,7 +201,7 @@ float d_max = 0;
 float Steer_D = 0;
 float Steer_D1 = 0;     //入弯
 float Steer_D2 = 0;     //出弯
-int ProSpect= 55;
+int ProSpect= 53;
 int SteerDuty = InitSteer;
 float long_steer_p = 0.5;
 float long_steer_d = 0.5;
@@ -318,13 +318,13 @@ int obj_angle_1 = 30;
 int obj_angle_2 = -180;
 int const_error_1 = -20;
 int const_error_2 = 40;
-int max_duty = 8000;
+int max_duty = 3000;
 int OutMeetingDistance1 = 4000;
 int OutMeetingDistance2 = 8000;
 float GroundAngle = 9.73;
 int StayCarFlag=1;
 int Stopdistance=500;
-int StayTime=1200;
+int StayTime=100;
 /*====================================路障=====================================*/
 int sum = 0;
 int sum_dist = 4500;

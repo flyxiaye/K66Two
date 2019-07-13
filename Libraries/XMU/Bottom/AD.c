@@ -47,9 +47,13 @@ void ind_protect(void)
           {
             if(protect_flag)
             {
-		g_drive_flag = 0;
+           
+//		g_drive_flag = 0;
             }
-                g_MasterOutFlag=1;
+               else
+               {
+                    g_MasterOutFlag=1;
+               }
           }
 }
 void ind_norm_maxmin(void)                //左右电感最大最小

@@ -104,7 +104,7 @@ void PIT0_IRQHandler(void)
 
 		//	}
 
-	//	TurnTail();
+//		TurnTail();
 //	MeetingTwo1();
 	ADclearCircle2();
         Meeting();

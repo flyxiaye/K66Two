@@ -13,11 +13,11 @@ void TurnTail()
 	//  flipgyro+= sensor.Gyro_deg.z * 0.002;
 	static float lastangle, acc_Speed = 0, Broken_Speed, lastspeed, first, initangleset, number = 0, initmode;
 	static int TurnTail = 0, count = 0, initcameraopen, initindopen;
-	//    if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong
-	//    {           TurnTailFlag=1;
-	//                number=1;
-	//           initangleset = g_angle_set;
-	//        }
+	    // if(2==Img_BrokenFlag&&g_mode==3&&g_drive_flag&&!number)  //ce shi yong
+	    // {           TurnTailFlag=1;
+	    //             number=1;
+	    //        initangleset = g_angle_set;
+	    //     }
 
 	if (!number)
 	{
@@ -84,6 +84,7 @@ void TurnTail()
 			acc_Speed += curSpeed;
 			if (flipgyro <= 100)
 			{
+                              g_drive_flag=1;
 				g_mode = 2;
 				g_angle_set = BalanceAngle;
 				AngleControl();
@@ -93,6 +94,7 @@ void TurnTail()
 			}
 			else if (flipgyro > 100)
 			{
+                          g_drive_flag=1;
 				acc_Speed = 0;
 				g_mode = 1;
 				TurnTail = 3;
@@ -109,6 +111,7 @@ void TurnTail()
 			count++;
 			if (count < 50)
 			{
+                          g_drive_flag=1;
 				g_mode = 5;
 				g_angle_set = GroundAngle;
 				AngleControl();
@@ -135,6 +138,7 @@ void TurnTail()
 			}
 			else if (count > 400+staycount+StayTime)
 			{
+                          g_drive_flag=1;
 				acc_Speed += curSpeed;
 				if (acc_Speed < OutMeetingDistance1)
 				{
@@ -187,7 +191,7 @@ void TurnTail()
 					}
 				}
 			}
-			if (count >= 5000)
+			if (count >= 50000)
 			{
 				g_GetMeetingFlag = 0;
 				TurnTailGoFlag = 0;
@@ -198,7 +202,7 @@ void TurnTail()
 				Img_RampFlag = 0;
 				CircleFlag = 0;
 				CircleState = 0;
-
+                                g_drive_flag = 0;
 				g_StateMaster = WaitingStop;
 				count = 0;
 			}

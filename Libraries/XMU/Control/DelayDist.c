@@ -127,6 +127,7 @@ int DIndLeftcol = 0, DIndRightcol = 0, DIndMid = 0, DistFlag = 0, count = 0;
 float Dpit = 0;
 void IndCI(void)
 {
+  return;
 	static int count;
 	//static int DIndLeftcol=0,DIndRightcol=0,DIndMid=0,DistFlag=0,count=0;
 	if (count <= 4)

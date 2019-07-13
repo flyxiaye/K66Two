@@ -10,7 +10,7 @@
 #include  "keyboard.h"
 
 
-int main(void)
+  int main(void)
 {
 	get_clk();
 	MyFlash_Read(0);
@@ -63,7 +63,7 @@ int main(void)
 			gpio_init(D1, GPO, 0);
 		else gpio_init(D1, GPO, 1);
 		//		if (CircleFlag)
-		if ((Img_RampFlag || CircleFlag || Img_BrokenFlag) && dialSwitchFlg3)
+		if ((Img_RampFlag || Img_BrokenFlag) && dialSwitchFlg3)
 			gpio_init(A7, GPO, 1);
 		else gpio_init(A7, GPO, 0);
 
