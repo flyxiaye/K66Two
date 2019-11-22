@@ -1,0 +1,60 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[JLinkDriver]
+CStepIntDis=_ 0
+LeaveTargetRunning=_ 0
+TraceBufferSize=0x00010000
+TraceStallIfFIFOFull=0x00000000
+TracePortSize=0x00000004
+[DebugChecksum]
+Checksum=80523490
+[Exceptions]
+StopOnUncaught=_ 0
+StopOnThrow=_ 0
+[CodeCoverage]
+Enabled=_ 0
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[DriverProfiling]
+Enabled=0
+Mode=1
+Graph=0
+Symbiont=0
+Exclusions=
+[CallStackLog]
+Enabled=0
+[CallStackStripe]
+ShowTiming=1
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Aliases]
+A0=_ "C:\Users\ChxxxXL\Desktop\移库\K66four\Libraries\XMU\Balance\Angle.c" ""
+A1=_ "C:\Users\ChxxxXL\Desktop\移库\K66four\Libraries\startup\DeviceSupport\system_MK66.c" ""
+A2=_ "E:\work\seekfree\freescale_work\单片机库开发\K66库编写\逐飞科技_K66库\Libraries\startup\DeviceSupport\IAR-ARM\startup_MK66F18.s" ""
+A3=_ "F:\work\seekfree\开发板\用户资料\3-开发板历程\4-应用例程\23-总钻风&2.8TFT显示图像(OK)\Projecct\USER\src\isr.c" ""
+A4=_ "F:\work\seekfree\开发板\用户资料\3-开发板历程\4-应用例程\23-总钻风&2.8TFT显示图像(OK)\Projecct\USER\src\main.c" ""
+A5=_ "G:\Users\总钻风&2.8TFT显示图像\Libraries\drives\inc\MK60DN10_dma.h" ""
+Count=6
+SuppressDialog=1
