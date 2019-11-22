@@ -6,8 +6,7 @@ const unsigned char g_Bit_Val_Up[8] = {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 const unsigned char g_Bit_Val_Down[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
 //**********Angle(角度控制)**************//
-float g_angle_set=18.09;//车平衡位置角度
-float g_angle_set_const = 26;
+float g_angle_set=-32;//车平衡位置角度
 
 float g_gyro_ratio = 4.8;
 float g_AngleControlOut = 0;
@@ -27,14 +26,15 @@ int g_count = 0;
 
 //串级
 float g_AngleOut = 0.0f;
-float g_RateP = 39.09;
-float g_RateD = 61.69;
-float g_angle_P=19.3; 
-float g_angle_D=30; 
+float g_RateP = 23.1;
+float g_RateD = 91.1;
+float g_angle_P=21.3; 
+float g_angle_Psingle=850; 
+float g_angle_D=100; 
 //单级
 float g_single_angle_P = 1;
 float g_single_angle_D = 0;
-
+int AngleMutationFlag=1;     //跳变检测
 //***********MOTOR（电机模式及其输出及开关）***********//
 float g_fleft;
 float g_fright;
@@ -43,10 +43,10 @@ float g_duty_left=0;
 float g_duty_right=0;
 //***********Speed(速度控制)**********//
 int g_flag=0;  //是否发车
-float g_Speed_P = 240;
-float g_Speed_I = 0.97;
+float g_Speed_P = 440;
+float g_Speed_I = 1.37;
 float g_fSpeedControlOut = 0;//输出速度控制
-float g_fSpeed_set = 20;//设置的速度值
+float g_fSpeed_set = 30;//设置的速度值
 float g_nSpeedControlPeriod=-1;
 float g_SpeedPeriod=10;
 float g_nLeftMotorPulseSigma = 0;//编码器采集的脉冲值
@@ -59,26 +59,39 @@ int Speed_MAX = 3800;//积分限幅
 
 
 //**************************Direction方向环（摄像头）**************//
-float gRateKp = 8.41;            //串级p
-float gRateKd = 10.1;            //串级d
+float gRateKp = 18.4;            //串级p
+float gRateKd = 15.1;            //串级d
 
-float g_dire_P=9;
-float g_dire_D=9.2;
+float g_dire_P=10.7;
+float g_dire_D=10.1f;
 float g_errorD=0;//差值
+float g_errorCircleland=0;
 float g_fDirectionControlOut;
 float g_nDirectionControlPeriod=0;//输出平滑
 float g_DirectionPeriod=5;//分的段数
 float AD_flag = 0;
 float g_fDirectionControlOut_new=0;
 float g_fDirectionControlOut_before=0;
+
+float Circle_P = 7;//环岛P
 //**************************Direction方向环（电感）**************//
-float gRateKp_AD = 15;            //串级p
+float gRateKp_AD = 14.9;            //串级p
 float gRateKd_AD = 10;            //串级d
 
-float g_dire_P_AD=6;
-float g_dire_D_AD=10;
+float g_dire_P_AD=10.9;
+float g_dire_D_AD=9.9;
 int protect_flag=0;
+
+//==========================方案选择模式============================//
+unsigned char BlockCount = 0;			//纯红外1，红外加摄像头0
+unsigned char Img_GrayJumpOpen = 0;		//灰度跳变检测断路开关
+
+//==========================元素计数变量============================//
+
+unsigned char CircleDir[10];		//环岛计数
+unsigned char Ind_CircleOpen = 0;	//电磁判断环岛开关
 //==========================图像变量============================//
+//#include "GlobalVar.h"
 const int MidOffset[] = {
 	 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 11, 12, 13, 14, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 52, 53, 54, 55, 56, 57, 58, 59, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 93,
 };
@@ -87,8 +100,11 @@ int ML[IMG_ROW], LL[IMG_ROW], RL[IMG_ROW];   //保存边缘线信息数组
 int ML_Count;									//中线有效行
 SpecialPoint LeftPnt, RightPnt;					//保存左右特殊点信息
 int DiffThreshold = 25;							//边缘检测阈值
+int DarkThreshold = 55;                         //暗阈值（路障）
+int BrightThreshold = 15;                      //亮阈值（坡道）
 int LightThreshold = 80;						//去高光噪声阈值
 int LightThreshold2 = 150;						//去高光噪声阈值2
+int BrokenThreshold = 35;						//断路灰度阈值
 int FindLineType = 0;							//是否加入高光滤波标志
 int g_RoadType = 0;
 int ErrorFlag = 0;								//错误标志位
@@ -99,6 +115,7 @@ int SpeedRow = 0;			//控速边界行数
 
 int CircleFlag = 0;
 int CircleState = 0;
+unsigned char Dist_ClearSevenFlag = 0;		//延距清环岛7标志位
 
 int LeftIntLine = 0;		//记录左内跳行数
 int RightIntLine = 0;		//记录右内跳行数
@@ -113,7 +130,8 @@ int BrokenLastAve = 0;
 int StopLineDist = 0;
 
 unsigned char Img_CircleOpen = 1;
-unsigned char Img_BrokenOpen = 1;
+unsigned char Img_StraightBrokenOpen = 1;
+unsigned char Img_CurveBrokenOpen = 1;
 unsigned char Img_StopOpen = 1;
 unsigned char Img_BlockOpen = 1;
 unsigned char Img_RampOpen = 1;
@@ -140,16 +158,16 @@ void VarInit(void)
 int StraightFlag = 0;//直道标志位 1为直道
 //==========================摄像头参数==============================//
 unsigned char image[ROW][COL];        //摄像头数据接收
-int exp_time = 300;                           //摄像头曝光时间
+int exp_time = 330;                           //摄像头曝光时间
 int HighThreshold = 50;						//canny高阈值
 int LowThreshold = 20;						//canny低阈值
-int ControlMid = 90;						//图像控制中值
+int ControlMid = 94;						//图像控制中值
 
 //==========================菜单标志==============================//
 
-
+int	g_car_lanuch = 0;			//车辆启动标志
 int g_drive_flag = 0;           //电机开关标志
-int g_ad_flag = 0;              //电感采集标志
+int g_ad_flag = 1;              //电感采集标志
 int g_steer_open = 1;           //舵机开关标志
 int g_handle_open = 0;          //补图开关标志
 int g_ramp_open = 0;            //坡道开关标志
@@ -164,7 +182,6 @@ int g_ind_ctrl_flag = 0;
 int g_broken_enable = 0;
 int BugFlag = 0;
 
-//int ErrorFlag = 0;
 int speed_type = 1;
 //int RoadType = 0;
 //int MaxSpeedFlag = 0;     //高速标志
@@ -184,7 +201,7 @@ float d_max = 0;
 float Steer_D = 0;
 float Steer_D1 = 0;     //入弯
 float Steer_D2 = 0;     //出弯
-int ProSpect= 55;
+int ProSpect= 53;
 int SteerDuty = InitSteer;
 float long_steer_p = 0.5;
 float long_steer_d = 0.5;
@@ -277,20 +294,21 @@ int dialSwitchFlg1=0;
 int dialSwitchFlg2=0;
 int dialSwitchFlg3=0;
 int dialSwitchFlg4=0;
+int dialSwitchFlg5=0;
+int dialSwitchFlg6=0;
+int dialSwitchFlg7=0;
+int dialSwitchFlg8=0;
 int dialSwitchcal=0;
 
 /*=====================================双车状态======================================*/
-unsigned char g_StartMaster = 0;                //主车发车准备
-unsigned char g_StartSlave = 1;                 //从车发车准备
-unsigned char g_GetMeetingMaster = 0;            //主车到达会车区标志
-unsigned char g_GetMeetingSlave = 0;             //从车到达会车区标志
-unsigned char g_MeetingCtrlFlag = 0;             //会车状态车辆控制标志
-unsigned char g_MeetingCtrlEndFlag = 0;             //会车状态车辆控制结束标志
-unsigned char g_EndMeetingMaster = 0;           //主车结束会车标志
 unsigned char g_MasterOutFlag = 0;              //主车出界
 unsigned char g_SlaveOutFlag = 0;               //从车出界
-unsigned char g_StateMaster = 0;
-unsigned char g_StateSlave = 0;
+unsigned char g_StateMaster = 0;		//主车状态
+unsigned char g_StateSlave = 0;			//从车状态
+unsigned char g_MeetingMode = 2;
+unsigned char g_MeetingDir = 2;			//转向方向 2为右转 1为左转
+unsigned char g_GetMeetingFlag = 0;	//进入会车标志 通过其他动作改变
+unsigned char g_GetMeetingState = 0;	//已经会车 0未会车 1已经会车 识别会车区后变为1
 
 /*====================================会车区惯导变量=====================================*/
 int sum_distance_1 = 3400;
@@ -300,17 +318,46 @@ int obj_angle_1 = 30;
 int obj_angle_2 = -180;
 int const_error_1 = -20;
 int const_error_2 = 40;
-int max_duty = 1300;
+int max_duty = 3000;
+int OutMeetingDistance1 = 4000;
+int OutMeetingDistance2 = 8000;
+float GroundAngle = 9.73;
+int StayCarFlag=1;
+int Stopdistance=500;
+int StayTime=100;
 /*====================================路障=====================================*/
-int g_RB_Lduty = 0,g_RB_Rduty = 0;
-float k1 = 30,k2 = 54,k3 = 63;//调整系数
 int sum = 0;
 int sum_dist = 4500;
-int inf_RB_flag = 0;
-int var = 0;
-float g_inf = 0;
-int s1 = 15;
+int g_inf =0 ;
 int st = -40;
-int stop_inf = 90;
-unsigned char ObstacleEndFlag = 0;
+int ST[5] = {1,-1,1,-1,1};
 
+int block_count=0;
+int block_inf = 900;
+int ramp_inf = 1200;
+int singleRedFlag=0;
+/**************0电磁环岛*************/
+float Circlelanderror=0;
+int circlelandflag=0;
+float circlelandSigma=0;
+int circlelandtimecount=0;
+int circlelandget=0; 
+int circlelandnumber=0;
+int circlelandsymbol=0;
+
+uint8 phototube=0;
+/*************====================坡道路障相关可控制变量=======================*************/
+int BrokenTurnTailPWM=2799;
+int BrokenTurnTailDistance=499;
+float Rampangle=9;
+
+/*************====================开机加速相关变量=======================*************/
+int BootRacerFlag=0;
+int BootRacerDistance=5000;
+int BootRacerAngle=-25;
+
+
+int BootRacerOpen=1;
+int AngleMutationOpenFlag=1; // 防抖标志
+int ADclearCircleFlag=1;
+int Meeting13Flag=0;

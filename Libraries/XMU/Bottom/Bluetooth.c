@@ -1,7 +1,7 @@
 #include "Bluetooth.h"
 #include "common.h"
 #include "MK60_uart.h"
-
+#include "headfile.h"
 uint8 uSendBuf[UartDataNum * 2] = { 0 };
 uint8 XmuDataNum = UartDataNum * 2;
 extern UART_Type* uart[];
@@ -12,15 +12,22 @@ SerialPortType SerialPortRx;
 
 void SendUserData()
 {
-	SendInt(LightThreshold);
-	/*SendFloat(ind_left);
-	SendFloat(ind_right);
-		SendFloat(ind_left+ind_right);*/
-		//SendFloat(imu_data.yaw);
-	SendInt(Img_BrokenFlag);
-	SendInt(Img_BlockFlag);
-	SendFloat(leftExpect);
-	SendFloat(rightExpect);
+	//SendInt(g_ErrorImageNumber);
+	//SendFloat(imu_data.pit);
+
+	////	SendInt(LightThreshold);
+	//	SendInt(ind_left_line);
+	//	SendInt(ind_right_line);
+	//        SendInt(ind_left_column);
+	//	SendInt(ind_right_column);
+	SendFloat(curSpeed);
+	SendInt(lCurSpeed);
+	SendInt(rCurSpeed);
+	//SendInt(AngleMutationFlag); 
+//	SendInt(Img_BrokenFlag);
+//	SendInt(Img_BlockFlag);
+//	SendFloat(leftExpect);
+//	SendFloat(rightExpect);
 }
 
 void BluetoothInt()

@@ -88,8 +88,16 @@ void DialSwitchInit()
     gpio_init(DIALSWITCH_PIN4, GPI, 1);    
     port_init_NoAlt(DIALSWITCH_PIN1,PULLUP);    
     port_init_NoAlt(DIALSWITCH_PIN2,PULLUP);
-    port_init_NoAlt(DIALSWITCH_PIN3,PULLUP);    
+    port_init_NoAlt(DIALSWITCH_PIN3,PULLUP);            
     port_init_NoAlt(DIALSWITCH_PIN4,PULLUP);
+    gpio_init(DIALSWITCH_PIN5, GPI, 1);   
+    gpio_init(DIALSWITCH_PIN6, GPI, 1);
+    gpio_init(DIALSWITCH_PIN7, GPI, 1);
+    gpio_init(DIALSWITCH_PIN8, GPI, 1);    
+    port_init_NoAlt(DIALSWITCH_PIN5,PULLUP);    
+    port_init_NoAlt(DIALSWITCH_PIN6,PULLUP);
+    port_init_NoAlt(DIALSWITCH_PIN7,PULLUP);    
+    port_init_NoAlt(DIALSWITCH_PIN8,PULLUP);
 
 
 }
@@ -116,25 +124,29 @@ void system_Init(void)
 #endif 
 //        sensor.gyr_calibrate = 1;
 
-//     communication_Init();
+     communication_Init();
 //     OLED_Init();
      DriveInit();  
      encoder_Init();
      lcd_init();
-     camera_init();
+    camera_init();
+    gpio_init(C8,GPI,0);
      adc_init(ADC1_SE8);
      adc_init(ADC1_SE9);
      adc_init(ADC0_SE12);
      adc_init(ADC0_SE13);
      adc_init(ADC1_SE10);
+     adc_init(ADC1_SE17);
+     adc_init(ADC0_SE17);
+     adc_init(ADC0_SE18);
      
 //     adc_init(ADC1_SE12);               //红外初始化
 //     //sd_init();
-////     SD_BMP_Init();
+     SD_BMP_Init();
 ////     crcInit();
      DialSwitchInit();
      	INTR_Keyboard_Init();		//键盘初始化
-//     BluetoothInt();
+     BluetoothInt();
      PIT_Init();    
     /**********设置中断优先级**********/
     NVIC_SetPriorityGrouping(3);   

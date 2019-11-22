@@ -2,303 +2,338 @@
 #include "Meeting.h"
 #include "Obstacle.h"
 
+#define MEETING_SPEED 10
+#define _ANGLE imu_data.yaw
 
-enum MeetingFlag {
-	WaitingStop = 15,
-	IsStopLine,
-	StateGo,
-	StateStop,
-	CarFinish
-};
-int StartDistance = 500; //Ê¶±ğ¶ÏÂ·ºóÑÓ¾à¾àÀë
-int StartSum = 0;               //¾àÀë»ıÀÛÁ¿
+int StartDistance = 0.5 * ONE_METER;
 
 //================================================================//
-//  @brief  :		ËÄÂÖ³µ»á³µº¯Êı
+//  @brief  :		è¡¥å›¾å˜é‡ä¸ä¼šè½¦å˜é‡è°ƒæ•´
 //  @param  :		void
 //  @return :		void
-//  @note   :		void	
+//  @note   :		æ”¾åœ¨è¡¥å›¾åé¢
 //================================================================//
-void MeetingFour(void)
+void MeetingToImage(void)
+{
+	if (!g_single_open) //éå•è½¦æ¨¡å¼
+	{
+		if (0 == g_GetMeetingState && !g_GetMeetingFlag //æœªå¼€å§‹ä¼šè½¦
+			&& 2 == Img_BrokenFlag && CarGo == g_StateMaster)
+			g_GetMeetingFlag = 1;
+		else if (g_GetMeetingState && !g_GetMeetingFlag //å·²ç»å®Œæˆä¼šè½¦ï¼Œä¸å†è¯†åˆ«æ–­è·¯
+				 && Img_BrokenFlag)
+			Img_BrokenFlag = 0;
+
+		if (g_GetMeetingState && 1 == Img_StopLineFlag && WaitingStop <= g_StateMaster) //å·²ç»å®Œæˆä¼šè½¦ï¼Œå¼€å§‹è¯†åˆ«åœè½¦çº¿
+			;
+		else
+			Img_StopLineFlag = 0;
+	}
+}
+int staycount = 0;
+
+//================================================================//
+//  @brief  :		äºŒè½®è½¦ä¼šè½¦å‡½æ•°(æ‰å¤´)
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
+//================================================================//
+void MeetingTwo1(void)
 {
 	static int acc_speed = 0;
-	static int sum_speed = 2000;
+	static int sum_speed = 0.5 * ONE_METER;
 	static float yaw_init = 0;
 	static float yaw_init_1 = 0;
 	static float yaw_init_2 = 0;
 	static int get_flag = 0;
 	static int count = 0;
-#if 1 == MEETING_MODE	//µôÍ·
-	switch (g_StartMaster)
+
+	static int Meetingcount = 0;
+	switch (g_StateMaster)
 	{
-	case 0:
-		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //½øÈë¶ÏÂ·Çø 
+	case Ready:
+		if (g_car_lanuch)
+			g_StateMaster = WaitingBegin;
+		break;
+	case WaitingBegin:
+		if (g_StateSlave > Ready)
+		{
+
+			g_car_lanuch = 1;
+			g_MasterOutFlag = 0;
+			CircleFlag = 0;
+			CircleState = 0;
+			Img_BrokenFlag = 0;
+			Img_BlockFlag = 0;
+			g_handle_open = 1;
+			g_ad_flag = 1;
+			Img_RampFlag = 0;
+			g_StateMaster = CarGo;
+			g_drive_flag = 1;
+		}
+		break;
+	case CarGo:
+		if (g_GetMeetingFlag) //è¿›å…¥ä¼šè½¦åŒº
 		{
 			acc_speed += curSpeed;
-			if (acc_speed > StartDistance)
+			if (acc_speed > 0)
 			{
-				g_GetMeetingMaster = 1;
-				g_handle_open = 0;
-				Img_BrokenFlag = 0;
-				BlockFlag = 0;
+				g_GetMeetingState = 1;
+				g_StateMaster = StateOne;
+				Img_BlockFlag = 0;
+
 				acc_speed = 0;
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 1;
-				speed_type = 3; //»á³µËÙ¶È
+				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+				//				g_StateMaster = 1;
+			}
+		}
+		else
+			acc_speed = 0;
+		break;
+	case StateOne: //ä¼šè½¦åŒºåŠ¨ä½œä»¥åŠçŠ¶æ€
+		if (!TurnTailFlag)
+		{
+			gpio_init(D2, GPO, 0);
+			TurnTailFlag = 1;
+		}
+		TurnTail(); //è¿›å…¥åä¸€æ³¢æ“ä½œæ‰å¤´
+
+		break;
+	case StateTwo:
+		//ç­‰å¾…æ¥æ”¶ä¿¡å·
+		if (g_StateSlave <= CarGo && StayCarFlag && !g_SlaveOutFlag)
+		{
+			staycount++;
+		}
+		if (g_SlaveOutFlag)
+		{
+			staycount = 0;
+		}
+		if ((g_StateSlave > CarGo || g_SlaveOutFlag) && !TurnTailGoFlag) //éš”å£è½¦å·²è¿‡æ–­è·¯
+		{
+			//GOGOGO!!!
+
+			TurnTailGoFlag = 1;
+			g_handle_open = 1;
+		}
+		TurnTail();
+
+		break;
+	case WaitingStop: //ç­‰å¾…è¯†åˆ«åœè½¦çº¿
+		TurnTailFlag = 0;
+		gpio_init(A7, GPO, 0);
+		if(!Meeting13Flag)
+		{
+		if (Img_StopLineFlag && !g_SlaveOutFlag) //è¯†åˆ«åœè½¦çº¿ åˆ¤æ–­ä»è½¦çŠ¶æ€
+		{
+			//			if (g_StateSlave == StateStop) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+			g_StateMaster = StateGo;
+			//			else
+			//			{
+			//				g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+			//				speed_type = 0;
+			//			}
+		}
+		else if (Img_StopLineFlag && g_SlaveOutFlag)
+			g_StateMaster = StateGo;
+		}
+		else
+		{
+			if(g_inf>3000&&g_StateSlave>=CarFinish)
+			{
+				g_StateMaster=CarFinish;
+			}
+			if(Img_StopLineFlag && !g_SlaveOutFlag)
+			{
+				g_StateMaster = StateGo;
+			}
+			else if (Img_StopLineFlag && g_SlaveOutFlag)
+			g_StateMaster = StateGo;
+		}
+		
+		break;
+	case StateGo:
+		acc_speed += curSpeed;
+		if(!Meeting13Flag)
+		{
+		if (acc_speed > Stopdistance)
+		{
+			acc_speed = 0;
+			count = 0;
+			g_StateMaster = CarFinish;
+		}
+		}
+		else
+		{
+		if (acc_speed > 0)
+		{
+			acc_speed = 0;
+			count = 0;
+			g_StateMaster = CarFinish;
+		}
+		}
+		break;
+	case StateStop:
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag) //ä»è½¦åˆ°è¾¾ æˆ–è€…ä»è½¦å‡ºç•Œ
+		{
+			speed_type = 1;
+			acc_speed += curSpeed;
+			if (acc_speed > Stopdistance)
+			{
+				g_StateMaster = CarFinish;
+				acc_speed = 0;
+			}
+		}
+		break;
+	case CarFinish: //æ‹åœ°æ¿
+		count++;
+		if (count < 100)
+		{
+			g_mode = 1;
+			g_angle_set = GroundAngle;
+			AngleControl();
+		}
+		else if (count >= 100)
+		{
+			g_drive_flag = 0;
+			count = 0;
+			g_mode = 1;
+			g_StateMaster = 99;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+//================================================================//
+//  @brief  :		äºŒè½®è½¦ä¼šè½¦å‡½æ•°(ç»§ç»­è·‘è·¯)
+//  @param  :		void
+//  @return :		void
+//  @note   :		void
+//================================================================//
+void MeetingTwo2(void)
+{
+	static int acc_speed = 0;
+	static int sum_speed = 0.5 * ONE_METER;
+	static float yaw_init = 0;
+	static float yaw_init_1 = 0;
+	static float yaw_init_2 = 0;
+	static int get_flag = 0;
+	static int count = 0;
+	switch (g_StateMaster)
+	{
+	case Ready:
+		if (g_car_lanuch)
+			g_StateMaster = WaitingBegin;
+		break;
+	case WaitingBegin:
+		if (g_StateSlave > Ready)
+		{
+			g_StateMaster = CarGo;
+			g_drive_flag = 1;
+		}
+		break;
+	case CarGo:
+		if (g_GetMeetingFlag) //è¿›å…¥ä¼šè½¦åŒº
+		{
+			acc_speed += curSpeed;
+			if (acc_speed > 0)
+			{
+				g_StateMaster = StateOne;
+				Img_BlockFlag = 0;
+				// g_handle_open = 0;
+				acc_speed = 0;
+				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+				speed_type = 3; //ä¼šè½¦é€Ÿåº¦
 				spdExp3 = MEETING_SPEED;
 				yaw_init = _ANGLE;
 				yaw_init_1 = yaw_init + 90;
-				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+				if (yaw_init_1 > 180)
+					yaw_init_1 -= 360;
 			}
 		}
-		else acc_speed = 0;
+		else
+			acc_speed = 0;
 		break;
-	case 1:
-		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
-		if (_ANGLE > 0 && yaw_init_1 >= 0)
+	case StateOne: //ä¼šè½¦åŒºåŠ¨ä½œä»¥åŠçŠ¶æ€
+		if (!TurnNoTailFlag)
 		{
-			if (_ANGLE > yaw_init_1)
+			TurnNoTailFlag = 1;
+		}
+		TurnNoTail(); //è¿›å…¥åä¸€æ³¢æ“ä½œæ‰å¤´
+		break;
+	case StateTwo:
+		//ç­‰å¾…æ¥æ”¶ä¿¡å·
+		if (g_StateSlave > CarGo || g_SlaveOutFlag) //éš”å£è½¦å·²è¿‡æ–­è·¯
+		{
+			//GOGOGO!!!
+			if (!TurnNoTailGoFlag)
 			{
-				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 3;
-				spdExp3 = 0;
-				acc_speed += curSpeed;
+				TurnNoTailGoFlag = 1;
 			}
 		}
-		else if (_ANGLE <= 0 && yaw_init_1 < 0)
+		TurnNoTail();
+		break;
+	case WaitingStop: //ç­‰å¾…è¯†åˆ«åœè½¦çº¿
+		gpio_init(A7, GPO, 0);
+		TurnNoTailFlag = 0;
+		if (!Meeting13Flag)
 		{
-			if (_ANGLE > yaw_init_1)
+			if (Img_StopLineFlag && !g_SlaveOutFlag) //è¯†åˆ«åœè½¦çº¿ åˆ¤æ–­ä»è½¦çŠ¶æ€
 			{
-				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 3;
-				spdExp3 = 0;
-				acc_speed += curSpeed;
+				//			if (g_StateSlave == StateStop) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+				g_StateMaster = StateGo;
+				//			else
+				//			{
+				//				g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+				//				speed_type = 0;
+				//			}
 			}
+			else if (Img_StopLineFlag && g_SlaveOutFlag)
+				g_StateMaster = StateGo;
+		}
+		else
+		{
+			if(g_inf>=3000&&g_StateSlave>=StateStop)
+			{
+				g_StateMaster=CarFinish;
+			}
+			if (Img_StopLineFlag && !g_SlaveOutFlag)
+			{
+				g_StateMaster = StateGo;
+			}
+			else if (Img_StopLineFlag && g_SlaveOutFlag)
+				g_StateMaster = StateGo;
 		}
 		break;
-	case 3:	//ÑÓÊ±Ò»¶ÎÊ±¼ä µÈ´ı³µÁ¾Í£ÎÈ
-		count++;
-		if (count > 100)
+	case StateGo:
+		acc_speed += curSpeed;
+		if(!Meeting13Flag)
+		{
+		if (acc_speed > Stopdistance)
 		{
 			count = 0;
-			//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-			g_StateMaster = 4;
-			spdExp = -MEETING_SPEED;
-			acc_speed += curSpeed;
+			acc_speed = 0;
+			g_StateMaster = CarFinish;
 		}
-		break;
-	case 4:
-		acc_speed += curSpeed;
-		if (acc_speed > 0)
-			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+		}
 		else
-			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer + 120);
-
-		if (_ANGLE > 0 && yaw_init_2 >= 0 && _ANGLE > yaw_init_2
-			|| _ANGLE <= 0 && yaw_init_2 < 0 && _ANGLE > yaw_init_2)
 		{
-			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-			//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-			g_StateMaster = 5;
-			spdExp3 = 0;
-		}
-		break;
-	case 5:		//µÈ´ıÁíÒ»Á¾³µ
-		if (g_StateMaster > 0)	//´Ó³µµ½´ï
+					if (acc_speed > 0)
 		{
-			//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-			g_StateMaster = 6;
-			spdExp3 = MEETING_SPEED;
-			g_handle_open = 1;
-			Img_BrokenFlag = 2;
-			BlockFlag = 1;
-		}
-		break;
-	case 6:
-		if (!Img_BrokenFlag)			//³ö¶ÏÂ· ½øÈëÏÂÒ»×´Ì¬
-		{
-			g_StateMaster = WaitingStop;
-			speed_type = 1;
-		}
-		break;
-	case WaitingStop:		//µÈ´ıÊ¶±ğÍ£³µÏß
-		if (Img_StopLineFlag)		//Ê¶±ğÍ£³µÏß ÅĞ¶Ï´Ó³µ×´Ì¬
-		{
-			if (g_StateSlave == StateStop) //´Ó³µÒÑµ½ ¼ÌĞøÅÜÒ»¶Î¾àÀëÍ£ÏÂ
-				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //Í£ÁôµÈ´ı
-				speed_type = 1;
-				spdExp1 = 0;
-			}
-		}
-		break;
-	case StateGo:
-		acc_speed += curSpeed;
-		if (acc_speed > sum_speed)
-		{
+			count = 0;
 			acc_speed = 0;
 			g_StateMaster = CarFinish;
+		}
 		}
 		break;
 	case StateStop:
-		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//´Ó³µµ½´ï
+		if (g_StateSlave >= StateGo || g_SlaveOutFlag) //ä»è½¦åˆ°è¾¾ æˆ–è€…ä»è½¦å‡ºç•Œ
 		{
-			spdExp1 = 15;
-			acc_speed += curSpeed;
-			if (acc_speed > sum_speed)
-			{
-				g_StateMaster = CarFinish;
-				acc_speed = 0;
-			}
-		}
-		break;
-	case CarFinish:
-		speed_type = 1;
-		spdExp1 = 0;
-		break;
-	default:
-		break;
-	}
-
-#elif 2 == MEETING_MODE		//²»µôÍ·
-	switch (g_StateMaster)
-	{
-	case 0:
-		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //½øÈë¶ÏÂ·Çø 
-		{
-			acc_speed += curSpeed;
-			if (acc_speed > StartDistance)
-			{
-				g_GetMeetingMaster = 1;
-				BlockFlag = 0;
-				acc_speed = 0;
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 1;
-				speed_type = 3; //»á³µËÙ¶È
-				spdExp3 = MEETING_SPEED;
-				yaw_init = _ANGLE;
-				yaw_init_1 = yaw_init + 90;
-				if (yaw_init_1 > 180) yaw_init_1 -= 360;
-			}
-		}
-		else acc_speed = 0;
-		break;
-	case 1:
-		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
-		if (_ANGLE > 0 && yaw_init_1 >= 0)
-		{
-			if (_ANGLE > yaw_init_1)
-			{
-				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 3;
-				spdExp3 = 0;
-				acc_speed += curSpeed;
-			}
-		}
-		else if (_ANGLE <= 0 && yaw_init_1 < 0)
-		{
-			if (_ANGLE > yaw_init_1)
-			{
-				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 3;
-				spdExp3 = 0;
-				acc_speed += curSpeed;
-			}
-		}
-		break;
-	case 3:
-		//µÈ´ı½ÓÊÕĞÅºÅ
-		if (g_StateSlave > 1)		//´Ó³µÒÑ¹ı¶ÏÂ·
-		{
-			//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-			g_StateMaster = 4;
-			spdExp3 = 0 - MEETING_SPEED;
-			yaw_init = _ANGLE;
-			yaw_init_1 = yaw_init - 90;
-			if (yaw_init_1 < -180)yaw_init_1 += 360;
-		}
-		break;
-	case 4:
-		//µ¹³µ
-		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
-		if (_ANGLE >= 0 && yaw_init_1 > 0)
-		{
-			if (_ANGLE < yaw_init_1)
-			{
-				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 5;
-				spdExp3 = MEETING_SPEED;
-			}
-		}
-		else if (_ANGLE < 0 && yaw_init_1 <= 0)
-		{
-			if (_ANGLE < yaw_init_1)
-			{
-				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 5;
-				spdExp3 = MEETING_SPEED;
-			}
-		}
-		break;
-	case 5:
-		//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-		g_StateMaster = 6;
-		Img_BrokenFlag = 2;
-		g_handle_open = 1;
-		g_GetMeetingMaster = 0;
-		break;
-	case 6:
-		if (!Img_BrokenFlag)			//³ö¶ÏÂ· ½øÈëÏÂÒ»×´Ì¬
-		{
-			g_StateMaster = WaitingStop;
 			speed_type = 1;
-		}
-		break;
-	case WaitingStop://15		//µÈ´ıÊ¶±ğÍ£³µÏß
-		if (Img_StopLineFlag)		//Ê¶±ğÍ£³µÏß ÅĞ¶Ï´Ó³µ×´Ì¬
-		{
-			if (g_StateSlave == StateStop) //´Ó³µÒÑµ½ ¼ÌĞøÅÜÒ»¶Î¾àÀëÍ£ÏÂ
-				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //Í£ÁôµÈ´ı
-				speed_type = 1;
-				spdExp1 = 0;
-			}
-		}
-		break;
-		//case IsStopLine:
-		//	if (g_StateSlave == StateStop) //´Ó³µÒÑµ½ ¼ÌĞøÅÜÒ»¶Î¾àÀëÍ£ÏÂ
-		//		g_StateMaster = StateGo;
-		//	else
-		//	{
-		//		g_StateMaster = StateStop; //Í£ÁôµÈ´ı
-		//		speed_type = 1;
-		//		spdExp1 = 0;R44RRRRRRRR5RRRR4R
-		//	}
-		//	break;
-	case StateGo://16
-		acc_speed += curSpeed;
-		if (acc_speed > sum_speed)
-		{
-			acc_speed = 0;
-			g_StateMaster = CarFinish;
-		}
-		break;
-	case StateStop://18
-		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//´Ó³µµ½´ï
-		{
-			spdExp1 = 15;
 			acc_speed += curSpeed;
-			if (acc_speed > sum_speed)
+			if (acc_speed > Stopdistance)
 			{
 				g_StateMaster = CarFinish;
 				acc_speed = 0;
@@ -306,243 +341,565 @@ void MeetingFour(void)
 		}
 		break;
 	case CarFinish:
-		speed_type = 1;
-		spdExp1 = 0;
+		count++;
+		if (count < 100)
+		{
+			g_mode = 5;
+			g_angle_set = GroundAngle;
+			AngleControl();
+		}
+		else if (count >= 100)
+		{
+			g_drive_flag = 0;
+			count = 0;
+			g_StateMaster = 0;
+		}
 		break;
 	default:
 		break;
 	}
-#endif
 }
 
-//================================================================//
-//  @brief  :		¶şÂÖ³µ»á³µº¯Êı
-//  @param  :		void
-//  @return :		void
-//  @note   :		void	
-//================================================================//
-void MeetingTwo(void)
-{
-	static int acc_speed = 0;
-	static int sum_speed = 2500;
-	static float yaw_init = 0;
-	static float yaw_init_1 = 0;
-	static float yaw_init_2 = 0;
-	static int get_flag = 0;
-	static int count = 0;
-#if 1 == MEETING_MODE//µôÍ·
-	switch (g_StateMaster)
-	{
-	case 0:
-		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //½øÈë¶ÏÂ·Çø 
-		{
-			BlockFlag = 0;//clear block 
-                        acc_speed+=curSpeed;
-			if (acc_speed > StartDistance)
-			{
-				g_GetMeetingMaster = 1;
-                                acc_speed = 0;
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 1;
-				g_drive_flag = 0;//Í£³µ
-				Img_BrokenFlag = 0;
-
-			}
-		}
-		break;
-	case 1://µÈ´ı´Ó³µµ½´ï±êÖ¾
-		if (g_StateSlave > 0)
-		{
-			g_StartMaster = 2;
-		}
-		break;
-	case 2:
-		//×ªÍä
-		//´Ë´¦Ìí¼Ó×ªÍäº¯Êı ³µÖ±Á¢ÆğÀ´ È»ºóÂıÂı×ªÍä
-                MeetingCtrlFun_1();
-		//½áÊø±êÖ¾Î»±ä»¯
-//		g_StateMaster = 3;
+//enum MeetingFlag {
+//	WaitingStop = 15,
+//	IsStopLine,
+//	StateGo,
+//	StateStop,
+//	CarFinish
+//};
+//int StartDistance = 500; //è¯†åˆ«æ–­è·¯åå»¶è·è·ç¦»
+//int StartSum = 0;               //è·ç¦»ç§¯ç´¯é‡
+//
+////================================================================//
+////  @brief  :		å››è½®è½¦ä¼šè½¦å‡½æ•°
+////  @param  :		void
+////  @return :		void
+////  @note   :		void
+////================================================================//
+//void MeetingFour(void)
+//{
+//	static int acc_speed = 0;
+//	static int sum_speed = 2000;
+//	static float yaw_init = 0;
+//	static float yaw_init_1 = 0;
+//	static float yaw_init_2 = 0;
+//	static int get_flag = 0;
+//	static int count = 0;
+//#if 1 == MEETING_MODE	//æ‰å¤´
+//	switch (g_StartMaster)
+//	{
+//	case 0:
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //è¿›å…¥æ–­è·¯åŒº
+//		{
+//			acc_speed += curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//				g_GetMeetingMaster = 1;
+//				g_handle_open = 0;
+//				Img_BrokenFlag = 0;
+//				BlockFlag = 0;
+//				acc_speed = 0;
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 1;
+//				speed_type = 3; //ä¼šè½¦é€Ÿåº¦
+//				spdExp3 = MEETING_SPEED;
+//				yaw_init = _ANGLE;
+//				yaw_init_1 = yaw_init + 90;
+//				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+//			}
+//		}
+//		else acc_speed = 0;
+//		break;
+//	case 1:
+//		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
+//		if (_ANGLE > 0 && yaw_init_1 >= 0)
+//		{
+//			if (_ANGLE > yaw_init_1)
+//			{
+//				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 3;
+//				spdExp3 = 0;
+//				acc_speed += curSpeed;
+//			}
+//		}
+//		else if (_ANGLE <= 0 && yaw_init_1 < 0)
+//		{
+//			if (_ANGLE > yaw_init_1)
+//			{
+//				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 3;
+//				spdExp3 = 0;
+//				acc_speed += curSpeed;
+//			}
+//		}
+//		break;
+//	case 3:	//å»¶æ—¶ä¸€æ®µæ—¶é—´ ç­‰å¾…è½¦è¾†åœç¨³
+//		count++;
+//		if (count > 100)
+//		{
+//			count = 0;
+//			//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//			g_StateMaster = 4;
+//			spdExp = -MEETING_SPEED;
+//			acc_speed += curSpeed;
+//		}
+//		break;
+//	case 4:
+//		acc_speed += curSpeed;
+//		if (acc_speed > 0)
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//		else
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer + 120);
+//
+//		if (_ANGLE > 0 && yaw_init_2 >= 0 && _ANGLE > yaw_init_2
+//			|| _ANGLE <= 0 && yaw_init_2 < 0 && _ANGLE > yaw_init_2)
+//		{
+//			ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//			//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//			g_StateMaster = 5;
+//			spdExp3 = 0;
+//		}
+//		break;
+//	case 5:		//ç­‰å¾…å¦ä¸€è¾†è½¦
+//		if (g_StateMaster > 0)	//ä»è½¦åˆ°è¾¾
+//		{
+//			//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//			g_StateMaster = 6;
+//			spdExp3 = MEETING_SPEED;
+//			g_handle_open = 1;
+//			Img_BrokenFlag = 2;
+//			BlockFlag = 1;
+//		}
+//		break;
+//	case 6:
+//		if (!Img_BrokenFlag)			//å‡ºæ–­è·¯ è¿›å…¥ä¸‹ä¸€çŠ¶æ€
+//		{
+//			g_StateMaster = WaitingStop;
+//			speed_type = 1;
+//		}
+//		break;
+//	case WaitingStop:		//ç­‰å¾…è¯†åˆ«åœè½¦çº¿
+//		if (Img_StopLineFlag)		//è¯†åˆ«åœè½¦çº¿ åˆ¤æ–­ä»è½¦çŠ¶æ€
+//		{
+//			if (g_StateSlave == StateStop) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+//				speed_type = 1;
+//				spdExp1 = 0;
+//			}
+//		}
+//		break;
+//	case StateGo:
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//	case StateStop:
+//		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//ä»è½¦åˆ°è¾¾
+//		{
+//			spdExp1 = 15;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//		break;
+//	case CarFinish:
+//		speed_type = 1;
+//		spdExp1 = 0;
+//		break;
+//	default:
+//		break;
+//	}
+//
+//#elif 2 == MEETING_MODE		//ä¸æ‰å¤´
+//	switch (g_StateMaster)
+//	{
+//	case 0:
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //è¿›å…¥æ–­è·¯åŒº
+//		{
+//			acc_speed += curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//				g_GetMeetingMaster = 1;
+//				BlockFlag = 0;
+//				acc_speed = 0;
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 1;
+//				speed_type = 3; //ä¼šè½¦é€Ÿåº¦
+//				spdExp3 = MEETING_SPEED;
+//				yaw_init = _ANGLE;
+//				yaw_init_1 = yaw_init + 90;
+//				if (yaw_init_1 > 180) yaw_init_1 -= 360;
+//			}
+//		}
+//		else acc_speed = 0;
+//		break;
+//	case 1:
+//		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
+//		if (_ANGLE > 0 && yaw_init_1 >= 0)
+//		{
+//			if (_ANGLE > yaw_init_1)
+//			{
+//				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 3;
+//				spdExp3 = 0;
+//				acc_speed += curSpeed;
+//			}
+//		}
+//		else if (_ANGLE <= 0 && yaw_init_1 < 0)
+//		{
+//			if (_ANGLE > yaw_init_1)
+//			{
+//				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 3;
+//				spdExp3 = 0;
+//				acc_speed += curSpeed;
+//			}
+//		}
+//		break;
+//	case 3:
+//		//ç­‰å¾…æ¥æ”¶ä¿¡å·
+//		if (g_StateSlave > 1)		//ä»è½¦å·²è¿‡æ–­è·¯
+//		{
+//			//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//			g_StateMaster = 4;
+//			spdExp3 = 0 - MEETING_SPEED;
+//			yaw_init = _ANGLE;
+//			yaw_init_1 = yaw_init - 90;
+//			if (yaw_init_1 < -180)yaw_init_1 += 360;
+//		}
+//		break;
+//	case 4:
+//		//å€’è½¦
+//		ftm_pwm_duty(ftm3, ftm_ch5, InitSteer - 120);
+//		if (_ANGLE >= 0 && yaw_init_1 > 0)
+//		{
+//			if (_ANGLE < yaw_init_1)
+//			{
+//				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 5;
+//				spdExp3 = MEETING_SPEED;
+//			}
+//		}
+//		else if (_ANGLE < 0 && yaw_init_1 <= 0)
+//		{
+//			if (_ANGLE < yaw_init_1)
+//			{
+//				ftm_pwm_duty(ftm3, ftm_ch5, InitSteer);
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 5;
+//				spdExp3 = MEETING_SPEED;
+//			}
+//		}
+//		break;
+//	case 5:
+//		//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//		g_StateMaster = 6;
 //		Img_BrokenFlag = 2;
-
-		break;
-	case 3:
-		//Æô¶¯
-		if (0 == Img_BrokenFlag)
-		{
-			//³ö¶ÏÂ·½áÊø»á³µ×´Ì¬·¢ËÍ±êÖ¾Î»
-			g_StateMaster = WaitingStop;		//½áÊø»á³µ
-			g_GetMeetingMaster = 0;
-		}
-		break;
-	case WaitingStop:		//³ö¶ÏÂ· µÈ´ıÊ¶±ğÍ£³µÏß
-		if (Img_StopLineFlag)	//Ê¶±ğµ½Í£³µÏß
-		{
-			if (g_StateSlave == IsStopLine) //´Ó³µÒÑµ½ ¼ÌĞøÅÜÒ»¶Î¾àÀëÍ£ÏÂ
-				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //Í£ÁôµÈ´ı
-				g_drive_flag = 0;
-			}
-		}
-		break;
-	case StateGo:
-		acc_speed += curSpeed;
-		if (acc_speed > sum_speed)
-		{
-			acc_speed = 0;
-			g_StateMaster = CarFinish;
-		}
-		break;
-	case StateStop:
-		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//´Ó³µµ½´ï
-		{
-			g_drive_flag = 1;
-			acc_speed += curSpeed;
-			if (acc_speed > sum_speed)
-			{
-				g_StateMaster = CarFinish;
-				acc_speed = 0;
-			}
-		}
-		break;
-	case CarFinish:
-		g_drive_flag = 0;
-                break;
-	default:
-		break;
-	}
-#elif 2 == MEETING_MODE		//²»µôÍ·
-	switch (g_StateMaster)
-	{
-	case 0:
-		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //½øÈë¶ÏÂ·Çø 
-		{
-			BlockFlag = 0;//clear block 
-                        acc_speed+=curSpeed;
-			if (acc_speed > StartDistance)
-			{
-                          acc_speed = 0;
-				g_GetMeetingMaster = 1;
-				//¸Ä±ä×´Ì¬ µ÷ÕûÏÂÒ»×´Ì¬±êÖ¾
-				g_StateMaster = 1;
-			}
-		}
-		break;
-	case 1:		//µç´ÅÅÜ¶ÏÂ·
-//                if(Img_BrokenFlag == 2)
+//		g_handle_open = 1;
+//		g_GetMeetingMaster = 0;
+//		break;
+//	case 6:
+//		if (!Img_BrokenFlag)			//å‡ºæ–­è·¯ è¿›å…¥ä¸‹ä¸€çŠ¶æ€
+//		{
+//			g_StateMaster = WaitingStop;
+//			speed_type = 1;
+//		}
+//		break;
+//	case WaitingStop://15		//ç­‰å¾…è¯†åˆ«åœè½¦çº¿
+//		if (Img_StopLineFlag)		//è¯†åˆ«åœè½¦çº¿ åˆ¤æ–­ä»è½¦çŠ¶æ€
+//		{
+//			if (g_StateSlave == StateStop) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+//				speed_type = 1;
+//				spdExp1 = 0;
+//			}
+//		}
+//		break;
+//		//case IsStopLine:
+//		//	if (g_StateSlave == StateStop) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+//		//		g_StateMaster = StateGo;
+//		//	else
+//		//	{
+//		//		g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+//		//		speed_type = 1;
+//		//		spdExp1 = 0;R44RRRRRRRR5RRRR4R
+//		//	}
+//		//	break;
+//	case StateGo://16
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//	case StateStop://18
+//		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//ä»è½¦åˆ°è¾¾
+//		{
+//			spdExp1 = 15;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//		break;
+//	case CarFinish:
+//		speed_type = 1;
+//		spdExp1 = 0;
+//		break;
+//	default:
+//		break;
+//	}
+//#endif
+//}
+//
+////================================================================//
+////  @brief  :		äºŒè½®è½¦ä¼šè½¦å‡½æ•°
+////  @param  :		void
+////  @return :		void
+////  @note   :		void
+////================================================================//
+//void MeetingTwo(void)
+//{
+//	static int acc_speed = 0;
+//	static int sum_speed = 2500;
+//	static float yaw_init = 0;
+//	static float yaw_init_1 = 0;
+//	static float yaw_init_2 = 0;
+//	static int get_flag = 0;
+//	static int count = 0;
+//#if 1 == MEETING_MODE//æ‰å¤´
+//	switch (g_StateMaster)
+//	{
+//	case 0:
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //è¿›å…¥æ–­è·¯åŒº
+//		{
+//			BlockFlag = 0;//clear block
+//                        acc_speed+=curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//				g_GetMeetingMaster = 1;
+//                                acc_speed = 0;
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 1;
+//				g_drive_flag = 0;//åœè½¦
+//				Img_BrokenFlag = 0;
+//
+//			}
+//		}
+//		break;
+//	case 1://ç­‰å¾…ä»è½¦åˆ°è¾¾æ ‡å¿—
+//		if (g_StateSlave > 0)
+//		{
+//			g_StartMaster = 2;
+//		}
+//		break;
+//	case 2:
+//		//è½¬å¼¯
+//		//æ­¤å¤„æ·»åŠ è½¬å¼¯å‡½æ•° è½¦ç›´ç«‹èµ·æ¥ ç„¶åæ…¢æ…¢è½¬å¼¯
+//                MeetingCtrlFun_1();
+//		//ç»“æŸæ ‡å¿—ä½å˜åŒ–
+////		g_StateMaster = 3;
+////		Img_BrokenFlag = 2;
+//
+//		break;
+//	case 3:
+//		//å¯åŠ¨
+//		if (0 == Img_BrokenFlag)
+//		{
+//			//å‡ºæ–­è·¯ç»“æŸä¼šè½¦çŠ¶æ€å‘é€æ ‡å¿—ä½
+//			g_StateMaster = WaitingStop;		//ç»“æŸä¼šè½¦
+//			g_GetMeetingMaster = 0;
+//		}
+//		break;
+//	case WaitingStop:		//å‡ºæ–­è·¯ ç­‰å¾…è¯†åˆ«åœè½¦çº¿
+//		if (Img_StopLineFlag)	//è¯†åˆ«åˆ°åœè½¦çº¿
+//		{
+//			if (g_StateSlave == IsStopLine) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+//				g_drive_flag = 0;
+//			}
+//		}
+//		break;
+//	case StateGo:
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//	case StateStop:
+//		if (g_StateSlave == StateGo || g_StateSlave == CarFinish)		//ä»è½¦åˆ°è¾¾
+//		{
+//			g_drive_flag = 1;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//		break;
+//	case CarFinish:
+//		g_drive_flag = 0;
+//                break;
+//	default:
+//		break;
+//	}
+//#elif 2 == MEETING_MODE		//ä¸æ‰å¤´
+//	switch (g_StateMaster)
+//	{
+//	case 0:
+//		if (Img_BrokenFlag == 2 && !Img_RampFlag && !g_GetMeetingMaster)             //è¿›å…¥æ–­è·¯åŒº
+//		{
+//			BlockFlag = 0;//clear block
+//                        acc_speed+=curSpeed;
+//			if (acc_speed > StartDistance)
+//			{
+//                          acc_speed = 0;
+//				g_GetMeetingMaster = 1;
+//				//æ”¹å˜çŠ¶æ€ è°ƒæ•´ä¸‹ä¸€çŠ¶æ€æ ‡å¿—
+//				g_StateMaster = 1;
+//			}
+//		}
+//		break;
+//	case 1:		//ç”µç£è·‘æ–­è·¯
+////                if(Img_BrokenFlag == 2)
+////                {
+//////                  MeetingCtrlFun_2();
+////                }
+//                if(g_StateSlave < 3 && g_SlaveOutFlag != 1)//ä»è½¦æœªåˆ°è¾¾å¹¶ä¸”æœªå‡ºç•Œï¼Œä¸»è½¦ç­‰å¾…
 //                {
-////                  MeetingCtrlFun_2();
-//                } 
-                if(g_StateSlave < 3 && g_SlaveOutFlag != 1)//´Ó³µÎ´µ½´ï²¢ÇÒÎ´³ö½ç£¬Ö÷³µµÈ´ı
-                {
-//                  g_drive_flag = 0;
-                  Ground();
-                }
-                else if(g_StateSlave >= 3 || g_SlaveOutFlag == 1)
-                {
-//                  g_StateMaster = WaitingStop;
-                  g_drive_flag = 1;
-                  CircleFlag = 0;
-                  CircleState = 0;
-                  BlockFlag = 0;
-                  Img_RampFlag = 0;
-                  g_handle_open = 1;
-                  CircleIsland_into_flag = 0;
-                  g_MasterOutFlag = 0;
-                  Img_BlockFlag = 1;
-                }
-		if (0 == Img_BrokenFlag)
-		{
-			//³ö¶ÏÂ·½áÊø»á³µ×´Ì¬·¢ËÍ±êÖ¾Î»
-			g_StateMaster = WaitingStop;		//½áÊø»á³µ
-			g_GetMeetingMaster = 0;
-                        CircleFlag = 0;
-                        CircleState = 0;
-                        BlockFlag = 0;
-                        Img_RampFlag = 0;
-                        acc_speed = 0;
-		}
-		break;
-	case WaitingStop:		//³ö¶ÏÂ· µÈ´ıÊ¶±ğÍ£³µÏß
-		if (Img_StopLineFlag)	//Ê¶±ğµ½Í£³µÏß
-		{
-			if (g_StateSlave == IsStopLine || g_SlaveOutFlag) //´Ó³µÒÑµ½ ¼ÌĞøÅÜÒ»¶Î¾àÀëÍ£ÏÂ
-				g_StateMaster = StateGo;
-			else
-			{
-				g_StateMaster = StateStop; //Í£ÁôµÈ´ı
-				
-			}
-		}
-//                else if ((Img_BrokenFlag== 3 || Img_BrokenFlag == 1)&&4 ==  dialSwitchFlg4)
-//                  Img_BrokenFlag = 0;
-		break;
-		//case IsStopLine:
-		//	if (g_StateSlave == IsStopLine) //´Ó³µÒÑµ½ ¼ÌĞøÅÜÒ»¶Î¾àÀëÍ£ÏÂ
-		//		g_StateMaster = StateGo;
-		//	else
-		//		g_StateMaster = StateStop; //Í£ÁôµÈ´ı
-		//	break;
-	case StateGo:
-		acc_speed += curSpeed;
-		if (acc_speed > sum_speed)
-		{
-			acc_speed = 0;
-			g_StateMaster = CarFinish;
-		}
-		break;
-                
-	case StateStop:
-                Ground();
-		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//´Ó³µµ½´ï
-		{
-			g_drive_flag = 1;
-			acc_speed += curSpeed;
-			if (acc_speed > sum_speed + 200)
-			{
-				g_StateMaster = CarFinish;
-				acc_speed = 0;
-			}
-		}
-                if(g_SlaveOutFlag == 1)//´Ó³µ³ö½ç£¬Ö÷³µ¼ÌĞø¶¯
-                {
-                  g_drive_flag = 1;
-			acc_speed += curSpeed;
-			if (acc_speed > sum_speed + 200)
-			{ 
-				g_StateMaster = CarFinish;
-				acc_speed = 0; 
-			}
-                }
-		break;
-	case CarFinish:
-          
-		g_drive_flag = 0;
-                break;
-	default:
-		break;
-	}
-#endif
-}
-
+////                  g_drive_flag = 0;
+//                  Ground();
+//                }
+//                else if(g_StateSlave >= 3 || g_SlaveOutFlag == 1)
+//                {
+////                  g_StateMaster = WaitingStop;
+//                  g_drive_flag = 1;
+//                  CircleFlag = 0;
+//                  CircleState = 0;
+//                  BlockFlag = 0;
+//                  Img_RampFlag = 0;
+//                  g_handle_open = 1;
+//                  CircleIsland_into_flag = 0;
+//                  g_MasterOutFlag = 0;
+//                  Img_BlockFlag = 1;
+//                }
+//		if (0 == Img_BrokenFlag)
+//		{
+//			//å‡ºæ–­è·¯ç»“æŸä¼šè½¦çŠ¶æ€å‘é€æ ‡å¿—ä½
+//			g_StateMaster = WaitingStop;		//ç»“æŸä¼šè½¦
+//			g_GetMeetingMaster = 0;
+//                        CircleFlag = 0;
+//                        CircleState = 0;
+//                        BlockFlag = 0;
+//                        Img_RampFlag = 0;
+//                        acc_speed = 0;
+//		}
+//		break;
+//	case WaitingStop:		//å‡ºæ–­è·¯ ç­‰å¾…è¯†åˆ«åœè½¦çº¿
+//		if (Img_StopLineFlag)	//è¯†åˆ«åˆ°åœè½¦çº¿
+//		{
+//			if (g_StateSlave == IsStopLine || g_SlaveOutFlag) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+//				g_StateMaster = StateGo;
+//			else
+//			{
+//				g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+//
+//			}
+//		}
+////                else if ((Img_BrokenFlag== 3 || Img_BrokenFlag == 1)&&4 ==  dialSwitchFlg4)
+////                  Img_BrokenFlag = 0;
+//		break;
+//		//case IsStopLine:
+//		//	if (g_StateSlave == IsStopLine) //ä»è½¦å·²åˆ° ç»§ç»­è·‘ä¸€æ®µè·ç¦»åœä¸‹
+//		//		g_StateMaster = StateGo;
+//		//	else
+//		//		g_StateMaster = StateStop; //åœç•™ç­‰å¾…
+//		//	break;
+//	case StateGo:
+//		acc_speed += curSpeed;
+//		if (acc_speed > sum_speed)
+//		{
+//			acc_speed = 0;
+//			g_StateMaster = CarFinish;
+//		}
+//		break;
+//
+//	case StateStop:
+//                Ground();
+//		if (g_StateSlave >= StateGo || g_StateSlave == CarFinish)		//ä»è½¦åˆ°è¾¾
+//		{
+//			g_drive_flag = 1;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed + 200)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//		}
+//                if(g_SlaveOutFlag == 1)//ä»è½¦å‡ºç•Œï¼Œä¸»è½¦ç»§ç»­åŠ¨
+//                {
+//                  g_drive_flag = 1;
+//			acc_speed += curSpeed;
+//			if (acc_speed > sum_speed + 200)
+//			{
+//				g_StateMaster = CarFinish;
+//				acc_speed = 0;
+//			}
+//                }
+//		break;
+//	case CarFinish:
+//
+//		g_drive_flag = 0;
+//                break;
+//	default:
+//		break;
+//	}
+//#endif
+//}
+//
+////================================================================//
+////  @brief  :		çŠ¶æ€è½¬åŒ–å¹³æ»‘è¾“å‡º
+////  @param  :		dst ç›®æ ‡è¾“å‡º srcæºè¾“å‡º dutyç›®æ ‡è¾“å‡ºå ç©ºæ¯”
+////  @return :		è¾“å‡ºé‡
+////  @note   :		æºè¾“å‡ºå‘ç›®æ ‡è¾“å‡ºè¿‡æ¸¡
+////================================================================//
+//float LinearOut(float dst, float src, float duty)
+//{
+//	return (dst * duty + src * (1 - duty));
+//}
 //================================================================//
-//  @brief  :		×´Ì¬×ª»¯Æ½»¬Êä³ö
-//  @param  :		dst Ä¿±êÊä³ö srcÔ´Êä³ö dutyÄ¿±êÊä³öÕ¼¿Õ±È
-//  @return :		Êä³öÁ¿
-//  @note   :		Ô´Êä³öÏòÄ¿±êÊä³ö¹ı¶É
+//  @brief  :		ä¼šè½¦åŒºæ§åˆ¶è½¦è¾†å‡½æ•°ï¼ˆä¸¤è½®ï¼‰
+//  @param  :		dst ç›®æ ‡è¾“å‡º srcæºè¾“å‡º dutyç›®æ ‡è¾“å‡ºå ç©ºæ¯”
+//  @return :		è¾“å‡ºé‡
+//  @note   :		æºè¾“å‡ºå‘ç›®æ ‡è¾“å‡ºè¿‡æ¸¡
 //================================================================//
-float LinearOut(float dst, float src, float duty)
-{
-	return (dst * duty + src * (1 - duty));
-}
-//================================================================//
-//  @brief  :		»á³µÇø¿ØÖÆ³µÁ¾º¯Êı£¨Á½ÂÖ£©
-//  @param  :		dst Ä¿±êÊä³ö srcÔ´Êä³ö dutyÄ¿±êÊä³öÕ¼¿Õ±È
-//  @return :		Êä³öÁ¿
-//  @note   :		Ô´Êä³öÏòÄ¿±êÊä³ö¹ı¶É
-//================================================================//
-//void MeetingCtrlFun_1(void) 
+//void MeetingCtrlFun_1(void)
 //{
 //  gpio_init(D0,GPO,0);
 //  static int stage = 0;
@@ -556,7 +913,7 @@ float LinearOut(float dst, float src, float duty)
 //    get_flag = 1;
 //    g_drive_flag = 0;
 //    last_yaw = _ANGLE;
-//  } 
+//  }
 //  switch(stage)
 //  {
 //    case 0:
@@ -591,7 +948,7 @@ float LinearOut(float dst, float src, float duty)
 //    case 2:
 //      sum_right += rCurSpeed;
 //      g_errorD =  meet_st;
-//      
+//
 //      if(_ANGLE * last_yaw <= 0)
 //      {
 //        error_yaw = abs(abs(_ANGLE - last_yaw) - 360);
@@ -613,18 +970,17 @@ float LinearOut(float dst, float src, float duty)
 //    default:
 //      break;
 //  }
-//    
+//
 //
 //}
 
-
 //================================================================//
-//  @brief  :		µç¸Ğ»á³µËã·¨,²»µôÍ·£¨Á½ÂÖ£©
-//  @param  :		
-//  @return :		
+//  @brief  :		ç”µæ„Ÿä¼šè½¦ç®—æ³•,ä¸æ‰å¤´ï¼ˆä¸¤è½®ï¼‰
+//  @param  :
+//  @return :
 //  @note   :		void
 //================================================================//
-//void MeetingCtrlFun_2()//ÏÖÓÃ
+//void MeetingCtrlFun_2()//ç°ç”¨
 //{
 //  static int count = 0;
 //
@@ -632,7 +988,7 @@ float LinearOut(float dst, float src, float duty)
 //  {
 //    count = 0;
 //
-////¸Ä±ä·½Ïò»·²îÖµ
+////æ”¹å˜æ–¹å‘ç¯å·®å€¼
 //    g_errorD = (ind_right / ave_right - ind_left / ave_left) / (ind_right / ave_right + ind_left / ave_left) /0.01;
 //    g_error_before = g_errorD;
 //
@@ -648,34 +1004,34 @@ float LinearOut(float dst, float src, float duty)
 //  }
 //  else
 //    count++;
-//  //ÓÃ·½Ïò»·º¯Êı¼ÌĞø½øĞĞÆ½»¬Êä³ö
+//  //ç”¨æ–¹å‘ç¯å‡½æ•°ç»§ç»­è¿›è¡Œå¹³æ»‘è¾“å‡º
 //}
-////»á³µÇø³µÁ¾¿ØÖÆº¯Êı
-////·ÅÔÚpitÖĞ¶ÏÀï
+////ä¼šè½¦åŒºè½¦è¾†æ§åˆ¶å‡½æ•°
+////æ”¾åœ¨pitä¸­æ–­é‡Œ
 //void MeetingCarControl(void)
 //{
-//	//»á³µ½áÊø×´Ì¬£¬Î´½øÈë»á³µÇø£¬²»½øÈëº¯Êı¿ØÖÆº¯Êı
+//	//ä¼šè½¦ç»“æŸçŠ¶æ€ï¼Œæœªè¿›å…¥ä¼šè½¦åŒºï¼Œä¸è¿›å…¥å‡½æ•°æ§åˆ¶å‡½æ•°
 //	if (g_MeetingCtrlEndFlag || !g_GetMeetingMaster) return;
 //
-//	//»á³µ¿ØÖÆº¯Êı
+//	//ä¼šè½¦æ§åˆ¶å‡½æ•°
 //  //  MeetingCtrlFun();
 //	MeetingCtrlFun_1();
 //
-//	//¿ØÖÆ½áÊø£¬¸ø³ö½áÊø±êÖ¾Î»
+//	//æ§åˆ¶ç»“æŸï¼Œç»™å‡ºç»“æŸæ ‡å¿—ä½
 //	//g_MeetingCtrlEndFlag = 1;
 //}
-////»á³µ½áÊøÈ«¾Ö±äÁ¿¿ØÖÆ
-////·ÅÔÚmain»òpitÖĞ¶Ïº¯Êı
+////ä¼šè½¦ç»“æŸå…¨å±€å˜é‡æ§åˆ¶
+////æ”¾åœ¨mainæˆ–pitä¸­æ–­å‡½æ•°
 //void ChangeEndMeetingFlag(void)
 //{
 //#if 1 == MEETING_MODE
-//	if (g_MeetingCtrlEndFlag)              //Ö÷³µÍê³É»á³µ£¬×¼±¸Àë¿ª»á³µÇø
+//	if (g_MeetingCtrlEndFlag)              //ä¸»è½¦å®Œæˆä¼šè½¦ï¼Œå‡†å¤‡ç¦»å¼€ä¼šè½¦åŒº
 //	{
-//		if (!g_GetMeetingSlave)         //´Ó³µÎ´µ½´ï¶ÏÂ·Çø
+//		if (!g_GetMeetingSlave)         //ä»è½¦æœªåˆ°è¾¾æ–­è·¯åŒº
 //		{
-//			speed_type = 4; //Í£³µ
+//			speed_type = 4; //åœè½¦
 //		}
-//		else                                //´Ó³µµ½´ï¶ÏÂ·Çø£¬Ö÷³µÆô¶¯
+//		else                                //ä»è½¦åˆ°è¾¾æ–­è·¯åŒºï¼Œä¸»è½¦å¯åŠ¨
 //		{
 //			g_GetMeetingMaster = 0;
 //			g_GetMeetingSlave = 0;
@@ -691,10 +1047,7 @@ float LinearOut(float dst, float src, float duty)
 //
 //}
 
-
-
-
-//void MeetingCtrlFun(void) // »á³µÇø¿ØÖÆ³µÁ¾º¯Êı1
+//void MeetingCtrlFun(void) // ä¼šè½¦åŒºæ§åˆ¶è½¦è¾†å‡½æ•°1
 //{
 //	static int state = 0;
 //	static int acc_speed = 0;
@@ -722,9 +1075,9 @@ float LinearOut(float dst, float src, float duty)
 //		ad_error_2 = ad_error_1;
 //		if (20 == ind_left && 20 == ind_right)
 //			SteerDuty = InitSteer;
-//		else if (20 == ind_left && 20 != ind_right)              //ÓÒ´òËÀ
+//		else if (20 == ind_left && 20 != ind_right)              //å³æ‰“æ­»
 //			SteerDuty = InitSteer - 120;
-//		else if (20 == ind_right && 20 != ind_left)         //×ó´òËÀ
+//		else if (20 == ind_right && 20 != ind_left)         //å·¦æ‰“æ­»
 //			SteerDuty = InitSteer + 120;
 //		else;
 //		SteerDuty = MAX(SteerDuty, InitSteer - 120);
@@ -742,7 +1095,7 @@ float LinearOut(float dst, float src, float duty)
 //	}
 //}
 //
-//void MeetingCtrlFun_1(void) // »á³µÇø¿ØÖÆ³µÁ¾º¯Êı2
+//void MeetingCtrlFun_1(void) // ä¼šè½¦åŒºæ§åˆ¶è½¦è¾†å‡½æ•°2
 //{
 //	static int state = 0;
 //	static int acc_speed = 0;
@@ -830,6 +1183,4 @@ float LinearOut(float dst, float src, float duty)
 //	}
 //}
 
-
-#undef _ANGLE 
-
+#undef _ANGLE

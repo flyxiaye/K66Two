@@ -4,6 +4,7 @@
 
 #define GIVEN_PAGE 1
 
+\
 void FlagChange(int * flag);
 void Input_Password(void);
 void Dis_Power(void);
@@ -21,7 +22,7 @@ void Key_Function(void);
 void Extra_Show(void);
 void Main_Show(void);
 
-
+void ExploreTime(void);
 
 
 

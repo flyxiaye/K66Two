@@ -27,7 +27,7 @@
 
 
 int startcarlinewait = 0;
-
+float flipgyrow=0;
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      PROTA中断执行函数
@@ -65,8 +65,13 @@ void DMA0_IRQHandler(void)
 int time = 0;
 void PIT0_IRQHandler(void)
 {
+  flipgyrow += sensor.Gyro_deg.z * 0.002;
 	Mpu_Data_Prepare(0.002);
 	My_IMU_update(0.002);
+	if (g_drive_flag&&AngleMutationOpenFlag)
+        {
+		AngleMutation();
+        }
 	//    if (g_block_open)           //路障
 	//    {
 	//      inf();
@@ -78,16 +83,33 @@ void PIT0_IRQHandler(void)
 	//      MeetingCarControl();
 	//    }
 	//    StopCar();
-	//    TurnTail();
+
 	//    StartSpeed();
-	DistCI();
+//	DistCI();
+	IndCI();
 	get_ind_error();
+	BootRacer();
 	AngleControl();
+	inf();
+
+//	circleland2();
+	Ramp2();
+	roadblock3();
 	Direction();
 	DirectionControlOutput();
 	SpeedControl();             //读取编码器计数
 	SpeedControlOutput();
+	//        if(g_mode!=6)
+	//        {
+
+		//	}
+
+//		TurnTail();
+//	MeetingTwo1();
+	ADclearCircle2();
+        Meeting();
 	power();
+	Dist_ClearIslandSeven();
 	PIT_FlAG_CLR(pit0);
 }
 //-------------------------------------------------------------------------------------------------------------------

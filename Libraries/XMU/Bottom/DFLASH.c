@@ -18,41 +18,67 @@
 
 extern void OLED_Clear(void);
 
-#define First_Time_Init 29
+#define First_Time_Init 31
 
 
 /********** 以下为存储的数据 **********/
-#define DFLASH_PARAM1       CNST           //阈值                  unsigned char
-
-#define DFLASH_PARAM2       KDp  // 舵机
-#define DFLASH_PARAM3       Kd
-
-#define DFLASH_PARAM4       KIp         //电机
-#define DFLASH_PARAM5       Ki
-
-#define DFLASH_PARAM6       Con_line    // 前瞻
-
-#define DFLASH_PARAM7       st   //速度
-#define DFLASH_PARAM8       sum_dist
-
-#define DFLASH_PARAM9      // Circle_path
-
-#define DFLASH_PARAM10      Circle_path
-   
-#define DFLASH_PARAM11      outBendSpeed
-#define DFLASH_PARAM12      smallStrightSpeed
-#define DFLASH_PARAM13      longStrightSpeed
-#define DFLASH_PARAM14      st
-#define DFLASH_PARAM15      sum_dist
-#define DFLASH_PARAM16      circleSpeed
-
-#define DFLASH_PARAM17      timeLimit
-
-#define DFLASH_PARAM18      closeLoop.p
-#define DFLASH_PARAM19      closeLoop.i
-#define DFLASH_PARAM20      closeLoop.expectDistance
-#define DFLASH_PARAM21      img.bendErrorEnlarge
-#define DFLASH_PARAM22      prospect
+#define DFLASH_PARAM1       g_angle_set           
+#define DFLASH_PARAM2       g_angle_P  
+#define DFLASH_PARAM3       g_RateP
+#define DFLASH_PARAM4       g_RateD        
+#define DFLASH_PARAM5       g_dire_P
+#define DFLASH_PARAM6       g_dire_D    
+#define DFLASH_PARAM7       g_fSpeed_set
+#define DFLASH_PARAM8       g_Speed_P
+#define DFLASH_PARAM9       g_Speed_I
+#define DFLASH_PARAM10      gRateKd
+#define DFLASH_PARAM11      gRateKp
+#define DFLASH_PARAM12      MaxSpeed
+#define DFLASH_PARAM13      ProSpect
+#define DFLASH_PARAM14      max_duty
+#define DFLASH_PARAM15      ramp_inf
+#define DFLASH_PARAM16      sum_dist
+#define DFLASH_PARAM17      Speed_MAX
+#define DFLASH_PARAM18      exp_time
+#define DFLASH_PARAM19      gRateKd_AD
+#define DFLASH_PARAM20      gRateKp_AD
+#define DFLASH_PARAM21      g_dire_P_AD
+#define DFLASH_PARAM22      g_dire_D_AD
+#define DFLASH_PARAM23		Img_CircleOpen
+#define DFLASH_PARAM24		Img_StraightBrokenOpen
+#define DFLASH_PARAM25		Img_CurveBrokenOpen
+#define DFLASH_PARAM26		Img_StopOpen
+#define DFLASH_PARAM27		Img_BlockOpen
+#define DFLASH_PARAM28		Img_RampOpen
+#define DFLASH_PARAM29		HighThreshold
+#define DFLASH_PARAM30		LowThreshold
+#define DFLASH_PARAM31		ControlMid
+#define DFLASH_PARAM32		Rampangle
+#define DFLASH_PARAM33		BrokenTurnTailPWM
+#define DFLASH_PARAM34		BrokenTurnTailDistance
+#define DFLASH_PARAM35		ind_left_line_max
+#define DFLASH_PARAM36		ind_left_line_min
+#define DFLASH_PARAM37		ind_left_column_max
+#define DFLASH_PARAM38		ind_left_column_min
+#define DFLASH_PARAM39		ind_right_line_min
+#define DFLASH_PARAM40		ind_right_line_max
+#define DFLASH_PARAM41		ind_right_column_max
+#define DFLASH_PARAM42		ind_right_column_min
+#define DFLASH_PARAM43		ind_mid_max
+#define DFLASH_PARAM44		ind_mid_min
+#define DFLASH_PARAM45		Circle_P
+#define DFLASH_PARAM46		ST[0]
+#define DFLASH_PARAM47		ST[1]
+#define DFLASH_PARAM48		ST[2]
+#define DFLASH_PARAM49		ST[3]
+#define DFLASH_PARAM50          block_inf
+#define DFLASH_PARAM51          Img_GrayJumpOpen
+#define DFLASH_PARAM52          BrokenThreshold
+#define DFLASH_PARAM53          Stopdistance
+#define DFLASH_PARAM54          BootRacerOpen
+#define DFLASH_PARAM55          AngleMutationOpenFlag
+#define DFLASH_PARAM56          ADclearCircleFlag
+#define DFLASH_PARAM57			Meeting13Flag
 
 /********** 以上为存储的数据 **********/
 
@@ -61,104 +87,149 @@ extern void OLED_Clear(void);
 //*************************************************************************//
 void MyFlash_Write(signed int flashnum)
 {
-    DisableInterrupts;
-    FLASH_EraseSector(SECTOR_NUM + flashnum);
-    DFlash_Write_Int(SECTOR_NUM + flashnum,0,First_Time_Init);
-    
+	DisableInterrupts;
+	FLASH_EraseSector(SECTOR_NUM + flashnum);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 0, First_Time_Init);
 
 
-       /********** 以下为存储的数据 **********/
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 1, g_angle_set);//角度设置
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 2, g_angle_P);//角度环
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 3, g_RateP);//内环角速度环
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 4, g_RateD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 5, g_dire_P);//方向环
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 6, g_dire_D);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 7, g_fSpeed_set);//速度环设置
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 8, g_Speed_P);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 9, g_Speed_I);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 10, gRateKd);//方向串级
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 11, gRateKp);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 12, MaxSpeed);//速度环限幅
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 13, ProSpect);//前瞻
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 14, meet_st);//会车给的固定偏差
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 15, max_duty);//速度环输出限幅
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 16, st);//V字形避障偏差
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 17, stop_inf); //路障拐弯红外
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 18, sum_dist);//V字形避障路程积分
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 19, ave_left_cross);//电感归一化
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 20,  ave_right_cross);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 21,  ave_left_column);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 22,  ave_right_column);//
-//        DFlash_Write_Float(SECTOR_NUM + flashnum, 23, ave_mid);//
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 24, sum_meet_left);//会车掉头
-//    DFlash_Write_Int(SECTOR_NUM + flashnum, 25, sum_meet_right);
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 26, Speed_MAX);//速度积分限幅
-//    DFlash_Write_Float(SECTOR_NUM + flashnum, 27, Img_BlockOpen);//前瞻
 
-    DFlash_Write_Int(SECTOR_NUM + flashnum, 28, exp_time);//单级控制参数
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 29, gRateKd_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 30, gRateKp_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 31, g_dire_P_AD);
-    DFlash_Write_Float(SECTOR_NUM + flashnum, 32, g_dire_D_AD);
+	/********** 以下为存储的数据 **********/
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 1, DFLASH_PARAM1);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 2, DFLASH_PARAM2);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 3, DFLASH_PARAM3);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 4, DFLASH_PARAM4);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 5, DFLASH_PARAM5);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 6, DFLASH_PARAM6);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 7, DFLASH_PARAM7);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 8, DFLASH_PARAM8);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 9, DFLASH_PARAM9);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 10, DFLASH_PARAM10);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 11, DFLASH_PARAM11);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 12, DFLASH_PARAM12);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 13, DFLASH_PARAM13);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 14, DFLASH_PARAM14);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 15, DFLASH_PARAM15);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 16, DFLASH_PARAM16);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 17, DFLASH_PARAM17);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 18, DFLASH_PARAM18);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 19, DFLASH_PARAM19);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 20, DFLASH_PARAM20);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 21, DFLASH_PARAM21);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 22, DFLASH_PARAM22);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 23, DFLASH_PARAM23);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 24, DFLASH_PARAM24);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 25, DFLASH_PARAM25);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 26, DFLASH_PARAM26);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 27, DFLASH_PARAM27);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 28, DFLASH_PARAM28);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 29, DFLASH_PARAM29);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 30, DFLASH_PARAM30);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 31, DFLASH_PARAM31);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 32, DFLASH_PARAM32);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 33, DFLASH_PARAM33);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 34, DFLASH_PARAM34);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 35, DFLASH_PARAM35);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 36, DFLASH_PARAM36);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 37, DFLASH_PARAM37);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 38, DFLASH_PARAM38);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 39, DFLASH_PARAM39);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 40, DFLASH_PARAM40);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 41, DFLASH_PARAM41);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 42, DFLASH_PARAM42);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 43, DFLASH_PARAM43);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 44, DFLASH_PARAM44);
+	DFlash_Write_Float(SECTOR_NUM + flashnum, 45, DFLASH_PARAM45);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 46, DFLASH_PARAM46);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 47, DFLASH_PARAM47);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 49, DFLASH_PARAM49);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 50, DFLASH_PARAM50);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 51, DFLASH_PARAM51);
+	DFlash_Write_Int(SECTOR_NUM + flashnum, 52, DFLASH_PARAM52);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 53, DFLASH_PARAM53);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 54, DFLASH_PARAM54);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 55, DFLASH_PARAM55);
+        DFlash_Write_Int(SECTOR_NUM + flashnum, 56, DFLASH_PARAM56);
+		DFlash_Write_Int(SECTOR_NUM + flashnum, 57, DFLASH_PARAM57);
 
-    /********** 以上为存储的数据 **********/
-OLED_Clear();
+	/********** 以上为存储的数据 **********/
+#ifdef _USE_LCD
+	LCD_DispChar(0, 0, '*');
+#else
+	OLED_Write_Char(0, 0, '*');
+#endif
 }
 void MyFlash_Read(signed int flashnum)
 {
-    int FirstStart = 0;
-    FirstStart = DFlash_Read_Int(SECTOR_NUM + flashnum,0);
-    if(FirstStart == First_Time_Init)
-    {
-        /********** 以下为存储的数据 **********/
-      
+	int FirstStart = 0;
+	FirstStart = DFlash_Read_Int(SECTOR_NUM + flashnum, 0);
+	if (FirstStart == First_Time_Init)
+	{
+		/********** 以下为存储的数据 **********/
 
-     
-      
-        g_angle_set = DFlash_Read_Float(SECTOR_NUM + flashnum, 1);
-        g_angle_P = DFlash_Read_Float(SECTOR_NUM + flashnum, 2);
-        g_RateP = DFlash_Read_Float(SECTOR_NUM + flashnum, 3);
-        g_RateD = DFlash_Read_Float(SECTOR_NUM + flashnum, 4);
-        g_dire_P = DFlash_Read_Float(SECTOR_NUM + flashnum, 5);
-        g_dire_D = DFlash_Read_Float(SECTOR_NUM + flashnum, 6);
-        g_fSpeed_set = DFlash_Read_Float(SECTOR_NUM + flashnum, 7);
-        g_Speed_P= DFlash_Read_Float(SECTOR_NUM + flashnum, 8);    
-        g_Speed_I = DFlash_Read_Float(SECTOR_NUM + flashnum, 9);
-        gRateKd = DFlash_Read_Float(SECTOR_NUM + flashnum, 10);
-        gRateKp = DFlash_Read_Float(SECTOR_NUM + flashnum, 11);
-        MaxSpeed= DFlash_Read_Int(SECTOR_NUM + flashnum, 12);
-        ProSpect = DFlash_Read_Int(SECTOR_NUM + flashnum,13);
-//        meet_st = DFlash_Read_Int(SECTOR_NUM + flashnum,14);
-        max_duty = DFlash_Read_Int(SECTOR_NUM + flashnum,15);
-        st = DFlash_Read_Int(SECTOR_NUM + flashnum,16);
-        stop_inf = DFlash_Read_Int(SECTOR_NUM + flashnum,17);
-        sum_dist = DFlash_Read_Int(SECTOR_NUM + flashnum,18);       
-//         ave_left_cross = DFlash_Read_Int(SECTOR_NUM + flashnum,19);
-//        ave_right_cross = DFlash_Read_Int(SECTOR_NUM + flashnum,20);
-//        ave_left_column = DFlash_Read_Int(SECTOR_NUM + flashnum,21);
-//        ave_right_column = DFlash_Read_Int(SECTOR_NUM + flashnum,22);
-//                ave_mid = DFlash_Read_Float(SECTOR_NUM + flashnum,23);
 
-        
-        
-        
-//        sum_meet_left = DFlash_Read_Int(SECTOR_NUM + flashnum,24);
-//        sum_meet_right = DFlash_Read_Int(SECTOR_NUM + flashnum,25);
-        Speed_MAX = DFlash_Read_Int(SECTOR_NUM + flashnum,26);
-//        Img_BlockOpen = DFlash_Read_Float(SECTOR_NUM + flashnum,27);
-//  
-//        
-        exp_time = DFlash_Read_Int(SECTOR_NUM + flashnum,28);
-        gRateKd_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,29);
-        gRateKp_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,30);
-        g_dire_P_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,31);
-        g_dire_D_AD = DFlash_Read_Float(SECTOR_NUM + flashnum,32);
 
-         
- 
-        /********** 以上为存储的数据 **********/
-      
-     }
-    
+
+		DFLASH_PARAM1 = DFlash_Read_Float(SECTOR_NUM + flashnum, 1);
+		DFLASH_PARAM2 = DFlash_Read_Float(SECTOR_NUM + flashnum, 2);
+		DFLASH_PARAM3 = DFlash_Read_Float(SECTOR_NUM + flashnum, 3);
+		DFLASH_PARAM4 = DFlash_Read_Float(SECTOR_NUM + flashnum, 4);
+		DFLASH_PARAM5 = DFlash_Read_Float(SECTOR_NUM + flashnum, 5);
+		DFLASH_PARAM6 = DFlash_Read_Float(SECTOR_NUM + flashnum, 6);
+		DFLASH_PARAM7 = DFlash_Read_Float(SECTOR_NUM + flashnum, 7);
+		DFLASH_PARAM8 = DFlash_Read_Float(SECTOR_NUM + flashnum, 8);
+		DFLASH_PARAM9 = DFlash_Read_Float(SECTOR_NUM + flashnum, 9);
+		DFLASH_PARAM10 = DFlash_Read_Float(SECTOR_NUM + flashnum, 10);
+		DFLASH_PARAM11 = DFlash_Read_Float(SECTOR_NUM + flashnum, 11);
+		DFLASH_PARAM12 = DFlash_Read_Int(SECTOR_NUM + flashnum, 12);
+		DFLASH_PARAM13 = DFlash_Read_Int(SECTOR_NUM + flashnum, 13);
+		DFLASH_PARAM14 = DFlash_Read_Int(SECTOR_NUM + flashnum, 14);
+		DFLASH_PARAM15 = DFlash_Read_Int(SECTOR_NUM + flashnum, 15);
+		DFLASH_PARAM16 = DFlash_Read_Int(SECTOR_NUM + flashnum, 16);
+		DFLASH_PARAM17 = DFlash_Read_Int(SECTOR_NUM + flashnum, 17);
+		DFLASH_PARAM18 = DFlash_Read_Int(SECTOR_NUM + flashnum, 18);
+		DFLASH_PARAM19 = DFlash_Read_Float(SECTOR_NUM + flashnum, 19);
+		DFLASH_PARAM20 = DFlash_Read_Float(SECTOR_NUM + flashnum, 20);
+		DFLASH_PARAM21 = DFlash_Read_Float(SECTOR_NUM + flashnum, 21);
+		DFLASH_PARAM22 = DFlash_Read_Float(SECTOR_NUM + flashnum, 22);
+		DFLASH_PARAM23 = DFlash_Read_Int(SECTOR_NUM + flashnum, 23);
+		DFLASH_PARAM24 = DFlash_Read_Int(SECTOR_NUM + flashnum, 24);
+		DFLASH_PARAM25 = DFlash_Read_Int(SECTOR_NUM + flashnum, 25);
+		DFLASH_PARAM26 = DFlash_Read_Int(SECTOR_NUM + flashnum, 26);
+		DFLASH_PARAM27 = DFlash_Read_Int(SECTOR_NUM + flashnum, 27);
+		DFLASH_PARAM28 = DFlash_Read_Int(SECTOR_NUM + flashnum, 28);
+		DFLASH_PARAM29 = DFlash_Read_Int(SECTOR_NUM + flashnum, 29);
+		DFLASH_PARAM30 = DFlash_Read_Int(SECTOR_NUM + flashnum, 30);
+		DFLASH_PARAM31 = DFlash_Read_Int(SECTOR_NUM + flashnum, 31);
+		DFLASH_PARAM32 = DFlash_Read_Int(SECTOR_NUM + flashnum, 32);
+		DFLASH_PARAM33 = DFlash_Read_Int(SECTOR_NUM + flashnum, 33);
+		DFLASH_PARAM34 = DFlash_Read_Int(SECTOR_NUM + flashnum, 34);
+		DFLASH_PARAM35 = DFlash_Read_Int(SECTOR_NUM + flashnum, 35);
+		DFLASH_PARAM36 = DFlash_Read_Int(SECTOR_NUM + flashnum, 36);
+		DFLASH_PARAM37 = DFlash_Read_Int(SECTOR_NUM + flashnum, 37);
+		DFLASH_PARAM38 = DFlash_Read_Int(SECTOR_NUM + flashnum, 38);
+		DFLASH_PARAM39 = DFlash_Read_Int(SECTOR_NUM + flashnum, 39);
+		DFLASH_PARAM40 = DFlash_Read_Int(SECTOR_NUM + flashnum, 40);
+		DFLASH_PARAM41 = DFlash_Read_Int(SECTOR_NUM + flashnum, 41);
+		DFLASH_PARAM42 = DFlash_Read_Int(SECTOR_NUM + flashnum, 42);
+		DFLASH_PARAM43 = DFlash_Read_Int(SECTOR_NUM + flashnum, 43);
+		DFLASH_PARAM44 = DFlash_Read_Int(SECTOR_NUM + flashnum, 44);
+		DFLASH_PARAM45 = DFlash_Read_Float(SECTOR_NUM + flashnum, 45);
+		DFLASH_PARAM46 = DFlash_Read_Int(SECTOR_NUM + flashnum, 46);
+		DFLASH_PARAM47 = DFlash_Read_Int(SECTOR_NUM + flashnum, 47);
+		DFLASH_PARAM48 = DFlash_Read_Int(SECTOR_NUM + flashnum, 48);
+		DFLASH_PARAM49 = DFlash_Read_Int(SECTOR_NUM + flashnum, 49);
+		DFLASH_PARAM50 = DFlash_Read_Int(SECTOR_NUM + flashnum, 50);
+                DFLASH_PARAM51 = DFlash_Read_Int(SECTOR_NUM + flashnum, 51);
+                DFLASH_PARAM52 = DFlash_Read_Int(SECTOR_NUM + flashnum, 52);
+                DFLASH_PARAM53 = DFlash_Read_Int(SECTOR_NUM + flashnum, 53);
+                DFLASH_PARAM54 = DFlash_Read_Int(SECTOR_NUM + flashnum, 54);
+                DFLASH_PARAM55 = DFlash_Read_Int(SECTOR_NUM + flashnum, 55);
+                DFLASH_PARAM56 = DFlash_Read_Int(SECTOR_NUM + flashnum, 56);
+				DFLASH_PARAM57 = DFlash_Read_Int(SECTOR_NUM + flashnum, 57);
+
+
+		/********** 以上为存储的数据 **********/
+
+	}
+
 }

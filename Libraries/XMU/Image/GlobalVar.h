@@ -31,10 +31,12 @@ extern float g_AngleOut;
 extern float g_RateP ;
 extern float g_RateD;
 extern float g_angle_P; 
+extern float g_angle_Psingle; 
 extern float g_angle_D; 
 //单级
 extern float g_single_angle_P;
 extern float g_single_angle_D;
+extern int AngleMutationFlag;
 //***********MOTOR（电机模式及其输出及开关）***********//
 extern float g_fleft;
 extern float g_fright;
@@ -69,6 +71,7 @@ extern int g_need ;//摄像头取得行数
 extern float g_dire_P;
 extern float g_dire_D;
 extern float g_errorD;//差值
+extern float g_errorCircleland;
 extern float g_fDirectionControlOut;
 extern float g_nDirectionControlPeriod;//输出平滑
 extern float g_DirectionPeriod;//分的段数
@@ -79,20 +82,30 @@ extern float g_dire_ad_D ;
 
 extern float g_fDirectionControlOut_new;
 extern float g_fDirectionControlOut_before;
+
+extern float Circle_P;
 //**************************Direction方向环（电感）**************//
 extern float gRateKp_AD ;            //串级p
 extern float gRateKd_AD ;            //串级d
 
 extern float g_dire_P_AD;
 extern float g_dire_D_AD;
+extern int protect_flag;
+//==========================方案选择模式============================//
+extern unsigned char BlockCount;			//纯红外1，红外加摄像头0
+extern unsigned char Img_GrayJumpOpen;		//灰度跳变检测断路开关
 
+//==========================元素计数变量============================//
+
+extern unsigned char CircleDir[10];		//环岛计数
+extern unsigned char Ind_CircleOpen;	//电磁判断环岛开关
 
 
 //==========================图像变量============================//
 #define LEFT_EAGE 0			//图像左边界
 #define RIGHT_EAGE 187		//图像右边界
 #define MIDDLE 94			//图像中值
-#define UP_EAGE 20			//图像上边界
+#define UP_EAGE 25			//图像上边界
 #define DOWN_EAGE 70		//图像下边界
 #define IMG_ROW 120			//图像行数
 #define IMG_COL 188			//图像列数
@@ -108,11 +121,9 @@ extern float g_dire_D_AD;
 #define CIRCLEUP_TH 15		//进入环岛差距行
 
 #define CIRCLE 2			//环岛开关
-#define BROKEN 0			//断路开关
-#define CURVE_BROKEN 0
-#define RAMP 0				//坡道开关
-#define BLOCK_BROKEN 1		//路障断路开关
-#define STOPLINE 0			//停车开关
+#define CURVE_BROKEN 1		//弯道断路
+#define STRAIGHT_BROKEN 1	//直道断路
+#define STOPLINE 1			//停车开关
 #define CI_IND 0			//出环岛标志
 #define INF 1				//红外识别
 
@@ -146,14 +157,18 @@ extern int g_RoadType;
 extern int ErrorFlag;								//错误标志位
 extern int LastMiddleLine;							//保存上帧中线
 extern int DiffThreshold;							//边缘检测阈值
+extern int DarkThreshold;                         //暗阈值（路障）
+extern int BrightThreshold;                       //亮阈值（坡道）
 extern int LightThreshold;						//去高光噪声阈值
 extern int LightThreshold2;						//去高光噪声阈值2
+extern int BrokenThreshold;
 extern int FindLineType;							//是否加入高光滤波标志
 
 extern int SpeedRow;			//控速边界行数
 
 extern int CircleFlag;
 extern int CircleState;
+extern unsigned char Dist_ClearSevenFlag;
 
 extern int LeftIntLine;		//记录左内跳行数
 extern int RightIntLine;		//记录右内跳行数
@@ -167,7 +182,8 @@ extern int BrokenLastAve;
 extern int StopLineDist;
 
 extern unsigned char Img_CircleOpen;
-extern unsigned char Img_BrokenOpen;
+extern unsigned char Img_StraightBrokenOpen;
+extern unsigned char Img_CurveBrokenOpen;
 extern unsigned char Img_StopOpen;
 extern unsigned char Img_BlockOpen;
 extern unsigned char Img_RampOpen;
@@ -178,6 +194,7 @@ void VarInit(void);
 extern int pro;
 
 //==========================摄像头参数=================================//
+#define ONE_METER 5800
 extern int exp_time;						//曝光时间
 extern int HighThreshold;						//canny高阈值
 extern int LowThreshold;						//canny低阈值
@@ -187,6 +204,7 @@ extern int ControlMid;						//图像控制中值
 //==========================菜单标志=================================//
 #define InitSteer 1147               //舵机初始值 75Hz 1145 50Hz 766
 
+extern int g_car_lanuch;				//车辆启动标志
 extern int g_drive_flag;                //电机开关
 extern int g_ad_flag;                   //电感开关
 extern int g_steer_open;                //舵机开关
@@ -321,6 +339,10 @@ extern int dialSwitchFlg1;
 extern int dialSwitchFlg2;
 extern int dialSwitchFlg3;
 extern int dialSwitchFlg4;
+extern int dialSwitchFlg5;
+extern int dialSwitchFlg6;
+extern int dialSwitchFlg7;
+extern int dialSwitchFlg8;
 extern int dialSwitchcal;
 //extern signed int DialSwitchFlag1;            //拨码开关1
 //extern signed int DialSwitchFlag2;            //拨码开关2
@@ -330,6 +352,10 @@ extern int dialSwitchcal;
 #define DIALSWITCH_PIN2 E6
 #define DIALSWITCH_PIN3 E7
 #define DIALSWITCH_PIN4 E9
+#define DIALSWITCH_PIN5 D9
+#define DIALSWITCH_PIN6 D10
+#define DIALSWITCH_PIN7 E12
+#define DIALSWITCH_PIN8 E11
 /*===================================双车通讯用=========================================*/
 typedef struct 
 {
@@ -344,17 +370,25 @@ extern signed char btRcvMessage;
 
 extern btInfo btSndInfo,btRcvInfo;
 /*=====================================双车状态======================================*/
-extern unsigned char g_StartMaster;                //主车发车准备
-extern unsigned char g_StartSlave;                 //从车发车准备
-extern unsigned char g_GetMeetingMaster;            //主车到达会车区标志
-extern unsigned char g_GetMeetingSlave;             //从车到达会车区标志
-extern unsigned char g_MeetingCtrlFlag;             //会车状态车辆控制标志
-extern unsigned char g_MeetingCtrlEndFlag;             //会车状态车辆控制结束标志
-extern unsigned char g_EndMeetingMaster;           //主车结束会车标志
+enum MeetingState {
+	Ready, WaitingBegin, CarGo,
+	StateOne = 4, StateTwo, StateThree, StateFour, StateFive, StateSix, StateSeven,
+	WaitingStop = 11, IsStopLine, StateGo, StateStop, CarFinish
+};
+
+//extern unsigned char g_GetMeetingMaster;            //主车到达会车区标志
+//extern unsigned char g_GetMeetingSlave;             //从车到达会车区标志
+//extern unsigned char g_MeetingCtrlFlag;             //会车状态车辆控制标志
+//extern unsigned char g_MeetingCtrlEndFlag;             //会车状态车辆控制结束标志
+//extern unsigned char g_EndMeetingMaster;           //主车结束会车标志
 extern unsigned char g_MasterOutFlag;              //主车出界
 extern unsigned char g_SlaveOutFlag;               //从车出界
 extern unsigned char g_StateMaster;
 extern unsigned char g_StateSlave;
+extern unsigned char g_MeetingMode;
+extern unsigned char g_MeetingDir;			//转向方向 1为右转 0为左转
+extern unsigned char g_GetMeetingFlag;
+extern unsigned char g_GetMeetingState;
 
 /*====================================会车区惯导变量=====================================*/
 extern int sum_distance_1;
@@ -365,19 +399,22 @@ extern int obj_angle_2;
 extern int const_error_1;
 extern int const_error_2;
 extern int max_duty;
+extern int OutMeetingDistance1;
+extern int OutMeetingDistance2;
+extern float GroundAngle;
+extern int StayCarFlag;
+extern int Stopdistance;
+extern int StayTime;
 /*====================================路障=====================================*/
-extern int BlockFlag;                   //路障标志
-extern int g_RB_Lduty,g_RB_Rduty;
-extern float k1,k2,k3;//调整系数
 extern int sum;
 extern int sum_dist;
-extern int inf_RB_flag;
-extern int var;
-extern float g_inf;
-extern int s1;
+extern int g_inf;
 extern int st;
-extern int stop_inf;
-extern unsigned char ObstacleEndFlag;
+extern int ST[5];
+extern int block_count;
+extern int block_inf;
+extern int ramp_inf;
+extern int singleRedFlag;
 /*=====================================陀螺仪变量======================================*/
 extern signed int I2C_Wait_Times;        //i2c等待次数
 extern signed int I2C_Wait_Err_Flg;      //i2c等待死循环错误标志
@@ -493,6 +530,27 @@ extern signed int DialSwitchFlag4;
 //#define DIALSWITCH_PIN2 E7
 //#define DIALSWITCH_PIN3 E8
 //#define DIALSWITCH_PIN4 E9
+/**************电磁环岛*************/
+extern float Circlelanderror;
+extern int circlelandflag;
+extern float circlelandSigma;
+extern int circlelandtimecount;
+extern int circlelandget; 
+extern int circlelandnumber;
+extern int circlelandsymbol;
 
+//uint8 phototube;
+/*************====================坡道路障相关可控制变量=======================*************/
+extern int BrokenTurnTailPWM;
+extern int BrokenTurnTailDistance;
+extern float Rampangle;
+/*************====================开机加速相关变量=======================*************/
+extern int BootRacerFlag;
+extern int BootRacerDistance;
+extern int BootRacerAngle;
 
+extern int BootRacerOpen;
+extern int AngleMutationOpenFlag;
+extern int ADclearCircleFlag;
+extern int Meeting13Flag;
 #endif

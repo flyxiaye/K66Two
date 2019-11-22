@@ -3,50 +3,58 @@
 #include "Basic.h"
 #include "AD.h"
 #include "Meeting.h"
-
-
+int g_ErrorImageNumber = 0;
 void AD_DirectionControl();
 //================================================================//
-//  @brief  :		·½Ïò»·Ëã·¨
+//  @brief  :		ï¿½ï¿½ï¿½ï¿½ï¿½ã·¨
 //  @param  :		
 //  @return :		
 //  @note   :		void
 //================================================================//
 void Direction()
 {
-  Camera_DirectionControl();
-  //²¦Âë¿ª¹ØÏòÏÂ²¦£¬ÉãÏñÍ·Ëã·¨
-//  if(dialSwitchFlg2&&balabaflag!=0)
-//  {
-//    
-//    if(Img_BrokenFlag == 2 && MEETING_MODE == 2 || Img_BrokenFlag == 3)
-//    {
-//      gpio_init(A7, GPO, 1);
-//      AD_DirectionControl();
-//    }
-//    else
-//    {
-//      gpio_init(A7, GPO, 0);
-//      Camera_DirectionControl();
-//    }
-//  }
-//  //²¦Âë¿ª¹ØÏòÉÏ²¦£¬µç´ÅËã·¨
-//  else if(!dialSwitchFlg2&&balabaflag!=0)
-//  {
-//    
-//      AD_DirectionControl();
-////      AD_CircleIsland_Control();
+	//  Camera_DirectionControl();
+	  //ï¿½ï¿½ï¿½ë¿ªï¿½ï¿½ï¿½ï¿½ï¿½Â²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ã·¨
+	//  if(dialSwitchFlg2&&balabaflag!=0)
+	//  {
+	//    
+	//    if(Img_BrokenFlag == 2 && MEETING_MODE == 2 || Img_BrokenFlag == 3)
+	//    {
+	//      gpio_init(A7, GPO, 1);
+	//      AD_DirectionControl();
+	//    }
+	//    else
+	//    {
+	//      gpio_init(A7, GPO, 0);
+	//      Camera_DirectionControl();
+	//    }
+	//  }
+	//  //ï¿½ï¿½ï¿½ë¿ªï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã·?
+	//  else if(!dialSwitchFlg2&&balabaflag!=0)
+	//  {
+	//
+//  if((!dialSwitchFlg2||(2==Img_BrokenFlag||3==Img_BrokenFlag))&&!TurnTailFlag)
+	if ((!dialSwitchFlg2 || Img_BrokenFlag) && !TurnTailFlag && !TurnNoTailFlag)
+	{
+		AD_DirectionControl();
+	}
+	else if (dialSwitchFlg2 && !TurnTailFlag && !Img_RampFlag && !TurnNoTailFlag)
+	{
+		Camera_DirectionControl();
+	}
+
+	////      AD_CircleIsland_Control();
 //    
 //  }
 }
 
 //================================================================//
-//  @brief  :		·½Ïò»·Æ½»¬Êä³ö
+//  @brief  :		ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿?
 //  @param  :		
 //  @return :		
 //  @note   :		void
 //================================================================//
-void DirectionControlOutput(void)//Æ½»¬Êä³ö
+void DirectionControlOutput(void)//Æ½ï¿½ï¿½ï¿½ï¿½ï¿?
 {
 	if (g_nDirectionControlPeriod < 5)
 	{
@@ -57,85 +65,135 @@ void DirectionControlOutput(void)//Æ½»¬Êä³ö
 	{
 		g_nDirectionControlPeriod = 0;
 	}
-	if (Img_BlockFlag || g_GetMeetingMaster || Img_BrokenFlag == 3) //ÏÞ·ù
-	{
-		g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
-		g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
-	}
+	//	if (Img_BlockFlag || g_GetMeetingFlag || Img_BrokenFlag == 3) //ï¿½Þ·ï¿½
+	//	{
+	g_fDirectionControlOut = MAX(g_fDirectionControlOut, -max_duty);
+	g_fDirectionControlOut = MIN(g_fDirectionControlOut, max_duty);
+	//	}
 	if (Img_BrokenFlag)
 	{
-            ;
+		;
 	}
-        g_fDirectionControlOut_before = g_fDirectionControlOut_new;
+	g_fDirectionControlOut_before = g_fDirectionControlOut_new;
 
 }
 
 //================================================================//
-//  @brief  :		µç´ÅÆ«²îËã·¨
+//  @brief  :		ï¿½ï¿½ï¿½Æ?ï¿½ï¿½ï¿½ã·¨
 //  @param  :		
 //  @return :		
 //  @note   :		void
 //================================================================//
 void AD_DirectionControl()
 {
-  static int count = 0;
-  static float g_fDirectionAngleControlOut = 0.0f;
-  static float sensorGyroZLast = 0.0f;
-  static float g_error_before = 0.0f;
-  if(count >= 4)
-  {
-    count = 0;
-    if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //Â·ÕÏ¿ØÖÆ
-    {
-      ;
-    }
-//    if(!CircleIsland_into_flag)//Ô²»·
-//    {
-      g_errorD = (right_line_norm - left_line_norm) / (right_line_norm + left_line_norm) * 100;
-//    }
-//    else if(CircleIsland_into_flag)
-//    {
-//      ;
-//    }
-    g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD + (g_errorD - g_error_before) * g_dire_D_AD;
-    g_fDirectionControlOut_new = (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z -  sensorGyroZLast) * gRateKd_AD;
-    sensorGyroZLast = sensor.Gyro_deg.z;
-    g_error_before = g_errorD;
-  }
-  else count++;
+	static int count = 0;
+	static float g_fDirectionAngleControlOut = 0.0f;
+	static float sensorGyroZLast = 0.0f;
+	static float g_error_before = 0.0f;
+	if (count >= 4)
+	{
+		count = 0;
+		//    if ((Img_BlockFlag && !g_handle_open) || g_GetMeetingMaster)                //Â·ï¿½Ï¿ï¿½ï¿½ï¿½
+		//    {
+		//      ;
+		//    }
+		//    if(!CircleIsland_into_flag)//Ô²ï¿½ï¿½
+		//    {
+		if (!Img_BlockFlag && circlelandflag != 2)
+		{
+			g_errorD = (left_line_norm - right_line_norm) / (right_line_norm + left_line_norm) * 100 ;
+		}
+		//    }
+		//    else if(CircleIsland_into_flag)
+		//    {
+		//      ;
+		//    }
+		//    if(!TurnTailFlag)
+		//    {
+		g_fDirectionAngleControlOut = g_errorD * g_dire_P_AD * (curSpeed / g_fSpeed_set * 0.8 + 0.2) + (g_errorD - g_error_before) * g_dire_D_AD;
+		g_fDirectionControlOut_new = (curSpeed / g_fSpeed_set + 0.8) * (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp_AD + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd_AD;
+		sensorGyroZLast = sensor.Gyro_deg.z;
+		g_error_before = g_errorD;
+		//    }
+
+	}
+	else count++;
 }
 //================================================================//
-//  @brief  :		ÉãÏñÍ·Æ«²îËã·¨
+//  @brief  :		ï¿½ï¿½ï¿½ï¿½Í·Æ«ï¿½ï¿½ï¿½ã·¨
 //  @param  :		
 //  @return :		
 //  @note   :		void
 //================================================================//
 void Camera_DirectionControl()
 {
-  static int count = 0;
-  static float g_fDirectionAngleControlOut = 0.0f;
-  static float sensorGyroZLast = 0.0f;
-  static float g_error_before = 0.0f;
-  if(count >= 5)
-  {
-    count = 0;
-    if (Img_BlockFlag|| g_GetMeetingMaster)                //Â·ÕÏ¿ØÖÆ
-    {
-      ;
-    }
-    else
-    {
-      g_errorD = 94 - ML[ProSpect];
-    
-	if (ErrorFlag)
-        {
-          g_errorD = g_error_before;
-        }
-    }
-    g_fDirectionAngleControlOut = g_errorD * g_dire_P + (g_errorD - g_error_before) * g_dire_D;
-    g_fDirectionControlOut_new = (g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd;
-    sensorGyroZLast = sensor.Gyro_deg.z;
-    g_error_before = g_errorD;
-  }
-  else count++;
+	static int count = 0;
+	static float g_fDirectionAngleControlOut = 0.0f;
+	static float sensorGyroZLast = 0.0f;
+	static float g_error_before = 0.0f;
+	static float temporary_P = 0.0f;
+	if (count >= 5)
+	{
+		count = 0;
+		//		if (Img_BlockFlag || g_GetMeetingFlag)                //Â·ï¿½Ï¿ï¿½ï¿½ï¿½
+		//		{
+		//			;
+		//		}
+		//		else
+		//		{	
+		if (CircleState >= 2)
+		{
+			temporary_P = Circle_P;
+		}
+		else
+		{
+			temporary_P = g_dire_P;
+		}
+		if (!Img_BlockFlag)
+		{
+			//¶¯Ì¬Ç°Õ°
+			int pro = ProSpect;
+			if (curSpeed < 10)
+				pro = ProSpect + 14;
+			else if (curSpeed < 15)
+				pro = ProSpect + 10;
+			else if (curSpeed < 20)
+				pro = ProSpect + 7;
+			else if (curSpeed < 30)
+				pro = ProSpect;
+			else pro = ProSpect - 5;
+			//»ñÈ¡Îó²î
+			if (pro < ML_Count)
+			{
+				g_errorD = (ControlMid - ML[ML_Count]);
+			}
+			else
+			{
+				g_errorD = (ControlMid - ML[pro]);
+			}
+
+			if (ErrorFlag)
+			{
+				g_ErrorImageNumber++;
+				g_errorD = g_error_before;
+			}
+		}
+		if (curSpeed > 15)
+		{
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.3 + 0.7) + (g_errorD - g_error_before) * g_dire_D;
+		}
+		else if (curSpeed >= 10&&curSpeed<=15)
+		{
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.6 + 0.2) + (g_errorD - g_error_before) * g_dire_D;
+		}
+		else if(curSpeed <10)
+		{
+			g_fDirectionAngleControlOut = g_errorD * temporary_P * (curSpeed / g_fSpeed_set * 0.8+ 0.1) + (g_errorD - g_error_before) * g_dire_D;
+		}
+		g_fDirectionControlOut_new = ((g_fDirectionAngleControlOut - sensor.Gyro_deg.z) * gRateKp + (sensor.Gyro_deg.z - sensorGyroZLast) * gRateKd);
+		sensorGyroZLast = sensor.Gyro_deg.z;
+		g_error_before = g_errorD;
+	}
+
+	else count++;
 }
